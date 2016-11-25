@@ -1,0 +1,662 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<script type="text/javascript">
+		function update_balance(){
+			var sel = document.getElementById("id_inventory_journal_set-add-debit_journal1").value;
+			var bal = 0
+			{% for deb_inv_jour in data.inv_jour_load_list %}
+				if (sel == {{ deb_inv_jour.0.id }}){
+					bal = {{ deb_inv_jour.0.balance_qty }}
+				}
+			{% endfor %}
+			document.getElementById("id_inventory_journal_set-add-balance_qty1").value = bal;
+			}
+	</script>
+
+<script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $('form#transaction_ref_form :input:visible:enabled:first').focus()
+            });
+        })(django.jQuery);
+    	</script>
+		
+<script type="text/javascript">
+	(function($) {
+	    var field;
+	})(django.jQuery);
+</script>
+
+<script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $('form#transaction_ref_form :input:visible:enabled:first').focus()
+	            });
+	        })(django.jQuery);
+	    </script>
+		
+		<script type="text/javascript">
+			(function($) {
+			    var field;
+			})(django.jQuery);
+</script>
+		
+<script type="text/javascript">
+
+		(function($) {
+		  $("#inventory_journal_set-group .tabular.inline-related tbody tr").tabularFormset({
+		    prefix: "inventory_journal_set",
+		    adminStaticPrefix: '/static/admin/',
+		    addText: "Add another Inventory_journal",
+		    deleteText: "Remove"
+		  });
+		})(django.jQuery);
+</script>
+		
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/journal_mgmt/coa/">Coas</a>
+&rsaquo; Add {{ data.coa_group_id.0.name }}
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="colM">
+    <h1>{% if data.id %} Edit {% else %} Create {% endif %} {{data.coa_group_id.0.name}} - {{data.name}}</h1>
+	
+	<div>
+		{{data.error}}
+	</div>
+	
+	
+	<div id="content-main">
+		<!--
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/coa/{{coa.id}}/history/" class="historylink">History</a>
+            </li>
+        </ul> 
+        -->
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:coa_save' %}" method="post" id="coa_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='alaLLRkqN3XslnvZCPy6I5zN3PC5nqFB' />
+		{% csrf_token %}
+		<div class="form-row field-ref_no">
+			<fieldset class="module aligned ">
+				<div class="form-row field-name">
+					<div>
+						<div hidden = "hidden">
+							<label class="required" for="id_pk">ID:</label>
+		                    <input class="vIntegerField" id="id_pk" name="pk" readonly="readonly" type="text" value={{data.id}} />
+						</div>
+					</div>
+					
+					<div style="float:left">
+						<div >
+	                        <label class="required" for="id_name">Name:</label>
+	                        <input class="vTextField" id="id_name" maxlength="200" name="name" readonly="readonly" type="text" value= {{data.name}} />
+	                    </div>
+	                </div>
+			        	
+	                <div style="float:left; margin-left:20px">
+	                    <div>
+	                        <label class="required" for="id_transaction_type">Transaction type:</label>
+	                        <select id="id_transaction_type" name="transaction_type" readonly="readonly">
+	                            <option value="{{ data.transaction_type.0.id }}" selected="selected">{{ data.transaction_type.0.name }}</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                
+	                <div style="float:left; margin-left:20px">
+	                    <div>
+	                        <label class="required" for="id_ref_no">Ref no:</label>
+	                        <input class="vIntegerField" id="id_ref_no" name="ref_no" readonly="readonly" type="text" value="{{data.ref_no}}" />
+	                    </div>
+	                </div>
+	                <div style="float:right">
+	                    <div style="float:left; margin-left:20px">
+	                        <div class="checkbox-row">
+	                                <input id="id_active" name="active" type="checkbox" {% if data.active == True %} checked {% endif %}/><label class="vCheckboxLabel" for="id_active">Active</label>
+	                        </div>
+	                    </div>
+	                
+	                    <div style="float:left; margin-left:20px"">
+	                        <div class="checkbox-row">
+	                            <input id="id_submit" name="submit" type="checkbox" {% if data.submit == True %} checked {% endif %}/><label class="vCheckboxLabel" for="id_submit">Submit</label>
+	                        </div>
+	                    </div>
+	                
+	                    <div style="float:left; margin-left:20px">
+	                        <div class="checkbox-row">
+	                            <input id="id_force_close" name="force_close" type="checkbox" {% if data.force_close == True %} checked {% endif %}/><label class="vCheckboxLabel" for="id_force_close">Force close</label>
+	                        </div>
+	                    </div>
+	                </div>
+            	</div>
+   				
+   				
+   				
+   				<div class="form-row field-ref_no">
+   					{% if data.trule == 3 or data.trule == 6 %}
+	   				<div style="float:left">
+	   					<div style="float:left; margin-left:20px">
+		                	<div>
+		                	    <label class="required" for="id_debit_transaction1">Debit transaction1:</label>
+		                            <select id="id_debit_transaction1" name="debit_transaction1" readonly = "readonly" readonly = "readonly" >
+		                            	{% if data.debit_transaction1.id %}
+										<option value="{{data.debit_transaction1.id}}" selected="selected" >{{data.debit_transaction1.name}}</option>
+										{% endif %}
+										{% if not data.inv_jour %}
+											{% for debit in data.debit_transaction1_opt %}
+												{% if data.debit_transaction1.id != debit.0.id %}
+													<option value="{{debit.0.id}}" {% if data.deb1 %} selected="selected" {% endif %}>{{debit.0.name}}</option>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									</select>
+								
+								<a href="/journal_mgmt/transaction_ref/detail/id={{data.debit_transaction1.id}}" id="navigate_parent">
+								<img src="/static/admin/img/icon_searchbox.png" alt="Search"/></a>
+				            </div>
+				        </div>
+						{% if data.trule == 6 %}
+						<div style="float:left; margin-left:20px">
+		                   <div>
+		                        <label class="required" for="id_debit_transaction2">Debit transaction2:</label>
+			                        <select id="id_debit_transaction2" name="debit_transaction2">
+										<option value="{{data.debit_transaction2.id}}"  selected="selected" >{{data.debit_transaction2.name}}</option>
+										{% if not data.inv_jour %}
+											{% for debit in data.debit_transaction2_opt %}
+												{% if data.debit_transaction1.id != debit.0.id %}
+													<option value="{{debit.0.id}}"  selected="selected" >{{debit.0.name}}</option>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+									</select>
+								<a href="/admin/journal_mgmt/transaction_ref/add/?_to_field=id" class="add-another" id="add_id_debit_transaction2" onClick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+			                </div>
+				        </div>
+				        {% endif %}
+				    </div>
+			    	{% endif %}
+		        	
+		        	<div style="float:right; margin-left:20px">
+	                	<div>
+	                        <label class="required" for="id_remarks">Remarks:</label>
+	                        <textarea class="vLargeTextField" cols="20" id="id_remarks" name="remarks" rows="2"></textarea>
+	                	</div>
+	    			</div>
+    			</div>
+    			
+    			{%if data.child_trefs %}
+    			<div class="form-row field-child_trefs">
+    				{% for cur_child_tref in data.child_trefs %}
+    				<div style="float:left; margin-left:20px">
+    				<a href="/journal_mgmt/transaction_ref/create/ttype={{cur_child_tref.0.id}}?deb1={{data.id}}" id="navigate_parent">Create {{cur_child_tref.0.name}}</a>
+    				<br/>
+	    				{% for child_tref in cur_child_tref.1 %}
+	    				<a href="/journal_mgmt/transaction_ref/detail/id={{child_tref.id}}" id="navigate_parent">> {{child_tref.name}}</a>
+	    				<br/>
+	    				{% endfor %}
+	    			</div>
+    				{% endfor %}
+    			</div>
+    			{% endif %}
+    			
+    			
+    			<!-- Transaction Reference Based Code is written within the div given below 
+	        	
+	        	<div class="form-row field-test">
+	        	<p>----------</p>
+	        	<p>{{data}}</p>
+	        	<p>----------</p>
+	        	</div>-->
+	        	
+	        	{% for cur_ttype_field in data.transaction_type.1.field_list %}
+	        	
+	        	<!--[('LABEL', 'HTML TAG TYPE', DEFAULT VALUE, {TAG SPECIFICATIONS IN DICTIONARY})]
+	        	EXAMPLE: [('input_box_test', 'input', 0, {'type': 'text', 'max_length': 12}), ('select_box_test', 'select', '', {'type': ''})]-->
+	        	{% if not forloop.counter|divisibleby:"2" %}
+	        	<div class="form-row field-{{cur_ttype_field.0}}">
+	        	{% endif %}
+	        		{% for cur_data in data.tref_data.field_list %}
+	        		{% if cur_data.0 == cur_ttype_field.3.name %}
+		        	<div style="float:left; width:50%">
+		        		<label class="required" for="id_{{ cur_ttype_field.0 }}">{{ cur_ttype_field.0 }}</label>
+		        		{% if cur_ttype_field.1 == 'input' %}
+		        		
+		        		<input class="vTextField" id="id_{{ cur_ttype_field.0 }}" maxlength="{{ cur_ttype_field.3.max_length }}" name="{{ cur_ttype_field.3.name }}" {% if data.submit == True %}
+		        		readonly="readonly" {% endif %} type="{{ cur_ttype_field.3.type }}" value={% if data.id %} {{ cur_data.1 }} {% else %} {{ cur_ttype_field.2 }} {% endif %}/>
+		        		
+		        		{% elif cur_ttype_field.1 == 'select' %}
+		        		
+		        		<select id="id_{{ cur_ttype_field.3.name }}" name="{{ cur_ttype_field.3.name }}">
+			        		<option value="{{ cur_data.1.0 }}">{{ cur_data.1.1 }}</option>
+			        		{% if not data.submit == 'True' %}
+			        		{% for cur_select_box in data.select_boxes %}
+			        			{% if cur_ttype_field.3.name == cur_select_box.0 %}
+			        			{% for cur_opt in cur_select_box.1 %}
+			        			{% if not cur_opt.id == cur_data.1.0 %}
+			        			<option value="{{ cur_opt.id }}">{{ cur_opt.name }}</option>
+			        			{% endif %}
+			        			{% endfor %}	
+			        			{% endif %}
+			        		{% endfor %}
+			        		{% endif %}
+			        	</select>
+			        	
+		        		{% endif %}
+		        	</div>
+		        	{% endif %}
+		        	{% endfor %}
+		        	
+	        	{% if forloop.counter|divisibleby:"2" %}
+	        	</div>
+	        	{% endif %}
+	        	
+	        	{% endfor %}
+	        	<!--
+	        	<p>{{data.select_boxes}} - data.select_boxes</p>
+			    <p>{{data.tref_data.field_list}} - data.tref_data.field_list</p>
+			    <p>{{data.transaction_type.1.field_list}} - data.transaction_type.1.field_list</p>
+			    -->
+				<!--
+				{% if 'vendor_list' in data.transaction_type.1.field_list %}
+					<div class="form-row Vendor">
+	            	    <div>
+	                        <label class="required" for="id_vendor">Vendor:</label>
+	                            <select id="id_vendor" name="Vendor">
+								<option value="">---------</option>
+								<option value="ABC" selected="selected">-</option>
+								<option value="XYZ">XYZ</option>
+								</select>
+							<a href="/admin/journal_mgmt/transaction_ref/add/?_to_field=id" class="add-another" id="add_id_debit_transaction3" onclick="return showAddAnotherPopup(this);"><img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>	
+	                	</div>
+		        	</div>
+		        {%	endif %}
+		        
+		        {% if 'payment_terms' in data.transaction_type.1.field_list %}
+		        	<div class="form-row field-Payment_Terms">
+		                <div>
+		                    <label class="required" for="id_name">Payment Terms:</label>
+		                    <input class="vTextField" id="id_name" maxlength="200" name="name" readonly="readonly" type="text" value= {{data.name}} />
+		                </div>
+		        	</div>
+		        {% endif %}
+		        	
+		        {% if 'date1' in data.transaction_type.1.field_list %}
+		        	<div class="form-row field-Delivery Date">
+		                <div>
+		                    <label class="required" for="id_name">Delivery Date:</label>
+		                    <input class="vDateField" id="id_pub_date" maxlength="10" name="date" type="text" value= {{data.date}} />
+		                </div>
+		        	</div>
+		        {% endif %}	
+		        	
+		        {% if 'number1' in data.transaction_type.1.field_list %}
+				
+				<div>
+			 		<div class="form-row field-Invoice No.">
+	                	<div>
+	                    <label class="required" for="id_name">Invoice No.:</label>
+	                    <input class="vTextField" id="id_name" maxlength="10" name="invoice no." type="text" value= {{data.number}} />
+	                	</div>
+	        		</div>
+	        	</div>
+	        	{% endif %}
+	        	
+	        	{% if 'attachment1' in data.transaction_type.1.field_list %}	
+	        	
+	        		<div class="form-row field-Invoice Copy attachment">
+						<div>
+						<label class="required" for="id_name">Attach Invoice Copy:</label>
+    						<form method="POST" action="/tests.py" >
+   							<input type="file">
+    						</form>
+						</div>
+					</div>
+				
+				{% endif %}
+				
+				{% if 'number2' in data.transaction_type.1.field_list %}
+				
+					<div class="form-row field-Delivery Challan No.">
+	                	<div>
+	                    <label class="required" for="id_name">Delivery Challan No.:</label>
+	                    <input class="vTextField" id="id_name" maxlength="20" name="Delivery Challan No." readonly="readonly" type="text" value= {{data.number}} />
+	                	</div>
+	        		</div>
+	        		
+	        	{% endif %}
+	        	
+	        	{% if 'attachment2' in data.transaction_type.1.field_list %}
+	        		
+	        		<div class="form-row field-Delivery Challan Copy">
+						<div id="filedialog">
+							<label class="required" for="id_name">Attach Delivery Challan Copy</label>
+    							<form method="POST" action="/tests.py" >
+   								<input type="file">
+    							</form>
+						</div>
+					</div>
+					
+				{% endif %}					
+				
+				{% if 'attachment3' in data.transaction_type.1.field_list %}
+				
+				
+				<div>
+					<div class="form-row field-Job Card Copy">
+						<label class="required" for="id_name">Attach Job Card Copy</label>
+						<div id="filedialog">
+    						<form method="POST" action="/tests.py" >
+   							<input type="file">
+    						</form>
+						</div>
+					</div>
+				</div>	
+				
+				{% endif %}
+				
+				{% if 'number3' in data.transaction_type.1.field_list %}
+				
+					<div class="form-row field-Annexure No.">
+	                	<div>
+	                    <label class="required" for="id_name">Annexure No.:</label>
+	                    <input class="vTextField" id="id_name" maxlength="20" name="Annexure No." type="text" value= {{data.number}} />
+	                	</div>
+	        		</div>
+	        		
+	        	{% endif %}	
+	        	
+	        	{% if 'attachment4' in data.transaction_type.1.field_list %}
+	        	
+	        		<div class="form-row field-Annexure copy">
+						<label class="required" for="id_name">Attach Annexure copy</label>
+						<div id="filedialog">
+    						<form method="POST" action="/tests.py" >
+   							<input type="file">
+    						</form>
+						</div>
+					</div>
+					
+				{% endif %}	
+				
+				{% if 'address1' in data.transaction_type.1.field_list %}
+				
+					<div class="form-row field-Shipping Address">
+	                	<div>
+	                    <label class="required" for="id_name">Shipping Address:</label>
+	                    <input class="vTextField" id="id_name" maxlength="100" name="Shipping Address" type="text" value="Street address" />
+	                	<input class="vTextField" id="id_name" maxlength="100" name="city" type="text" value= "city" />
+	                	<input class="vTextField" id="id_name" maxlength="12" name="Phone Number" type="text" value= "phone number" />
+	                	</div>
+	        		</div>
+	        		
+	        	{% endif %}	
+	        	
+	        	{% if 'address2' in data.transaction_type.1.field_list %}
+	        	
+	        		<div class="form-row field-Company (vendor details)">
+	                	<div>
+	                    <label class="required" for="id_name">Company (vendor details):</label>
+	                    <input class="vTextField" id="id_name" maxlength="50" name="Company Name" type="text" value="Company street address" />
+	                	<input class="vTextField" id="id_name" maxlength="12" name="Phone Number" type="text" value= "city" />
+	                	<input class="vTextField" id="id_name" maxlength="250" name="Address" type="text" value= "phone number" />
+	                	</div>
+	        		</div>
+	        	
+				{% endif %}
+	        	
+	        	-->
+	        	<!-- Transaction Reference Based field codes end here -->
+	        </fieldset>
+		</div>
+		
+		{% if not data.load_inv_jour or data.load_inv_jour == 'False' %}
+		<!-- Inventory Journal Table goes here -->
+		{% if data.id %}
+		<div class="inline-group" id="inventory_journal_set-group">
+		  	<div class="tabular inline-related last-related">
+			<input id="id_inventory_journal_set-TOTAL_FORMS" name="inventory_journal_set-TOTAL_FORMS" type="hidden" value="4" />
+			<input id="id_inventory_journal_set-INITIAL_FORMS" name="inventory_journal_set-INITIAL_FORMS" type="hidden" value="0" />
+			<input id="id_inventory_journal_set-MIN_NUM_FORMS" name="inventory_journal_set-MIN_NUM_FORMS" type="hidden" value="0" />
+			<input id="id_inventory_journal_set-MAX_NUM_FORMS" name="inventory_journal_set-MAX_NUM_FORMS" type="hidden" value="1000" />
+			
+			<fieldset class="module">
+			
+				<h2>Inventory_journals</h2>
+				
+				<table>
+			    	<thead>
+				    	<tr>
+				    		<th class="required">Sl
+					        </th>
+					        {% if data.trule == 1 %}
+					        <th class="required">Item Master
+					        </th>
+					       	{% endif %}
+					       	{% if data.trule == 3 or  data.trule == 6 %}
+				        	<th class="required">Debit journal 1
+					        </th>
+					        <th class="required">Balance qty in {{ data.debit_transaction1.name }}
+					        </th>
+					        {% endif %}
+							<th class="required">Issue qty
+				         	</th>
+				         	<th class="required">Delete?
+				         	</th>
+				     	</tr>
+			     	</thead>
+					<tbody>
+					{% if data.inv_jour %}
+					{% for cur_inv_jour in data.inv_jour %}
+			     	<tr class="form-row row{{ forloop.counter }} " id="inventory_journal_set-{{ forloop.counter }}">
+				        <td class="field-sl">
+				        	{{ forloop.counter }}
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-id" name="inventory_journal_set-{{ forloop.counter }}-id" type="hidden" value="{{cur_inv_jour.0.id}}" />
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-transaction_ref" name="inventory_journal_set-{{ forloop.counter }}-transaction_ref" type="hidden" value="{{cur_inv_jour.0.transaction_ref.id}}" />
+				        </td>
+				        {% if data.trule == 1 %}
+		        	    <td class="field-item_master">
+							<select id="id_inventory_journal_set-{{ forloop.counter }}-item_master" name="inventory_journal_set-{{ forloop.counter }}-item_master" readonly="readonly">
+								<option value="{{cur_inv_jour.0.item_master.id}}" selected="selected">{{cur_inv_jour.0.item_master.name}}</option>
+							</select>
+						</td>
+						{% endif %}
+						{% if data.trule == 3 or  data.trule == 6 %}
+				        <td class="field-debit_journal1">
+				        	<select id="id_inventory_journal_set-{{ forloop.counter }}-debit_journal1" name="inventory_journal_set-{{ forloop.counter }}-debit_journal1">
+								<option value="{{ cur_inv_jour.0.debit_journal1.id }}" selected="selected">{{ cur_inv_jour.0.debit_journal1.name }}</option>
+							</select><a href="/admin/journal_mgmt/inventory_journal/add/?_to_field=id" class="add-another" id="add_id_inventory_journal_set-{{ forloop.counter }}-debit_journal1" onclick="return showAddAnotherPopup(this);">
+						</td>
+						<td class="field-balance_qty1">
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-balance_qty1" readonly="readonly" name="inventory_journal_set-{{ forloop.counter }}-balance_qty1" step="1" type="number" value="{{ cur_inv_jour.0.debit_journal1.balance_qty }}" />
+			            </td>
+						{% endif %}
+						<td class="field-issue_qty">
+		        	        <input id="id_inventory_journal_set-{{ forloop.counter }}-issue_qty" name="inventory_journal_set-{{ forloop.counter }}-issue_qty" step="1" type="number" value="{{ cur_inv_jour.0.issue_qty }}" />
+		    	        </td>
+		    	        <td class="field-delete">
+		    	        <p class="deletelink-box"><a href="/journal_mgmt/inventory_journal/delete/id={{cur_inv_jour.0.id}}" class="deletelink">Delete</a></p>
+		    	        </td>
+					</tr>
+			    	{% endfor %}
+			    	{% endif %}
+			    	
+			    	<!--End Inventory Journal Content-->
+			    	<!--Add Inventory Journal Row-->
+		       		<tr class="add-row">
+		       		<td><img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"></td>
+		       		{% if data.trule == 1 %}
+					<td rowspan="2">
+						<select id="id_inventory_journal_set-add-group" name="inventory_journal_set-add-item_group" readonly="readonly">
+							{% for cur_item_group_opt in data.item_group_opt %}
+							<option value="{{cur_item_group_opt.id}}" selected="selected">{{cur_item_group_opt.name}}</option>
+							{% endfor %}
+						</select>
+						<select id="id_inventory_journal_set-add-item_master" name="inventory_journal_set-add-item_master" readonly="readonly">
+							{% for cur_item_master_opt in data.item_master_opt %}
+							<option value="{{cur_item_master_opt.id}}">{{cur_item_master_opt.name}}</option>
+							{% endfor %}
+						</select>
+					</td>
+					{% endif %}
+					{% if data.trule == 3 or data.trule == 6 %}
+					<td rowspan="2">
+			        	<select id="id_inventory_journal_set-add-debit_journal1" name="inventory_journal_set-add-debit_journal1" onclick="update_balance()">
+							<option selected="selected">-</option>
+							{% for cur_inv_jour_debit1_opt in data.inv_jour_load_list %}
+							<option value="{{ cur_inv_jour_debit1_opt.0.id }}">{{ cur_inv_jour_debit1_opt.0.name }}</option>
+							{% endfor %}
+						</select>
+					</td>
+					<td class="field-balance_qty1">
+			        	<input id="id_inventory_journal_set-add-balance_qty1" readonly="readonly" name="inventory_journal_set-{{ forloop.counter }}-balance_qty1" step="1" type="number" value="{{ cur_inv_jour.0.debit_journal1.balance_qty }}" />
+		            </td>
+		            {% endif %}
+					<td class="field-issue_qty">
+		        	        <input id="id_inventory_journal_set-add-issue_qty" name="inventory_journal_set-{{ forloop.counter }}-issue_qty" step="1" type="number" value="{{ cur_inv_jour.0.issue_qty }}" />
+	    	        </td>
+					</tr>
+					<!--End Add Invntory Journal row -->
+				</tbody>
+				</table>
+			
+			</fieldset>
+				<!--<button type="submit" class="button" title="Run the selected action" name="index" value="0">Add Item</button>-->
+			</div>
+		</div>
+		{% endif %}	
+		<!--Inventory Journal Table Ends here -->
+		
+		<div class="submit-row">
+			{% if data.id %}
+			<input style="float:left" type="submit" value="Add Inventory Journal" name="_add_inv_jour" />
+			{% endif%}
+			<input type="submit" value="Save" class="default" name="_save" />
+			<input type="submit" value="Save and add another" name="_addanother" />
+			<input type="submit" value="Save and continue editing" name="_continue" />
+		</div>
+		{% endif %}
+		</form>
+		
+		{% if data.load_inv_jour == 'True' %}
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:inv_jour_bulk_create' %}" method="post" id="transaction_ref_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='alaLLRkqN3XslnvZCPy6I5zN3PC5nqFB' />
+		{% csrf_token %}
+		<div class="form-row field-ref_no">
+			<div class="inline-group" id="inventory_journal_set-group">
+				<div class="tabular inline-related last-related">
+					<div class="form-row field-id">
+						<div hidden = "hidden">
+							<label class="required" for="id_pk">ID:</label>
+		                    <input class="vIntegerField" id="id_pk" name="pk" readonly="readonly" type="text" value={{data.id}} />
+						</div>
+					</div>
+					<div><!-- DIV needed for valid HTML -->
+					<fieldset class="module">
+						<h2>Parent Inventory Journals</h2>
+						
+						<table>
+							<thead>
+								<tr>
+									<th class="required">Sl</th>
+									<th class="required">Item</th>
+									<th class="required">Available Qty</th>
+									<th class="required">Qty to Issue</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for parent_inv_jour in data.inv_jour_load_list %}
+								<tr class="form-row row{{ forloop.counter }}" id="add_inventory_journal_set-{{ forloop.counter }}">
+									<td class="field-sl">
+						        	{{ forloop.counter }}
+						        	<input id="id_inventory_journal_set-{{ forloop.counter }}-id" name="add_inventory_journal_set-{{ forloop.counter }}-id" type="hidden" value="{{cur_inv_jour.0.id}}" />
+						        	<input id="id_inventory_journal_set-{{ forloop.counter }}-transaction_ref" name="add_inventory_journal_set-{{ forloop.counter }}-transaction_ref" type="hidden" value="{{cur_inv_jour.0.transaction_ref.id}}" />
+						        	</td>
+									<td class="field-item_master">
+										<select id="id_inventory_journal_set-{{ forloop.counter }}-debit_journal1" name="add_inventory_journal_set-{{ forloop.counter }}-debit_journal1">
+											<option value="{{ parent_inv_jour.0.id }}" selected="selected">{{ parent_inv_jour.0.name }}</option>
+										</select>
+									</td>
+									<td class="field-balance_qty">
+										<input id="id_inventory_journal_set-{{ forloop.counter }}-balance_qty" name="add_inventory_journal_set-{{ forloop.counter }}-balance_qty" type="text" readonly="readonly" value="{{ parent_inv_jour.0.balance_qty }}"/>
+									</td>
+									<td class="field-issue_qty">
+										<input id="id_inventory_journal_set-{{ forloop.counter }}-issue_qty" name="add_inventory_journal_set-{{ forloop.counter }}-issue_qty" type="text" value="{{ parent_inv_jour.0.balance_qty }}"/>
+									</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+		
+		<div class="submit-row">
+			<input type="submit" value="Add list" class="default" name="_bulk_create" />
+		</div>	
+		
+		</div>
+		</form>
+		{% endif %}
+		
+		{% if not data.inv_jour and data.id %}
+		<form id="changelist-search" action="" method="get">
+			{% if not data.load_inv_jour or data.load_inv_jour == 'False' %}
+			<button type="submit" name="load" value="True">Auto Load Items</button>
+			{% endif %}
+		{% endif %}
+		{% if data.load_inv_jour == 'True' %}
+		<button type="submit" name="load" value="False">Cancel Load</button>
+		</form>
+		{% endif %}
+		
+	</div>
+</div>
+{% endblock %}
+</body>

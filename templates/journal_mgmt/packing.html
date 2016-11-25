@@ -1,0 +1,195 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+<!-- Container -->
+	{% block breadcrumbs %}
+	<div class="breadcrumbs">
+	<a href="/admin/">Home</a>
+	&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+	&rsaquo; Packing List
+	</div>
+	{% endblock %}
+	
+	{% block content %}
+	<script language="javascript" type="text/javascript">
+	
+	function popitup(url) {
+	    newwindow=window.open(url,'{{title}}','height=650,width=950');
+	    if (window.focus) {newwindow.focus()}
+	    return false;
+	}
+	
+	</script>
+	<script type="text/javascript">
+	function quote_update() {
+	    var selectBox = document.getElementById("id_project");
+	    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+	    var nav_location =  "/journal_mgmt/quote_import/?project=" + String(selectedValue)
+	    window.location = nav_location;
+	   }
+	</script>
+	<script type="text/javascript">
+	function packing_list() {
+	    var selectBox = document.getElementById("id_project");
+	    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+	    var nav_packing =  "/journal_mgmt/packing/?project=" + String(selectedValue)
+	    window.packing = nav_packing;
+	   }
+	</script>
+	<!-- Content -->
+	<!-- test code <p>{{ data.project }}</p> -->
+	<div>
+	{% load custom_temp_tags %}
+        <h3>Packing List</h3>
+        <fieldset class="module aligned">
+		<table id="result_list" style="width:100%">
+						<thead>
+						<tr>
+							<th scope="col"  class="column-__str__">
+							   	<div class="text"><span>Sl No</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col" class="column-__str__">
+								<div class="text"><span>Item Name</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Item Weight</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Gross Weight</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Net Weight</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Packing Item Set Qty</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Box Qty</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Packing Items</span></div>
+							   	<div class="clear"></div>
+							</th>
+							
+						</tr>
+						</thead>
+						<tbody>
+						{% for cur_item_name, packing_list in data.packing_list_dict.items %}
+							{% with forloop.counter|add:-1 as cur_serial %}
+							{% for cur_pack in packing_list %}
+							{% cycle 'row1' 'row2' as rowcolors silent %}
+						 		
+						 		<tr>
+								{% if forloop.counter == 1 %}
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.9 }}" style="width:2.5%">
+									{{ cur_serial|add:forloop.counter }}
+								</td>
+								{% endif %}
+								{% if forloop.counter == 1 %}
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.9 }}" style="width:20%">
+								{{ cur_pack.0 }}
+								</td>
+								{% endif %}
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.8 }}" style="width:7%">
+									{{ cur_pack.5 }} Kg
+								</td>
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.8 }}" style="width:7%">
+									{{ cur_pack.6 }} Kg
+								</td>
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.8 }}" style="width:7%">
+									{{ cur_pack.7 }} Kg
+								</td>
+								
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.8 }}" style="width:5%">
+									{{ cur_pack.2 }}
+								</td>
+								<td class="form-row {{ rowcolors }}" rowspan="{{ cur_pack.8 }}" style="width:5%">
+									{{ cur_pack.3 }}
+								</td>
+									
+									{% for cur_box_items in cur_pack.4 %}
+									
+									<td class="form-row {{ rowcolors }}"rowspan="1"style="width:30%" hidden>
+										{{ cur_box_items }}
+									</td>
+									<tr>
+									<td class="form-row {{ rowcolors }}"style="width:30%">
+									{{ cur_box_items }}
+									</td>
+									</tr>
+									{% endfor %}
+									
+									
+								
+								 
+								</tr>
+								
+						{% endfor %}
+						{% endwith %}
+						
+						{% endfor %}
+						</tbody>
+						</table>
+		</fieldset>
+		
+		
+		</div>
+
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>
+
+
+<!--
+
+
+
+-->

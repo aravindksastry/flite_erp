@@ -1,0 +1,143 @@
+{% extends "admin/base_site_custom.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+<div class="margin10" style="float: left; height:7x; width:100%">
+        	<ul class="breadcrumbs">
+            <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			
+						<li>Add {{ data.transaction_type.0.name }}</li>
+                 
+                </ul>
+               </div>
+               <br>
+              {% endif %}
+{% endblock %}
+{% block content %}
+			<form id="changelist-search" action="{% url 'journal_mgmt:cur_stock' %}" method="post">
+   	   			<div style="float:left; width:100%" class="form-row field-xyz">
+				{% csrf_token %}
+				<div class="form-row field-xyz">
+	        		<div style="float:left; width:100%">
+		            	<div>
+		                	<label class="required" for="id_sel_location_ref_id">Location Type :</label>
+		                	<select id ="id_sel_location_type_id" name="sel_location_type_id" onchange="submit()">
+		                	<option value="*All*" selected >*All*</option>
+		                	{% for cur_location_type in data.location_type_opt %}
+		                	<option value="{{ cur_location_type.id }}" {% if data.sel_location_type_id == cur_location_type.id %} selected {% endif %} onclick="submit()">{{ cur_location_type.name }}</option>
+		                	{% endfor %}
+		                	</select>
+						</div>
+	        		</div>
+	        	</div>
+			</form>
+			<form id="changelist-search" action="{% url 'journal_mgmt:cur_stock' %}" method="post">
+			{% csrf_token %}
+			<input name="sel_location_type_id" type="number" hidden value="{{ data.sel_location_type_id }}"></input>
+			<div class="form-row field-xyz">
+				<div style="float:left; width:100%">
+	            	<div>
+	            	
+	                	<label class="required" for="id_sel_location_ref_id">Location :</label>
+	                	<select id ="id_sel_location_ref_id" name="sel_location_ref_id" onchange="submit()">
+	                	{% for cur_location_ref in data.location_ref_opt %}
+	                	<option value="{{ cur_location_ref.id }}" {% if data.sel_location_ref_id == cur_location_ref.id %} selected {% endif %} onclick="submit()">{{ cur_location_ref.name }}</option>
+	                	{% endfor %}
+	                	</select>
+					</div>
+        		</div>
+        	</div>
+		</div>
+				
+		<div class="form-row field-xyz" hidden>
+	        <div style="float:left; width:50%">
+	            <div>
+	                <label class="required" for="id_item_master">Item name search:</label>
+	                <input id="id_sel_location_ref_val" name="sel_location_ref_val" onchange="submit()" value="{{ data.sel_location_ref_val }}">
+	                <input id="id_item_group" name="sel_item_group_id" onchange="submit()" value="{{ data.sel_item_group_id }}">
+	                <input id="id_item_name_search" name="item_name_search" onchange="submit()" value="{{ data.item_name_search }}">
+	            </div>
+	        </div>
+	    </div>
+     				</form>
+     				<br>
+     				<fieldset class="module aligned ">
+	 	<table>
+				<thead>
+				<tr>
+					<th class="required">Sl No</th>
+					<th class="required">Item Master</th>
+					<th class="required">Name</th>
+					<th class="required">TPL Ref No</th>
+					<th class="required">Current Stock</th>
+					<th class="required">Current Rate</th>
+					<th class="required">Total Value</th>
+				</tr>
+			</thead>
+			<tbody>
+					
+						
+					{% for current_stock_list in data.sel_current_stock_list %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+					<tr class="{{ rowcolors }}">
+						<td class="form-row row{{ rowcolors }}">
+						{{ forloop.counter }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ current_stock_list.item_master_ref_id }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ current_stock_list }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ current_stock_list.tpl_ref_no }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ current_stock_list.cur_stock }}
+						<td class="form-row row{{ rowcolors }}">
+						{{ current_stock_list.cur_rate }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ current_stock_list.tot_value }}
+					{% endfor %}
+						
+					</tbody>	
+					</table>
+      </fieldset>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

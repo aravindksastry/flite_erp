@@ -1,0 +1,400 @@
+{% extends "admin/change_list_custom.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class="app-journal_mgmt model-transaction_ref change-list" style="width:1200px border:thin solid grey">
+{% load custom_temp_tags %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; 
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Content -->
+
+	<div class="flex">
+	     <div id="content-main">
+	     <h1>ADD BOM</h1>
+	
+		   <fieldset class="module aligned ">
+			 <form enctype="multipart/form-data" action="{% url 'journal_mgmt:bom_add_popup' data.pl_obj.id %}" method="post" id="coa_group_form" novalidate>
+			 <input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+   	    	   <div style="float:left; width:100%" class="form-row field-xyz">
+   	    		{% csrf_token %}
+	    		
+				<div><!-- DIV needed for valid HTML -->
+						<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /></label>
+						<input type="text" size="40" name="searched_param" value="{{ data.searched_param }}" id="searchbar" />
+						<input type="submit" class="command-button button primary"  value="Search" />
+	    			</div>
+	    			<br/>
+	    			<div style="width:100%">
+	    			<tbody>
+					<label class="required" for="id_raw_material">Price List : </label>
+	                <select id="id_pl_item" name="pl_item" onchange=submit()>
+							<option value="{{ data.sel_derivative_id }}" {% if data.sel_derivative_id == 0 %} selected {% endif %}> ---- </option>
+							{% for cur_pl in data.auto_pl %}
+								<option value="{{ cur_pl.id }}" name="{{ cur_pl.name }}" {% if data.sel_pl_item_id == cur_pl.id %} selected {% endif %}>{{ cur_pl.name }}</option>
+							{% endfor %}
+					</select> 
+					</tbody>
+					</div>
+				</form>
+				<form enctype="multipart/form-data" action="{% url 'journal_mgmt:bom_add_popup' data.pl_obj.id %}" method="post" id="coa_group_form" novalidate>	
+					<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+					{% csrf_token %}
+					
+						<input type="text" size="40" name="searched_param" value="{{ data.searched_param }}" id="searchbar"  hidden/>
+					<select id="id_pl_item" name="pl_item" onchange=submit() hidden>
+							{% for cur_pl in data.auto_pl %}
+								<option value="{{ cur_pl.id }}" name="{{ cur_pl.name }}" {% if data.sel_pl_item_id == cur_pl.id %} selected {% endif %}>{{ cur_pl.name }}</option>
+							{% endfor %}
+					</select> 
+					<br>
+					<div style="width:100%">
+					<label class="required" for="id_raw_material">Derivative List : </label>
+	                <select id="id_derivative" name="derivative" onchange=submit()>
+							<option value="{{ data.sel_derivative_id }}" {% if data.sel_derivative_id == 0 %} selected {% endif %}> ---- </option>
+							{% for cur_derivative in data.derivative_list %}
+								<option value="{{ cur_derivative.0 }}" name="{{ cur_derivative.1 }}" {% if data.sel_derivative_id == cur_derivative.0 %} selected {% endif %}>{{ cur_derivative.1 }}</option>
+							{% endfor %}
+					</select> 
+					{% if data.sel_derivative %}
+					<input type="submit" value="Add Derivative" class="command-button button primary"  name="add_derivative"/>
+					{% endif %}
+					</div>
+					
+				{% if data.derivative_add %}
+				
+				<fieldset class="module aligned ">
+				<table id="result_list" style="width:100%">
+				<lable><h2><b>Derivative</b></h2></lable>
+				<thead>
+				<tr>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Derivative Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>D1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Qty</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>F1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F5</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F6</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F7</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F8</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F9</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F10</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F11</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F12</span></div>
+				   <div class="clear"></div>
+				</th>
+				
+				</tr>
+				</thead>
+				<tbody>
+				<tr class="{{ rowcolors }}">
+				<td><input type="text" style="width:155px" maxlength="200" name="derivative_name"  value="{{data.derivative_name|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="d1"  value="{{data.d1|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="d2"  value="{{data.d2|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="d3"  value="{{data.d3|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="d4"  value="{{data.d4|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="qty"  value="{{data.qty|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f1"  value="{{data.f1|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f2"  value="{{data.f2|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f3"  value="{{data.f3|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f4"  value="{{data.f4|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f5"  value="{{data.f5|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f6"  value="{{data.f6|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f7"  value="{{data.f7|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f8"  value="{{data.f8|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f9"  value="{{data.f9|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f10"  value="{{data.f10|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f11"  value="{{data.f11|stringformat:".2f" }}"/></input></td>
+				<td><input type="text" style="width:55px" maxlength="200" name="f12"  value="{{data.f12|stringformat:".2f" }}"/></input></td>
+				</tr>
+				</tbody>
+				</table>
+				<input type="submit" value="Add" class="command-button button primary"  name="add_pl_derivative"/>
+				</fieldset>
+				
+				{% endif %}
+				
+				<fieldset class="module aligned ">
+				<table id="result_list" style="width:100%">
+				<lable><h2><b>Bom Table</b></h2></lable>
+				<thead>
+				<tr>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>SL NO</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Item Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>D1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Qty</span></div>
+				   <div class="clear"></div>
+				</th>
+				</tr>
+				</thead>
+				
+				<tbody>
+				{% for cur_pl in data.bom_pl_list %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<tr class="{{ rowcolors }}" onclick="submit()">
+					<tr class="{{ rowcolors }}">
+					<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.1 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.2 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.3 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.4 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.5 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.6 }}</td>
+					
+				</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+				
+				</fieldset>
+				
+				
+				<fieldset class="module aligned ">
+				<table id="result_list" style="width:100%">
+				<lable><h2><b>Derivative Table</b></h2></lable>
+				<thead>
+				<tr>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>SL NO</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>D1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Qty</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F5</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F6</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F7</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F8</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F9</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F10</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F11</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>F12</span></div>
+				   <div class="clear"></div>
+				</th>
+				
+				
+				</tr>
+				</thead>
+				
+				<tbody>
+				{% for cur_derivative in data.sel_derivative_list %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<tr class="{{ rowcolors }}" onclick="submit()">
+					<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.1 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.2 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.3 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.4 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.5 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.6 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.7 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.8 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.9 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.10 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.11 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.12 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.13}}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.14 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.15 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.16 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.17 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_derivative.18 }}</td>
+					
+				</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+					<input type="submit" value="Add" class="command-button button primary"  name="add"/>
+				</fieldset>
+				</form>
+			</fieldset>
+			
+			</div>
+		</div>	
+	
+
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>

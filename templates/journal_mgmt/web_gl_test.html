@@ -1,0 +1,80 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_static %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+
+  
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/web_gl_test/script.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/web_gl_test/libs.js"></script>
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+<!-- Container -->
+<div id="container">
+	<!-- Header -->
+	<!--
+	<div id="header">
+	    <div id="branding">
+			<h1 id="site-name"><a href="/admin/">Django administration</a></h1>
+	    </div>
+	    <div id="user-tools">
+	        Welcome,
+	        <strong>admin</strong>.
+	        <a href="/admin/password_change/">Change password</a> /
+	        <a href="/admin/logout/">Log out</a>
+	    </div>
+	</div>
+	-->
+	<!-- END Header -->	
+	
+	
+	{% block breadcrumbs %}	
+	<div class="breadcrumbs">
+	<a href="/admin/">Home</a>
+	&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+	&rsaquo; Transaction_refs
+	</div>
+	{% endblock %}
+	
+	{% block content %}
+	{% load staticfiles %}
+	{% load custom_temp_tags %}
+
+	<!-- Content -->
+	<body style='margin:0px' onload='main()'>
+    <canvas id='your_canvas'
+            style='position: absolute; background-color: black;'></canvas>
+  </body>
+	
+	<!-- END Content -->
+	{% endblock %}
+</div>
+<!-- END Container -->
+</body>

@@ -1,0 +1,137 @@
+{% extends "admin/change_form_custom.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% load custom_temp_tags %}
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+{% block breadcrumbs %}
+			
+    <div class="margin5" style="float: left; height:10x; width:90%">
+	<ul class="breadcrumbs-custom ">
+        <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+    	<li>{{data.chosen_dept}}</li>
+    </ul>
+    </div>
+          
+{% endblock %}
+
+{% block content %}
+
+
+<style> 
+ h4 {
+    text-align: center;
+}
+
+</style>
+</head>
+<div class="container page-content"> 
+    <div data-role="charm" data-position="left" id="left-charm" style="overflow:auto; float: left; width:25%"><h1 class="text-light">My Shortcuts</h1>
+      	{% for cur_dept in data.dept_data %}
+      	<div class="cell" >
+         	<ul class="sidebar2" style="width:100%">
+            <li class="stick">
+           	<a class="dropdown-toggle" ><span class="{{cur_dept.1.dept_icon}}"></span>{{cur_dept.0.name}}</a>
+           		<ul class="d-menu" data-role="dropdown">
+	                <div class="form-row field-child_trefs">
+						<div style="float:left; width:100%">
+							<li></li>
+							{% for cur_ttype in data.ttype_data_all %}
+							{% if cur_ttype.0.ttype_department_ref_id == cur_dept.0.id %}
+								<li>
+									<a href="/journal_mgmt/transaction_ref/index/ttype={{ cur_ttype.0.id }}" {% if ttype.ttype_department_ref == cur_dept.id %}{% endif %}	 id="navigate_parent">{{cur_ttype.0.name}}</a>
+								</li>
+							{% endif %} 
+							{% endfor %}
+							</li>
+						</div>
+					</div>
+				</ul>
+			</ul>
+		</div>
+		{% endfor %} 
+	</div>
+</div> 
+	{% if data.chosen_dept.id == 7 %} 
+	<div style="float:center; text-align:center; width:80%; margin-left:10%; margin-right:10%">
+		<a href="/journal_mgmt/coa/index/coa_group_id=23" class="tile-label" >
+       		<div class="tile-large bg-orange fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Customer </h4><br><br><br></span>    
+       		</div>
+      	</a>
+       	<a href="/journal_mgmt/coa/index/coa_group_id=20" class="tile-label" >
+      		<div class="tile-large bg-teal fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+    		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Purchase Vendor </h4><br><br><br></span>    
+      		</div>
+       	</a>
+			
+	   <!--  <a href="/journal_mgmt/coa/index/coa_group_id=21" class="tile-label" >
+	        		<div class="tile-large bg-lightBlue fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+	      		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Services Vendor</h4><br><br><br></span>    
+	        		</div>
+	        		</a>  -->	
+	    <a href="/journal_mgmt/coa/index/coa_group_id=24" class="tile-label" >
+       		<div class="tile-large bg-darkBlue fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Employee</h4><br><br><br></span>    
+       		</div>
+       	</a>
+       	<a href="/journal_mgmt/auto_price_list/matrix/" class="tile-label" >
+       		<div class="tile-large bg-magenta fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Auto Price list Matrix </h4><br><br><br></span>    
+       		</div>
+      	</a>
+      	<a href="/journal_mgmt/quote_import/" class="tile-label" >
+       		<div class="tile-large bg-green fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Quote Import </h4><br><br><br></span>    
+       		</div>
+      	</a>
+      	<a href="/journal_mgmt/auto_price_list/index/" class="tile-label" >
+       		<div class="tile-large bg-emerald fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Auto Price list </h4><br><br><br></span>    
+       		</div>
+      	</a>
+      	<a href="/journal_mgmt/vendor_pl/index/" class="tile-label" >
+       		<div class="tile-large bg-red fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Vendor Pl List </h4><br><br><br></span>    
+       		</div>
+      	</a>
+      	<a href="/journal_mgmt/wc_pl/index/" class="tile-label" >
+       		<div class="tile-large bg-red fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Work Center Pl List </h4><br><br><br></span>    
+       		</div>
+      	</a>
+      	
+	 {% endif %}
+	{% if data.chosen_dept.id == 8 %} 
+	<div style="float:center; text-align:center; width:80%; margin-left:10%; margin-right:10%">
+		<a href="/journal_mgmt/transaction_report" class="tile-label" >
+       		<div class="tile-large bg-orange fg-white slide-right" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+     		 	<span class="tile-label-custom-ttype" style="text-align:center; width:100%"><h4>Transaction Report </h4><br><br><br></span>    
+       		</div>
+      	</a>
+      	</div>
+      	{% endif %}
+<body>
+     <div style="float:center; width:100%">
+	 	<div style="float:center; text-align:center; width:100%; margin-left:0%; margin-right:0%">
+		{% for cur_ttype_group in data.ttype_data_grouped %}
+		<div class="form-row field-xyz" style="width:100%">
+			<h2 style="text-align:center; width:10%; float:left">{{ cur_ttype_group.0 }}<h2>
+			<div style="text-align:center; width:90%; float:left">
+			{% for cur_ttype in cur_ttype_group|slice:'1:' %}
+			<a href="/journal_mgmt/transaction_ref/index/ttype={{ cur_ttype.0.id }}" class="tile-label" >
+			<div class="{{cur_ttype.1.color}}" style="height:50px; width: 25%; float:left; margin-left:1%; margin-right:1%; margin-bottom:1%; margin-top:1%;" data-role="tile">
+            <span class="tile-label-custom-ttype" style="text-align:center; width:100%" >
+            <h4 style="text-align:center; width:100%">{{ cur_ttype.0.name }}<h4>
+			</span>
+    		</div>
+            </a>
+            {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+       	</div>
+	</div>
+</body>
+{% endblock %}

@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> coa_group_detail | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-coa_group change-form">
+
+<!-- Container -->
+<div id="container">
+
+    <!-- Content -->
+    <div id="content" class="colM">
+        <h1>Coa_group_detail</h1>
+        <div id="content-main">
+  <ul class="object-tools">
+    <li>
+        <a href="/admin/journal_mgmt/coa_group/23/history/" class="historylink">History</a>
+    </li>
+  </ul>
+
+<form enctype="multipart/form-data" action="{% url 'journal_mgmt:auto_rmp_sup_save' data.rmp_supply.id %}" method="post" id="coa_group_form" novalidate>
+<!--<form enctype="multipart/form-data" action="{% url 'journal_mgmt:test_response' %}" method="post" id="coa_group_form" novalidate>-->
+<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+{% csrf_token %}
+<div>
+	<fieldset class="module aligned ">
+		<div class="form-row field-auto_rmp_sup_id">
+			<div>
+				<label class="required" for="id_rmp_supply_id">Raw Material Supply ID</label>
+				<input  class="vIntegerField" id="id_rmp_supply_id" name="rmp_supply_id" type="text" value="{{ data.rmp_supply.id }}" readonly />
+			</div>
+        </div>
+        
+        <div class="form-row field-auto_pl_name">
+			<div>
+               <label class="required" for="id_rmp_supply_name">Raw Material Name</label>
+               <input  class="vTextField" id="id_rmp_supply_name" maxlength="200" name="rmp_supply_name" type="text" value="{{ data.rmp_supply.rmp.name }}" readonly />
+			</div>
+        </div>
+		<div class="form-row field-Value">
+			<div>
+				<label class="required" for="id_rmp_supply_value">Value</label>
+              	<input  class="vTextField" id="id_rmp_supply_value" maxlength="200" name="rmp_supply_value" type="text" value="{{ data.rmp_supply.rate }}"/>
+			</div>
+		</div>
+		<div class="form-row field-type">
+			<div>
+               <label class="required" for="id_type">Supplier Type</label>
+               <input  class="vTextField" id="id_type" maxlength="200" name="type" type="text" value="{{ data.type }}" readonly />
+			</div>
+        </div>
+		
+        <div class="form-row field-parent_coa_group">
+            <div>
+				<label class="required" for="id_rmp_supply_name">Supplier</label>
+				<input  class="vTextField" id="id_rmp_supply_name" maxlength="200" name="rmp_supply_name" type="text" value="{{ data.rmp_supply.name }}" readonly />
+			</div>
+        </div>
+        <div class="form-row field-auto_pl_id">
+			<div>
+				<label class="required" for="id_auto_pl_id">Redirect</label>
+				Auto PL ID
+				<input  class="vIntegerField" id="id_auto_pl_id" name="auto_pl_id" type="text" value="{{ data.auto_pl_id }}" readonly />
+				Item Master ID
+				<input  class="vIntegerField" id="id_item_master_id" name="item_master_id" type="text" value="{{ data.item_master_id }}" readonly />
+				PL Vendor ID
+				<input  class="vIntegerField" id="id_pl_vendor_id" name="pl_vendor_id" type="text" value="{{ data.pl_vendor_id }}" readonly />
+				PL Work Center ID
+				<input  class="vIntegerField" id="id_pl_work_center_id" name="pl_work_center_id" type="text" value="{{ data.pl_work_center_id }}" readonly />
+			</div>
+        </div>
+    </fieldset>
+
+<div class="submit-row">
+<input type="submit" value="Save" class="default" name="_save" />
+<p class="deletelink-box"><a href="/admin/journal_mgmt/coa_group/23/delete/" class="deletelink">Delete</a></p>
+<input type="submit" value="Save and add another" name="_addanother" />
+<input type="submit" value="Save and continue editing" name="_continue" />
+</div>
+</div>
+</form>
+</div><br class="clear" /></div>
+<!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+</body>
+</html>

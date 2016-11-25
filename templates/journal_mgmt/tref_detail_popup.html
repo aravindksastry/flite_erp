@@ -1,0 +1,521 @@
+{% extends "admin/base_popup.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<script type="text/javascript">
+	function update_balance(){
+		var sel = document.getElementById("id_inventory_journal_set-add-debit_journal1").value;
+		var bal = 0
+		{% for deb_inv_jour in data.inv_jour_debit1_opt %}
+			if (sel == {{ deb_inv_jour.0.id }}){
+				bal = {{ deb_inv_jour.0.balance_qty }}
+			}
+		{% endfor %}
+		document.getElementById("id_inventory_journal_set-add-balance_qty1").value = bal;
+		}
+</script>
+
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<body class=" app-journal_mgmt model-transaction_ref change-form">
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+<div class="margin10" style="float: left; height:7x; width:40%">
+        	<ul class="breadcrumbs">
+                    <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+					<li><a href="/journal_mgmt/homeview/index/dept={{ data.transaction_type.0.ttype_department_ref.id }}">{{ data.transaction_type.0.ttype_department_ref.name }}</a></li>
+					<li><a href="/journal_mgmt/transaction_ref/index/ttype={{ data.transaction_type.0.id }}">{{ data.transaction_type.0.name }}</a></li>
+						<li>Add {{ data.transaction_type.0.name }}</li>
+                 
+                </ul>
+               </div>
+               <br>
+              {% endif %}
+{% endblock %}
+{% block content %}
+
+<script type="text/javascript">
+	function item_master_filter() {
+	    var selectBox_item_group = document.getElementById("id_inventory_journal_set-add-group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = 6;
+	    var nav_location =  "/journal_mgmt/transaction_ref/detail/id={{ data.id }}/?item_group=" + String(selectedValue_item_group);
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function filter_debit_journal(){
+		var box_debit_tref = document.getElementById("id_sel_debit_tref1");
+	    var debit_tref_val = box_debit_tref.options[box_debit_tref.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = 6;
+	    var nav_location =  "/journal_mgmt/transaction_ref/detail/id={{ data.object.id }}/?redirect_name=" + String({{ data.redirect_name }}) + "&redirect_data=" + String({{ data.redirect_data }}) + "&redirect_status=" + String({{ data.redirect_status }}) + "&sel_debit_tref1=" + String(debit_tref_val);
+	    window.location = nav_location;
+		}
+</script>
+
+<div id="" class="colM">
+	
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Metro, a sleek, intuitive, and powerful framework for faster and easier web development for Windows Metro Style.">
+    <meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, metro, front-end, frontend, web development">
+    <meta name="author" content="Sergey Pimenov and Metro UI CSS contributors">
+
+    
+
+    <link href="{{STATIC_URL}}css/metro.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/metro-icons.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/metro-responsive.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/metro-schemes.css" rel="stylesheet">
+
+    <link href="{{STATIC_URL}}css/docs.css" rel="stylesheet">
+
+    <script src="{{STATIC_URL}}js/jquery-2.1.3.min.js"></script>
+    <script src="{{STATIC_URL}}js/metro.js"></script>
+    <script src="{{STATIC_URL}}js/docs.js"></script>
+    <script src="{{STATIC_URL}}js/prettify/run_prettify.js"></script>
+    <script src="{{STATIC_URL}}js/ga.js"></script>
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+    <script>
+        function showDialog(id){
+            var dialog = $("#"+id).data('dialog');
+            if (!dialog.element.data('opened')) {
+                dialog.open();
+            } else {
+                dialog.close();
+            }
+        }
+    </script>
+
+
+				
+</head>
+<body>
+    <form enctype="multipart/form-data" action="{% url 'journal_mgmt:tref_save' %}" method="post" id="transaction_ref_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='alaLLRkqN3XslnvZCPy6I5zN3PC5nqFB' />
+		{% csrf_token %}
+		<div class="form-row field-ref_no">
+			<fieldset class="module aligned ">
+				<div class="form-row field-name">
+					<div>
+						<div hidden>
+							<label class="required" for="id_pk">ID:</label>
+		                    <input class="vIntegerField" id="id_pk" name="pk" readonly type="text" value={{data.id}} />
+						</div>
+					</div>
+					
+					<div style="float:left">
+						<div>
+	                        <label class="required" for="id_name">Name:</label>
+	                        <input class="vTextField" id="id_name" maxlength="200" name="name" readonly type="text" value= {{data.name}} />
+	                    </div>
+	                </div>
+			        	
+	                <div style="float:left; margin-left:30px">
+	                    <div>
+	                        <label class="required" for="id_transaction_type">Transaction type:</label>
+	                            <select id="id_transaction_type" name="transaction_type" readonly>
+	                            <option value="{{ data.transaction_type.0.id }}" selected>{{ data.transaction_type.0.name }}</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                
+	                <div style="float:left; margin-left:30px">
+	                    <div>
+	                        <label class="required" for="id_ref_no">Ref no:</label>
+	                        <input class="vIntegerField" id="id_ref_no" name="ref_no" readonly type="text" value="{{data.ref_no}}" />
+	                    </div>
+	                </div>
+	                
+            	</div>
+   				<div class="form-row field-ref_no">
+   					<div style="float:left">
+	   					<label class="required" for="id_custom_name">Reference Name:</label>
+	   					<input class="vTextField" id="id_custom_name" maxlength="50" name="ref_name" value="{{data.object.ref_name}}"/>
+   					</div>
+   			        	
+		        	<div style="float:right; margin-left:20px">
+	                	<div>
+	                        <label class="required" for="id_remarks">Remarks:</label>
+	                        <textarea class="vLargeTextField" cols="20" id="id_remarks" name="remarks" rows="2">{{data.object.remarks}}</textarea>
+	                	</div>
+	    			</div>
+    			</div>
+    			
+    		<!-- Add the popup caller 
+    		<div id="block1" class="block_popup "></div>
+			<div id="container1" class = "container_popup ">
+				<iframe id="iframe1" style="width:100%; height: 100%; outline: 1px solid red;"></iframe>
+			<span id="closebtn1" class="closebtn_popup " onclick="close('#block1', '#container1')">Close</span>
+			</div>-->
+    			
+    			
+    			<!-- Transaction Reference Based Code is written within the div given below 
+	        	
+	        	<div class="form-row field-test">
+	        	<p>{{ data.transaction_type.1.field_list }}</p>
+	        	<p>----------</p>
+	        	<p>{{ data.trule_data.attrib_list }}</p>
+	        	<p>----------</p>
+	        	{{ data.tax_format_opt }}
+	        	<p>----------</p>
+	        	{{ data.tref_data }}
+	        	<p>----------</p>
+	        	{{ data.add_links }}
+	        	</div>-->
+	        	<div>
+	        	{% for cur_ttype_field in data.transaction_type.1.field_list %}
+	        		<!--[('LABEL', 'HTML TAG TYPE', DEFAULT VALUE, {TAG SPECIFICATIONS IN DICTIONARY})]
+		        	EXAMPLE: [('input_box_test', 'input', 0, {'type': 'text', 'max_length': 12}), ('select_box_test', 'select', '', {'type': ''})]-->
+		        	{% if not forloop.counter|divisibleby:"2" %}
+		        	<div class="form-row field-{{cur_ttype_field.0}}">
+		        	{% endif %}
+		        		<div style="float:left; width:50%">
+			        		<label class="required" for="id_{{ cur_ttype_field.0 }}">{{ cur_ttype_field.0 }}</label>
+			        		{% if cur_ttype_field.1 == 'input' %}
+				        		<input class="vTextField" id="id_{{ cur_ttype_field.0 }}"
+				        		maxlength="{{ cur_ttype_field.3.max_length }}"
+				        		name="{{ cur_ttype_field.3.name }}"
+				        		{% if data.submit == True or 'readonly' in cur_ttype_field.3 %}
+				        			readonly
+			        			{% endif %}
+			        			type="{{ cur_ttype_field.3.type }}"
+			        			value=
+			        			{% for cur_data_key, cur_data_value in data.tref_data.field_list.items  %}
+			        			{% if cur_data_key == cur_ttype_field.3.name %}
+		        				"{{ cur_data_value }}"
+		        				{% endif %}
+		        				{% endfor %} />
+			        		{% elif cur_ttype_field.1 == 'select' %}
+				        		<select id="id_{{ cur_ttype_field.3.name }}" name="{{ cur_ttype_field.3.name }}">
+				        		{% if cur_ttype_field.3.name in data.tref_data.field_list %}
+						        	{% for cur_data_key, cur_data_value in data.tref_data.field_list.items  %}
+					        			{% if cur_data_key == cur_ttype_field.3.name %}
+							        		{% if 'readonly' in cur_ttype_field.3 or data.submit == 'True' %}
+							        			<option value="{{ cur_data_value.0 }}" selected>{{ cur_data_value.1 }}</option>
+							        		{% elif not data.submit == 'True' %}
+								        		{% for cur_select_box in data.select_boxes %}
+								        			{% if cur_ttype_field.3.name == cur_select_box.0 %}
+								        			{% for cur_opt in cur_select_box.1 %}
+								        			<option value="{{ cur_opt.id }}" {% if cur_opt.id == cur_data_value.0 %} selected {% endif %}>{{ cur_opt.name }}</option>
+								        			{% endfor %}
+								        			{% endif %}
+								        		{% endfor %}
+								        	{% endif %}
+							        	{% endif %}
+			        				{% endfor %}
+			        			{% else %}
+			        				{% for cur_select_box in data.select_boxes %}
+					        			{% if cur_ttype_field.3.name == cur_select_box.0 %}
+						        			{% for cur_opt in cur_select_box.1 %}
+						        			<option value="{{ cur_opt.id }}">{{ cur_opt.name }}</option>
+						        			{% endfor %}
+					        			{% endif %}
+					        		{% endfor %}
+			        			{% endif %}
+		        				</select>
+				        	{% endif %}
+			        	</div>
+			        {% if forloop.counter|divisibleby:"2" %}
+		        	</div>
+		        	{% endif %}
+	        	{% endfor %}
+	        	
+	        	</div>
+	        	<!-- Transaction Reference Based field codes end here -->
+	        	<!--Additional Links are added here-->
+	        	<div>
+			    	<div class="form-row field-add_links">
+					{% for cur_link in data.add_links %}
+			        	{% if forloop.counter == 1 or forloop.counter == 6 %}
+			        	<div style="float:left; width:20%">
+			        	{% endif %}
+			        	<input type="button" class="command-button button primary" name="{{ cur_link.0 }}" value="{{ cur_link.0 }}" onclick="navigate('{{cur_link.1}}')"/>
+			        	{% if forloop.counter == 5 or forloop.counter == 10 %}
+			        	</div>
+			        	{% endif %}
+					{% endfor %}
+			    	</div>
+		    	</div>
+		    	<div class="form-row field-redirect" hidden>
+		    		Redirect Name
+		    		<input class="vTextField" id="id_redirect_name" type="text" name="redirect_name" value="{{data.redirect_name}}" readonly/>
+		    		Redirect Data
+		    		<input class="vTextField" id="id_redirect_data" type="text" name="redirect_data" value="{{data.redirect_data}}" readonly/>
+		    		Redirect Status
+		    		<input class="vTextField" id="id_redirect_status" type="text" name="redirect_status" value="{{data.redirect_status}}" readonly/>
+		    	</div>
+		    	
+		    <!-- Additional Links End Here -->
+	        </fieldset>
+	        
+		</form>
+				
+		{% if not data.load_inv_jour or data.load_inv_jour == 'False' %}
+		<!-- Inventory Journal Table goes here -->
+		{% if data.id %}
+		<!--<div id="myDiv" class="inline-group" id="inventory_journal_set-group">
+		  	<div  class="tabular inline-related last-related"> -->
+			<fieldset class="module aligned">
+			<div  id="inventory_journal_set-group" style="float:left; width:100%">
+				<h2 >Inventory_journals</h2>
+				<table stlye="width:100%">
+			    	<thead>
+				    	<tr>
+				    		<th class="required" scope="col" >Sl</th>
+					        <th class="required" scope="col" width="500px">Item Master Name</th>
+					        {% if data.trule_data.code == 1 %}
+					        <th class="required" scope="col">Item Master</th>
+					       	{% endif %}
+					       	{% if data.trule_data.code == 3 or data.trule_data.code == 6 %}
+					       	<th class="required" scope="col">Debit Transaction</th>
+				        	<th class="required" scope="col" hidden>Debit journal 1</th>
+					        <th class="required" scope="col">Balance qty{{ data.debit_transaction1.name }}</th>
+					        {% endif %}
+							<th class="required" scope="col" {{data.trule_data.attrib_list.issue_qty.2.readonly}} {{data.trule_data.attrib_list.issue_qty.2.hidden}}>Issue qty</th>
+				         	<th class="required" scope="col" {{data.trule_data.attrib_list.rate.2.readonly}} {{data.trule_data.attrib_list.rate.2.hidden}}>
+				         	{{ data.trule_data.attrib_list.rate.0 }}
+				         	</th>
+				         	{% if 'discount' in data.trule_data.attrib_list %}
+				         	<th class="required" scope="col" {{ data.trule_data.attrib_list.discount.2.readonly }} {{ data.trule_data.attrib_list.discount.2.hidden }}>
+				         	Discount
+				         	</th>
+				         	{% endif %}
+				         	{% if 'surcharge' in data.trule_data.attrib_list %}
+				         	<th class="required" scope="col" {{ data.trule_data.attrib_list.surcharge.2.readonly }} {{ data.trule_data.attrib_list.surcharge.2.hidden }}>
+				         	Surcharge
+				         	</th>
+				         	{% endif %}
+				         	<th class="required" scope="col" {{ data.trule_data.attrib_list.special_rate.2.readonly }} {{ data.trule_data.attrib_list.special_rate.2.hidden }}>
+				         	Special Rate
+				         	</th>
+				         	<th class="required" scope="col" {{ data.trule_data.attrib_list.tax.2.readonly }} {{ data.trule_data.attrib_list.tax.2.hidden }}>
+				         	tax
+				         	</th>
+				         	<th class="required" scope="col" {{ data.trule_data.attrib_list.value.2.readonly }} {{ data.trule_data.attrib_list.value.2.hidden }}>
+				         	value
+				         	</th>
+				         	
+				     	</tr>
+			     	</thead>
+					<tbody>
+					{% if data.inv_jour %}
+					{% for cur_inv_jour in data.inv_jour %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+			     	<tr class="{{ rowcolors }} " id="inventory_journal_set-{{ forloop.counter }}">
+				        <td class="field-sl">
+				        	{{ forloop.counter }}
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-id" name="inventory_journal_set-{{ forloop.counter }}-id" type="hidden" value="{{cur_inv_jour.0.id}}" />
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-transaction_ref" name="inventory_journal_set-{{ forloop.counter }}-transaction_ref" type="hidden" value="{{cur_inv_jour.0.transaction_ref.id}}" />
+				        </td>
+				        <td>{{cur_inv_jour.0.item_master.name}}</td>
+				        {% if data.trule_data.code == 1 %}
+		        	    <td class="form-row row{{ rowcolors }} ">
+							<input id="id_inventory_journal_set-{{ forloop.counter }}-item_master" name="inventory_journal_set-{{ forloop.counter }}-item_master" style="width:60px" type="text" value="{{cur_inv_jour.0.item_master.id}}" readonly />
+						</td>
+						{% endif %}
+						{% if data.trule_data.code == 3 or  data.trule_data.code == 6 %}
+						<td class="form-row row{{ rowcolors }}">
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-debit_transaction1" name="inventory_journal_set-{{ forloop.counter }}-debit_transaction1" type="text" size="20" style="width:100px" value="{{ cur_inv_jour.0.debit_journal1.transaction_ref.name }}" readonly />
+			            </td>
+						<td class="form-row row{{ rowcolors }}" hidden >
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-debit_journal1" name="inventory_journal_set-{{ forloop.counter }}-debit_journal1" type="text" size="20" style="width:60px" value="{{cur_inv_jour.0.id}}" readonly/>
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+				        	<input id="id_inventory_journal_set-{{ forloop.counter }}-balance_qty1" name="inventory_journal_set-{{ forloop.counter }}-balance_qty1" step="1" type="number" size="5" style="width:75px" value="{{ cur_inv_jour.0.debit_journal1.balance_qty }}" readonly />
+			            </td>
+						{% endif %}
+						<td class="form-row row{{ rowcolors }}">
+		        	        <input id="id_inventory_journal_set-{{ forloop.counter }}-issue_qty" name="inventory_journal_set-{{ forloop.counter }}-issue_qty" step="1" type="number" size="5" style="width:75px" value="{{ cur_inv_jour.0.issue_qty }}" {% if data.trule_data.attrib_list.issue_qty.2.readonly %} readonly {% endif %}/>
+		    	        </td>
+		    	        <td class="form-row row{{ rowcolors }}" {{ data.trule_data.attrib_list.rate.2.readonly }} {{ data.trule_data.attrib_list.rate.2.hidden }}>
+			         	{{ cur_inv_jour.0.rate }}
+			         	</td>
+			         	{% if 'discount' in data.trule_data.attrib_list %}
+			         	<td class="form-row row{{ rowcolors }}" {{ data.trule_data.attrib_list.discount.2.readonly }} {{ data.trule_data.attrib_list.discount.2.hidden }}>
+			         		<input id="id_inventory_journal_set-{{ forloop.counter }}-discount" name="inventory_journal_set-{{ forloop.counter }}-discount" type="number" value="{{ cur_inv_jour.0.discount }}" {{ data.trule_data.attrib_list.discount.2.readonly }}{{ data.trule_data.attrib_list.discount.2.hidden }}>
+			         	</td>
+			         	{% endif %}
+			         	{% if 'surcharge' in data.trule_data.attrib_list %}
+						<td class="form-row row{{ rowcolors }}" {{ data.trule_data.attrib_list.surcharge.2.readonly }} {{ data.trule_data.attrib_list.surcharge.2.hidden }}>
+			         		<input id="id_inventory_journal_set-{{ forloop.counter }}-surcharge" name="inventory_journal_set-{{ forloop.counter }}-surcharge" type="number" value="{{ cur_inv_jour.0.surcharge }}" {{ data.trule_data.attrib_list.surcharge.2.readonly }}{{ data.trule_data.attrib_list.surcharge.2.hidden }}>
+			         	</td>
+			         	{% endif %}
+			         	<td class="form-row row{{ rowcolors }}" {{ data.trule_data.attrib_list.special_rate.2.readonly }} {{ data.trule_data.attrib_list.special_rate.2.hidden }}>
+			         	{{ cur_inv_jour.0.special_rate }}
+			         	</td>
+			         	<td class="form-row row{{ rowcolors }}" {{ data.trule_data.attrib_list.tax.2.readonly }} {{ data.trule_data.attrib_list.tax.2.hidden }}>
+			         		<select id="id_inventory_journal_set-{{ forloop.counter }}-tax_format" name="inventory_journal_set-{{ forloop.counter }}-tax_format">
+								{% if data.submit == 'True' %}
+								<!--the existing data is picked up from data colomn of inventory_journal cur_inv_jour.1 -> {tax_format:[('tax_format_id','tax_format_name'),{tax_format_data}]}-->
+								<option value="{{ cur_inv_jour.1.tax_format.0 }}">{{ cur_inv_jour.1.tax_format.1 }}</option>
+								{% else %}
+								{% for cur_tax_format in data.tax_format_opt %}
+								<option value="{{ cur_tax_format.0.id }}" {% if cur_tax_format.0.id == cur_inv_jour.0.tax_format.id %} selected {% endif %}>{{ cur_tax_format.0.name }}</option>
+								{% endfor %}
+								{% endif %}
+							</select>
+			         	</td>
+			         	<td class="form-row row{{ rowcolors }}" {{ data.trule_data.attrib_list.value.2.readonly }} {{ data.trule_data.attrib_list.value.2.hidden }}>
+			         	{{ cur_inv_jour.0.value }}
+			         	</td>
+			         	
+					</tr>
+		    	{% endfor %}
+			    {% endif %}
+		    	</tbody>
+			</table>
+			<br/>
+			</div>	
+			</fieldset>
+			<!--  Add button to navigate to Tref_detail page 
+				<div>
+				<span class="empli_popup" onclick="open('/journal_mgmt/transaction_ref/detail/id={{tref.0.id}}/?redirect_name={{data.searched_name}}&redirect_data={{data.searched_data}}&redirect_status={{data.index_filter}}', '#block1', '#container1', '#iframe1')">Edit</span>
+				</div> -->
+				
+
+			<!--Inventory Journal Table Ends here -->
+			<div class="form-row field-redirect" hidden>
+				Primary Key
+				<input class="vTextField" id="id_pk" type="text" name="pk" value="{{data.object.id}}" readonly/>
+	    		Redirect Name
+	    		<input class="vTextField" id="id_redirect_name" type="text" name="redirect_name" value="{{data.redirect_name}}" readonly/>
+	    		Redirect Data
+	    		<input class="vTextField" id="id_redirect_data" type="text" name="redirect_data" value="{{data.redirect_data}}" readonly/>
+	    		Redirect Status
+	    		<input class="vTextField" id="id_redirect_status" type="text" name="redirect_status" value="{{data.redirect_status}}" readonly/>
+	    	</div>
+			
+			{% endif %}
+			{% endif %}
+			{% if not data.inv_jour and data.id %}
+				{% if not data.load_inv_jour or data.load_inv_jour == 'False' %}
+				<input type="submit" name="load" value="True" class="command-button button primary"/>Auto Load Items
+				{% endif %}
+			{% endif %}
+			</form>
+		<!--Additional Links are added here
+    	<div class="form-row field-add_links">
+		{% for cur_link in data.add_links %}
+        	{% if forloop.counter == 1 or forloop.counter == 6 %}
+        	<div class="form-row field-{{cur_ttype_field.0}}">
+        	{% endif %}
+        	<input type="submit" name="{{ cur_link.0 }}" value="{{ cur_link.0 }}" onclick="navigate('{{cur_link.1}}')">abcd</input>
+        	{{cur_link.1}}
+        	{% if forloop.counter == 5 or forloop.counter == 10 %}
+        	</div>
+        	{% endif %}
+		{% endfor %}
+    	</div>-->
+	    <!-- Additional Links End Here -->
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:inv_jour_bulk_create' %}" method="post" id="transaction_ref_form" novalidate>
+		<input type='hidden' name='csrfmiddlewaretoken' value='alaLLRkqN3XslnvZCPy6I5zN3PC5nqFB' />
+		{% csrf_token %}
+        <div class="form-row field-redirect" hidden>
+			Primary Key
+			<input class="vTextField" id="id_pk" type="text" name="pk" value="{{data.object.id}}" readonly/>
+    		Redirect Name
+    		<input class="vTextField" id="id_redirect_name" type="text" name="redirect_name" value="{{data.redirect_name}}" readonly/>
+    		Redirect Data
+    		<input class="vTextField" id="id_redirect_data" type="text" name="redirect_data" value="{{data.redirect_data}}" readonly/>
+    		Redirect Status
+    		<input class="vTextField" id="id_redirect_status" type="text" name="redirect_status" value="{{data.redirect_status}}" readonly/>
+    	</div>
+    	{% if data.load_inv_jour == 'True' %}
+		<div class="form-row field-ref_no">
+			<div class="inline-group" id="inventory_journal_set-group">
+				<div class="tabular inline-related last-related">
+					<div class="form-row field-id">
+						<div hidden>
+							<label class="required" for="id_pk">ID:</label>
+		                    <input class="vIntegerField" id="id_pk" name="pk" readonly type="text" value={{data.id}} />
+						</div>
+					</div>
+					<div><!-- DIV needed for valid HTML -->
+					<fieldset class="module">
+						<h2>Parent Inventory Journals</h2>
+						<table>
+							<thead>
+								<tr>
+									<th class="required">Sl</th>
+									<th class="required">Item</th>
+									<th class="required">Available Qty</th>
+									<th class="required">Qty to Issue</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for parent_inv_jour in data.inv_jour_debit1_opt %}
+								{% cycle 'row1' 'row2' as rowcolors silent %}
+								<tr class="{{ rowcolors }}" id="add_inventory_journal_set-{{ forloop.counter }}">
+									<td class="form-row row{{ rowcolors }}">
+						        	{{ forloop.counter }}
+						        	<input id="id_inventory_journal_set-{{ forloop.counter }}-id" name="add_inventory_journal_set-{{ forloop.counter }}-id" value="{{cur_inv_jour.0.id}}" hidden/>
+						        	<input id="id_inventory_journal_set-{{ forloop.counter }}-transaction_ref" name="add_inventory_journal_set-{{ forloop.counter }}-transaction_ref" value="{{cur_inv_jour.0.transaction_ref.id}}" hidden/>
+						        	</td>
+									<td class="form-row row{{ rowcolors }}">
+										<select id="id_inventory_journal_set-{{ forloop.counter }}-debit_journal1" name="add_inventory_journal_set-{{ forloop.counter }}-debit_journal1">
+											<option value="{{ parent_inv_jour.0.id }}" selected>{{ parent_inv_jour.0.name }}</option>
+										</select>
+									</td>
+									<td class="form-row row{{ rowcolors }}">
+										<input id="id_inventory_journal_set-{{ forloop.counter }}-balance_qty" name="add_inventory_journal_set-{{ forloop.counter }}-balance_qty" type="text" readonly value="{{ parent_inv_jour.0.balance_qty }}"/>
+									</td>
+									<td class="form-row row{{ rowcolors }}">
+										<input id="id_inventory_journal_set-{{ forloop.counter }}-issue_qty" name="add_inventory_journal_set-{{ forloop.counter }}-issue_qty" type="text" value="{{ parent_inv_jour.0.balance_qty }}"/>
+									</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+					</fieldset>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	
+		
+		
+		{% endif %}
+		
+		</form>
+{% endblock %}
+</body>
+</div>

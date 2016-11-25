@@ -1,0 +1,269 @@
+{% extends "admin/change_form.html" %}
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> Shipment Item </title>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+<!-- <script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script> -->
+</head>
+
+<body class=" app-journal_mgmt model-coa_group change-form">
+
+<!-- Container -->
+<div id="container">
+    <!-- Header -->
+
+    <!-- END Header -->
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+	<a href="/admin/">Home</a>
+	&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+	&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+
+<!-- Content -->
+	<div>
+	    <h1>TPL</h1>
+	    <div>
+	  	<ul class="object-tools">
+		    <li>
+		        <a href="/admin/journal_mgmt/coa_group/23/history/" class="historylink">History</a>
+		    </li>
+	  	</ul>
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:job_shop_order' data.tref.id %}" method="post" id="coa_group_form" novalidate>
+		<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+		{% csrf_token %}
+		<div>
+		  	<fieldset class="module aligned ">
+		  		<div class="form-row field-shipment" hidden>
+		           <input class="vTextField" name="shipment_id" id="id_shipment_id" type="text" value="{{ data.shipment.id }}" readonly/>
+		        </div>
+		  		<div class="form-row field-shipment">
+		  			<div style="float:left; width:50%">
+			           <label class="required" for="id_shipment_item_id">Transaction Type Ref:</label>
+			           <input  class="vTextField" name="shipment_item_id" id="id_shipment_item_id" type="text" value="{{data.tref_obj.transaction_type.name}}" readonly />
+			        </div>
+			        <div style="float:left; width:50%">
+						<label class="required" for="id_item_group">Transaction Ref.:</label>
+						<input  class="vIntegerField" id="id_item_group_no" readonly style="width:100px" name="shipment" type="text" value="{{data.tref_obj.name}}" />
+					</div>
+				</div>
+			</fieldset>
+			<fieldset class="module aligned ">
+		        <h2>Processes </h2>
+		        <table id="new_inf_list">
+					<thead>
+						<tr>
+							<th scope="col" class="action-checkbox-column" style="width:2.5%">
+							   <div class="text"><span>Sl No.</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Item</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Issue Qty</span></div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for cur_process_jour in data.process %}
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}">
+								<div class="text"><span>{{ forloop.counter }}</span></div>
+								<div hidden>
+								<input type="number" id="id_inv_jour_id_{{ forloop.counter }}" maxlength="50" name="inv_jour_id!!{{ forloop.counter }}" value="{{ rec_item_obj.id }}"/>
+								</div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="text"><span>{{ cur_process_jour.name }}</span></div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="text"><span>{{ cur_process_jour.issue_qty }}</span></div>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</fieldset>
+			
+			
+			<fieldset class="module aligned ">
+		        <h2>Receivable Items </h2>
+		        <table id="new_inf_list">
+					<thead>
+						<tr>
+							<th scope="col" class="action-checkbox-column" style="width:2.5%">
+							   <div class="text"><span>Sl No.</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Item</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Issue Qty</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Balance Qty</span></div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for cur_rec_item in data.receivable %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}">
+								<div class="text"><span>{{ forloop.counter }}</span></div>
+								<div hidden>
+								<input type="number" id="id_inv_jour_id_{{ forloop.counter }}" maxlength="50" name="inv_jour_id!!{{ forloop.counter }}" value="{{ rec_item_obj.id }}"/>
+								</div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="text"><span>{{ cur_rec_item.name }}</span></div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="text"><span>{{ cur_rec_item.issue_qty }}</span></div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="text"><span>{{ cur_rec_item.balance_qty }}</span></div>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</fieldset>
+			
+			<fieldset class="module aligned ">
+		        <h2>Pre Nested Raw Material </h2>
+		        <table id="new_inf_list">
+					<thead>
+						<tr>
+							<th scope="col" class="action-checkbox-column" style="width:2.5%">
+							   <div class="text"><span>Sl No.</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Item</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Issue Qty</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Balance Qty</span></div>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for cur_rm_item in data.rm_req %}
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+					
+						<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}">
+								<div class="text"><span>{{ forloop.counter }}</span></div>
+								<div hidden>
+								<input type="number" id="id_inv_jour_id_{{ forloop.counter }}" maxlength="50" name="inv_jour_id!!{{ forloop.counter }}" value="{{ rm_item_obj.id }}"/>
+								</div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="text"><span>{{ cur_rm_item.name }}</span></div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="select"><span>{{ cur_rm_item.issue_qty }}</span></div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:40%">
+								<div class="select"><span>{{ cur_rm_item.balance_qty }}</span></div>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</fieldset>
+			<fieldset class="module aligned ">
+			<h2>Nested Raw Material </h2>
+		        <table id="new_inf_list">
+					<thead>
+						<tr>
+							<th scope="col" class="action-checkbox-column" style="width:2.5%">
+							   <div class="text"><span>Sl No.</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Item</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Issue Qty</span></div>
+							</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+					{% for cur_nested_rm_item in data.nested_rm_req %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+					<tr class="{{ rowcolors }}">
+						<td class="form-row {{ rowcolors }}">
+							<div class="text"><span>{{ forloop.counter }}</span></div>
+							<div hidden>
+							<input type="number" id="id_item_master_id_{{ forloop.counter }}" maxlength="50" name="item_master_id_{{ forloop.counter }}" value="{{ nested_rm_item_obj.id }}"/>
+							</div>
+						</td>
+						<td class="form-row {{ rowcolors }}" style="width:40%">
+							<div class="text"><span>{{ cur_nested_rm_item.name }}</span></div>
+						</td>
+						<td class="form-row {{ rowcolors }}" style="width:40%">
+							<div class="select"><span>{{ cur_nested_rm_item.issue_qty }}</span></div>
+						</td>
+					</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</fieldset>
+						
+		</div>
+		<div class="submit-row">
+			<input type="submit" value="Save" class="default" name="save"/>
+			<input type="submit" value="Save and continue editing" name="continue"/>
+			<input type="submit" value="preview" name="preview"/>
+		</div>
+		</form>
+	</div>
+        
+    <br class="clear" />
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+</body>
+</html>

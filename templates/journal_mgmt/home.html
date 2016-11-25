@@ -1,0 +1,60 @@
+{% extends "admin/change_form_custom.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "journal_mgmt/css/login.css" %}" />{% endblock %}
+
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<link rel='shortcut icon' type='image/x-icon' href='/static/favicon.ico' />
+    <link href="{{STATIC_URL}}css/metro.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/metro-icons.css" rel="stylesheet">
+    <link href="{{STATIC_URL}}css/metro-responsive.css" rel="stylesheet">
+
+    <script src="{{STATIC_URL}}js/jquery-2.1.3.min.js"></script>
+    <script src="{{STATIC_URL}}js/metro.js"></script>
+	<script language="javascript" type="text/javascript">
+			
+			function popitup(url) {
+			    newwindow=window.open(url,'{{title}}','height=650,width=950');
+			    if (window.focus) {newwindow.focus()}
+			    return false;
+			}
+			
+			</script>
+		<br>
+		<br>
+		<br>
+		<br>
+	<body>
+		<div class="container page-content" style="align:center;">
+		<div style="float:center; text-align:center; width:100%">
+		{% for cur_dep in data.dept_data %}
+			<a href="/journal_mgmt/home_view/index/dept={{ cur_dep.0.id  }}" class="tile-label" >
+            <div class="{{cur_dep.1.dept_color}}" style="height: 200px; width: 30%; float:center; margin:1.25%" data-role="tile">
+            <div class="tile-content iconic">
+                 <span class="{{cur_dep.1.dept_icon}}"></span>
+             </div>
+             <div>
+             <span class="tile-label-custom" style="align:center; width:100%; float:center"><h4 style="align:center; float:center">{{ cur_dep.0.name }}<h4></span>
+             </div>
+            </div>
+            </a>
+          {% endfor %}
+       </div>
+       </div> 
+       </div>
+	</body> 
+                 
+{% endblock %}
+
+
+
+
+
+
+

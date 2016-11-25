@@ -1,0 +1,178 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_static %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+
+  
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+<!-- Container -->
+<div id="container">
+	<!-- Header -->
+	<!--
+	<div id="header">
+	    <div id="branding">
+			<h1 id="site-name"><a href="/admin/">Django administration</a></h1>
+	    </div>
+	    <div id="user-tools">
+	        Welcome,
+	        <strong>admin</strong>.
+	        <a href="/admin/password_change/">Change password</a> /
+	        <a href="/admin/logout/">Log out</a>
+	    </div>
+	</div>
+	-->
+	<!-- END Header -->	
+	
+	
+	{% block breadcrumbs %}	
+	<div class="breadcrumbs">
+	<a href="/admin/">Home</a>
+	&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+	&rsaquo; Transaction_refs
+	</div>
+	{% endblock %}
+	
+	{% block content %}
+	{% load staticfiles %}
+	{% load custom_temp_tags %}
+	<!-- Content -->
+<div id="toolbar">
+<h1>SELECT{{data.work_center_opt.name}} </h1>
+		<div id="content-main">
+			<ul class="object-tools">
+		        <li>
+		          	<a href="/journal_mgmt/wc_pl/detail/?sel_work_center_id={{ data.sel_work_center_id }}"">
+		            Add New Workcenter pl
+		          	</a>
+		        </li>
+		    </ul>
+	    		<form id="changelist-search" action="{% url 'journal_mgmt:wc_pl_index' %}" method="post">
+	    			<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+    				{% csrf_token %}
+					<div class="form-row field-search">
+						<label for="searchbar"><b>FILTER</b></label>
+						<label for="searchbar">Work Center:</label>
+	    				<select name="sel_wc_id">
+							<option value="*All*"{% if data.sel_wc_id == '*All*' %} selected {% endif %}>*All*</option>
+							{% for cur_wc in data.wc_opt %}
+							<option value="{{ cur_wc.id }}" {% if data.sel_wc_id == cur_vendor.id %} selected {% endif %}>{{ cur_wc.name }}</option>
+							{% endfor %}
+						</select>
+						<label for="searchbar">Item:</label>
+						<select name="sel_item_group">
+							{% for cur_item_group in data.item_group_opt %}
+							<option value="{{ cur_item_group.id }}"
+							{% if not data.sel_item_group_id == '*All*' %}
+								{% if cur_item_group.id == data.sel_cur_item_group_id %}
+								selected
+								{% endif %}
+							{% endif %}>
+							{{ cur_item_group.name }}
+							</option>
+							{% endfor %}
+							<option value="*All*"{% if data.sel_item_group_id == '*All*' %} selected {% endif %}>*All*</option>
+						</select>
+						
+						<label for="searchbar">Item Name:</label>
+						<input type="text" size="25" name="item_name_search" value="{{data.item_name_search}}" id="searchbar"/>
+						<label for="searchbar">Page No.:</label>
+						    <select name="page_no">
+							{% for i in data.page_range %}
+							<option value="{{ i }}"
+							{% if i = data.page_no %}
+							selected
+							{% endif %}>
+							{{ i }}
+							</option>
+							{% endfor %}
+							</select>
+						<input type="submit" name="search" value="GO"/>
+					</div>
+				</form>
+			<div>
+			    </div>
+	    		
+	    		<div class="results">
+	    			{% if data.result_list %}
+					<table id="result_list" style="width:100%">
+					<thead>
+						<tr>
+							<th scope="col" style="width:2.5%" class="sortable column-Serial No.">
+							   <div class="text"><span>Sl.</span></div>
+							</th>
+							<th scope="col" style="width:10%" class="sortable column-Serial No.">
+							   <div class="text"><span>Work Center.</span></div>
+							</th>
+							<th scope="col" style="width:25%" class="sortable column-Serial No.">
+							   <div class="text"><span>Item.</span></div>
+							</th>
+							<th scope="col" style="width:2.5%" class="sortable column-Serial No.">
+							   <div class="text"><span>Rate.</span></div>
+							</th>
+							<th scope="col" style="width:2.5%" class="sortable column-Serial No.">
+							   <div class="text"><span>Last Updated</span></div>
+							</th>
+							<th scope="col" style="width:2.5%" class="sortable column-Serial No.">
+							   <div class="text"><span>Remarks.</span></div>
+							</th>
+					{% with data.page_no|add:-1|multiply:100 as sl_start %}		
+					{% for cur_pl in data.disp_result_list %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+					<tr class="{{ rowcolors }}">
+						<td class="form-row row{{ rowcolors }}" >{{ sl_start|add:forloop.counter}}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.work_center }}</td>
+						<td class="form-row row{{ rowcolors }}">
+						<a href="/journal_mgmt/work_center_pl/detail/">
+								{{ cur_pl.item}}
+						</a>
+						</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.rate }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.last_updated }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.remarks }}</td>
+					{% endfor %}	
+					{% endwith %}	
+					
+					</tbody>
+					</table>
+					{% else %}
+					    <p>{% trans "You don't have permission to edit anything." %}</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END Content -->
+	{% endblock %}
+</div>
+<!-- END Container -->
+</body>

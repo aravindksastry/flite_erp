@@ -1,0 +1,202 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+
+
+<!-- Header -->
+<!--
+<div id="header">
+    <div id="branding">
+		<h1 id="site-name"><a href="/admin/">Django administration</a></h1>
+    </div>
+    <div id="user-tools">
+        Welcome,
+        <strong>admin</strong>.
+        <a href="/admin/password_change/">Change password</a> /
+        <a href="/admin/logout/">Log out</a>
+    </div>
+</div>
+-->
+<!-- END Header -->	
+
+
+{% block breadcrumbs %}	
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+<!-- Container -->
+<div id="container">
+<div id="" class="flex">
+<h1>Select Auto Pricelist to change</h1>
+	<div id="content-main">
+	<!-- Content -->
+		<ul class="object-tools">
+	        <li>
+	          	<a href="/journal_mgmt/coa/create/coa_group_id={{data.coa_group.0.id}}" class="addlink">
+	            Add Auto Price List
+	          	</a>
+	        </li>
+	    </ul>
+	    <div class="module" id="changelist">
+	    	<div id="toolbar">
+	    		<form id="changelist-search" action="" method="get">
+					<div><!-- DIV needed for valid HTML -->
+						<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /></label>
+						<input type="text" size="40" name="searched_param" value="{{data.searched_param}}" id="searchbar" />
+						<input type="submit" value="Search" />
+	    			</div>
+				</form>
+			</div>
+    		<script type="text/javascript">document.getElementById("searchbar").focus();</script>
+    		<form id="changelist-form" action="" method="post" novalidate><input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+    		{% csrf_token %}
+    		<div class="actions">
+			    <label>Action: 
+			    	<select name="action">
+						<option value="" selected="selected">---------</option>
+						<option value="delete_selected">Delete selected transaction_refs</option>
+					</select>
+				</label>
+				<input class="select-across" name="select_across" type="hidden" value="0" />
+			    <button type="submit" class="button" title="Run the selected action" name="index" value="0">Go</button>
+			        <script type="text/javascript">var _actions_icnt="2";</script>
+			        <span class="action-counter">0 of 2 selected</span>
+		    </div>
+    		<p class="paginator">
+			    <span class="this-page"></span>
+			    {% for i in data.page_range %}
+			    	<a href="{{data.index_url}}&page_no={{i}}">{% if data.page_no = i %}>{% endif %}{{i}}</a>
+			    {% endfor %} 
+				 Total : {{data.result_tot}} records
+			</p>
+			<fieldset class="module aligned ">
+    		<div class="results">
+    			{% if data.index_result %}
+				<table id="result_list" style="width:100%">
+				<thead>
+				<tr>
+				<th scope="col"  class="action-checkbox-column">
+				   <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Item Group</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>Code Genre</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Auto PL Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Item Count</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Auto PL ID</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Flite 360 Code</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Remarks</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Delete</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Delete CRM</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-last_updated">
+				   <div class="text"><span>Last Updated</span></div>
+				   <div class="clear"></div>
+				</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for cur_auto_pl in data.index_result %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<tr class="{{ rowcolors }}">
+					<td class="form-row row{{ rowcolors }}"><input class="action-select" name="_selected_action" type="checkbox" value={{cur_auto_pl.id}}/></td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.0.item_group.name }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.0.spec_code }}</td>
+					<td class="form-row row{{ rowcolors }}"><a href="/journal_mgmt/auto_price_list/detail/id={{ cur_auto_pl.0.id }}/">{{cur_auto_pl.0.name}} ({{ cur_auto_pl.1.master_count }})</a></td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.1.master_count }}</a></td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.0.id }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.0.flite_360_price_list_id }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.1.remarks }}</td>
+					<td class="form-row row{{ rowcolors }}"><a href="/journal_mgmt/confirmation_page/?reason=auto_pl_del&param1={{ cur_auto_pl.0.id }}">Delete Auto PL</a></td>
+					<td class="form-row row{{ rowcolors }}"><a href="/journal_mgmt/confirmation_page/?reason=auto_pl_crm_pl_del&param1={{ cur_auto_pl.0.id }}">Del Auto + CRM PL</a></td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_auto_pl.0.last_updated }}</td>
+				</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+				{% else %}
+				    <p>{% trans "You don't have permission to edit anything." %}</p>
+				{% endif %}
+			</div>
+			</fieldset>
+		</div>
+		
+	</div>
+</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>

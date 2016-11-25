@@ -1,0 +1,583 @@
+{% extends "admin/change_form_custom.html" %}
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> Production Auto PLAN </title>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+</head>
+
+<body class=" app-journal_mgmt model-coa_group change-form">
+
+<!-- Container -->
+<div id="container">
+    <!-- Header -->
+
+    <!-- END Header -->
+{% block breadcrumbs %}
+{% if not is_popup %}
+<div class="margin10" style="float: left; height:7x; width:100%">
+        	<ul class="breadcrumbs">
+                    <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+						<li>Add {{ data.transaction_type.0.name }}</li>
+                 
+                </ul>
+               </div>
+               <br>
+              {% endif %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+<script>
+        function showCharm(id){
+            var  charm = $("#"+id+"-charm").data("charm");
+            if (charm.element.data("opened") === true) {
+                charm.close();
+            } else {
+                charm.open();
+            }
+        }
+    </script> 
+
+
+
+
+
+<script type="text/javascript">
+	function myFunction(x,y){
+		var sel = document.getElementById("job_work_rate").value  ;
+		document.getElementById(y).value = x;
+		
+		}
+</script>
+								
+
+<!-- Content -->
+	<div>
+	
+
+
+	
+	<div1 data-role="charm" data-position="left" id="left-charm" style="overflow:auto; float: left; width:20%"><h1 class="text-light">Menu</h1>
+         	<div class="cell" >
+                       <ul class="sidebar2">
+                        <li class="active"><a href="/journal_mgmt/transaction_ref/index/ttype=64"><span class="mif-home icon"></span>Recive TPL</a></li>
+                            </ul>
+           </div>
+   </div1>
+	    <h1>Production Auto Plan </h1>
+	    <div>
+	    
+	  	<ul class="object-tools">
+		    <li>
+		        <a href="/admin/journal_mgmt/coa_group/23/history/" class="historylink">History</a>
+		    </li>
+	  	</ul>
+		
+		<div>
+		  	<fieldset class="module aligned ">
+		  		<div class="form-row field-shipment" hidden>
+		           <input class="vTextField" name="shipment_id" id="id_shipment_id" type="text" value="{{ data.shipment.id }}" readonly/>
+		        </div>
+		  		<div class="form-row field-shipment">
+		  			<div style="float:left; width:50%">
+			           <label class="required" for="id_shipment_item_id">Transaction Type Ref:</label>
+			           <input  class="vTextField" name="shipment_item_id" id="id_shipment_item_id" type="text" value="{{data.tref.transaction_type.name}}" readonly />
+			        </div>
+			        <div style="float:left; width:50%">
+						<label class="required" for="id_item_group">Transaction Ref.:</label>
+						<input  class="vIntegerField" id="id_item_group_no" readonly style="width:100px" name="shipment" type="text" value="{{data.tref.name}}" />
+					</div>
+				</div>
+			</fieldset>
+			<fieldset class="module aligned ">
+			<form enctype="multipart/form-data" action="{% url 'journal_mgmt:production_auto_plan' data.tref.id %}" method="post" id="coa_group_form" novalidate>
+			<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+			{% csrf_token %}
+						<div style="float:right; width:99%; height:45px">
+						<label class="required" for="id_item_group" style="float:left; width:130px">Work Center Name:</label>
+						<select id="id_cur_sel_wc" name="cur_sel_wc" onchange="submit()">
+								{% for cur_wc in data.wc_name_list %}
+	        						<option value="{{ cur_wc.id }}" name="{{ cur_wc.name }}" {% if data.sel_wc == cur_wc.id %} selected {% endif %}>{{ cur_wc.name }}</option>
+	               				{% endfor %}
+	               		</select>
+						</div>
+					
+					{% for cur_inv_jour_id, cur_inv_jour in data.pro_inv_jour.items %}
+						{% with cur_inv_jour.0 as inv_jour_obj %}
+						{% with cur_inv_jour.1 as add_data %}	
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}" style="width:2.5%">
+								
+								<div hidden>
+								<input type="number" id="id_inv_jour_id_{{ forloop.counter }}" maxlength="50" name="inv_jour_id!!{{ forloop.counter }}" value="{{ inv_jour_obj.id }}"/>
+								<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_shop_qty!!{{ forloop.counter }}" name="shop_qty!!{{ forloop.counter }}"  value="{{ add_data.shop_qty|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<text id="id_sel_wc_{{ forloop.counter }}" name="sel_wc_{{ forloop.counter }}">
+								{% for cur_wc in add_data.wc_pl_opt %}
+				                	{% if cur_wc.rate > 0 %}
+				                	<text value="{{ cur_wc.id }}"{% if add_data.sel_wc_id == cur_wc.work_center.id %}selected {% endif %}>{{ cur_wc.rate }}</text>
+				                	{% endif %}
+				                {% endfor %}
+							</text>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" maxlength="50" style="width:70px"id="id_job_qty!!{{ forloop.counter }}" name="job_qty!!{{ forloop.counter }}"  value="{{ add_data.job_qty|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+								<td class="form-row {{ rowcolors }}" style="width:7%">
+									<div class="text">
+									<span>
+									<text id="id_sel_vendor_{{ forloop.counter }}" name="sel_vendor_{{ forloop.counter }}">
+		                			{% for cur_vendor_pl in add_data.vendor_pl_opt %}
+		                			
+		                			<text value="{{ cur_vendor_pl.id }}"  {% if add_data.sel_vendor_id == cur_vendor_pl.vendor.id %} selected {% endif %}>{{ cur_vendor_pl.job_work_rate }}</text>
+		                			
+		                			{% endfor %}
+			                	</text>
+									</span></div>
+								</td>
+								</div>
+							</td>
+							</tr>
+						{% endwith %}
+						{% endwith %}
+					{% endfor %}			
+					
+					</form>
+			</fieldset>	
+				<fieldset class="module aligned ">
+				<form enctype="multipart/form-data" action="{% url 'journal_mgmt:production_auto_plan' data.tref.id %}" method="post" id="coa_group_form" novalidate>
+					<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+				{% csrf_token %}
+							<div style="float:right; width:99%; height:40px">
+								<label class="required" for="id_item_group" style="float:left; width:130px">Vendor Name:</label>
+								<select id="id_cur_sel_vendor" name="cur_sel_vendor" onchange="submit()">
+										{% for cur_vendor in data.vendor_list %}
+				        					<option value="{{ cur_vendor.id }}" name="{{ cur_vendor.name }}" {% if data.sel_vendor == cur_vendor.id %} selected {% endif %}>{{ cur_vendor.name }}</option>
+				               			{% endfor %}
+			               		</select>
+							</div>
+						
+						{% for cur_inv_jour_id, cur_inv_jour in data.pro_inv_jour.items %}
+						{% with cur_inv_jour.0 as inv_jour_obj %}
+						{% with cur_inv_jour.1 as add_data %}	
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}" style="width:2.5%">
+								
+								<div hidden>
+								<input type="number" id="id_inv_jour_id_{{ forloop.counter }}" maxlength="50" name="inv_jour_id!!{{ forloop.counter }}" value="{{ inv_jour_obj.id }}"/>
+								<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_shop_qty!!{{ forloop.counter }}" name="shop_qty!!{{ forloop.counter }}"  value="{{ add_data.shop_qty|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<text id="id_sel_wc_{{ forloop.counter }}" name="sel_wc_{{ forloop.counter }}">
+								{% for cur_wc in add_data.wc_pl_opt %}
+				                	{% if cur_wc.rate > 0 %}
+				                	<text value="{{ cur_wc.id }}"{% if add_data.sel_wc_id == cur_wc.work_center.id %}selected {% endif %}>{{ cur_wc.rate }}</text>
+				                	{% endif %}
+				                {% endfor %}
+							</text>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" maxlength="50" style="width:70px"id="id_job_qty!!{{ forloop.counter }}" name="job_qty!!{{ forloop.counter }}"  value="{{ add_data.job_qty|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+								<td class="form-row {{ rowcolors }}" style="width:7%">
+									<div class="text">
+									<span>
+									<text id="id_sel_vendor_{{ forloop.counter }}" name="sel_vendor_{{ forloop.counter }}">
+		                			{% for cur_vendor_pl in add_data.vendor_pl_opt %}
+		                			
+		                			<text value="{{ cur_vendor_pl.id }}"  {% if add_data.sel_vendor_id == cur_vendor_pl.vendor.id %} selected {% endif %}>{{ cur_vendor_pl.job_work_rate }}</text>
+		                			
+		                			{% endfor %}
+			                	</text>
+									</span></div>
+								</td>
+								</div>
+							</td>
+							</tr>
+						{% endwith %}
+						{% endwith %}
+					{% endfor %}				
+				
+				
+				</form>	
+			</fieldset>
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:production_auto_plan' data.tref.id %}" method="post" id="coa_group_form" novalidate>
+					<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+				{% csrf_token %}			
+			<fieldset id = "show_hide_panel{{forloop.counter}}" class="module aligned collapse">
+			<h2>{{cur_bom_key}} (<a id="switch_link{{forloop.counter}}" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel{{forloop.counter}}', 'switch_link{{forloop.counter}}')">Show</a>)</h2>
+		        
+		        <table id="new_inf_list">
+					<thead>
+						<tr>
+							<th scope="col" class="action-checkbox-column" style="width:2.5%">
+							   <div class="text"><span>Sl No.</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Item Master Name</span></div>
+							</th>
+							
+							<th scope="col" class="action-checkbox-column" style="width:2%">
+							   <div class="text"><span>Next</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column" style="width:5%">
+							   <div class="text"><span>Balance Qty</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>New Balance Qty
+							   </span></div>
+							</th>
+							{% if 'wc_dict' in data %}
+							<th scope="col" class="action-checkbox-column" style="width:5%">
+							   <div class="text"><span>Shop Order</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Work Center Price</span></div>
+							</th>
+							{% endif %}
+							{% if 'vendor_dict' in data %}
+							<th scope="col" class="action-checkbox-column" style="width:5%">
+							   <div class="text"><span>Job Order</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Vendor Price</span></div>
+							</th>
+							{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+					
+					
+					
+					{% for cur_inv_jour_id, cur_inv_jour in data.pro_inv_jour.items %}
+						{% with cur_inv_jour.0 as inv_jour_obj %}
+						{% with cur_inv_jour.1 as add_data %}	
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}" style="width:2.5%">
+								<div class="text"><span>{{ forloop.counter }}</span></div>
+								<div hidden>
+								<input type="number" id="id_inv_jour_id_{{ forloop.counter }}" maxlength="50" name="inv_jour_id!!{{ forloop.counter }}" value="{{ inv_jour_obj.id }}"/>
+								</div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:30%">
+								<div class="text"><span>{{ inv_jour_obj.name }}</span></div>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:5%">
+								{% if add_data.next == True %}
+								<div class="text"><span>YES</span></div>
+								{% endif %}
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<div class="text"><span>{{ inv_jour_obj.balance_qty|stringformat:".2f" }}</span></div>
+							</td>
+							
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<div class="text"><span>{{ add_data.new_balance_qty|stringformat:".2f" }}</span></div>
+							</td>
+							{% if 'wc_dict' in data %}
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="number"><span>	
+								<input type="number" style="width:70px" maxlength="50" id="id_shop_qty!!{{ forloop.counter }}" name="shop_qty!!{{ forloop.counter }}"  value="{{ add_data.shop_qty|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<text id="id_sel_wc_{{ forloop.counter }}" name="sel_wc_{{ forloop.counter }}">
+								{% for cur_wc in add_data.wc_pl_opt %}
+				                	{% if cur_wc.rate > 0 %}
+				                	<text value="{{ cur_wc.id }}"{% if add_data.sel_wc_id == cur_wc.work_center.id %}selected {% endif %}>{{ cur_wc.rate }}</text>
+				                	{% endif %}
+				                {% endfor %}
+							</text>
+							</td>
+							{% endif %}
+							{% if 'vendor_dict' in data %}
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="number"><span>	
+								<input type="number" maxlength="50" style="width:70px"id="id_job_qty!!{{ forloop.counter }}" name="job_qty!!{{ forloop.counter }}"  value="{{ add_data.job_qty|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+								<td class="form-row {{ rowcolors }}" style="width:7%">
+									<div class="text">
+									<span>
+									<text id="id_sel_vendor_{{ forloop.counter }}" name="sel_vendor_{{ forloop.counter }}">
+		                			{% for cur_vendor_pl in add_data.vendor_pl_opt %}
+		                			{% if cur_vendor_pl.job_work_rate > 0 %}
+		                			<text value="{{ cur_vendor_pl.id }}"  {% if add_data.sel_vendor_id == cur_vendor_pl.vendor.id %} selected {% endif %}>{{ cur_vendor_pl.job_work_rate }}</text>
+		                			{% endif %}
+		                			{% endfor %}
+			                	</text>
+									</span></div>
+								</td>
+						{% endif %}	
+						</tr>
+						{% endwith %}
+						{% endwith %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</fieldset>
+			{% if 'vendor_dict' in data %}
+			<fieldset class="module aligned ">
+						<table id="new_inf_list">
+						<thead>
+		 					<th scope="col" class="action-checkbox-column" style="width:10%">Vendor Name</th>
+		 					<th scope="col" class="action-checkbox-column" style="width:10%">Ship To</th>
+							<th scope="col" class="action-checkbox-column" style="width:25%">Shipping Address Line 1</th>
+							<th scope="col" class="action-checkbox-column" style="width:25%">Shipping Address Line 2</th>
+							<th scope="col" class="action-checkbox-column" style="width:10%">City</th>
+							<th scope="col" class="action-checkbox-column" style="width:14%">State</th>
+							<th scope="col" class="action-checkbox-column" style="width:10%">Delivery Date</th>
+							<th scope="col" class="action-checkbox-column" style="width:10%"hidden></th>
+						</thead>
+					<tbody>
+							<fieldset class="module aligned " hidden>
+							<div style="float:left; width:50%">
+								<label class="required" for="id_item_group">Work Center Name:</label>
+								<select id="id_cur_sel_wc" name="cur_sel_wc" onchange="submit()">
+									
+		        						<option>{{ data.sel_wc }}</option>
+		               				
+			               		</select>
+							</div>
+							<div style="float:left; width:50%">
+								<label class="required" for="id_item_group">Vendor Name:</label>
+								<select id="id_cur_sel_vendor" name="cur_sel_vendor" onchange="submit()">
+									<option>{{ data.sel_vendor }}</option>
+			               		</select>
+							</div>
+					</fieldset>
+					{% for cur_inv_jour_id, cur_inv_jour in data.pro_inv_jour.items %}
+					{% with cur_inv_jour.1 as add_data %}					
+					<div>
+						{% for cur_vendor in add_data.vendor_name_list %}  	
+							<tr class="{{ rowcolors }}">
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<text value="{{ cur_vendor.name }}" id="id_vendor_name_{{ forloop.counter }}" name="vendor_name_{{ forloop.counter }}" {% if add_data.sel_vendor_id == cur_vendor.id %} selected {% endif %}/> 
+								{{ cur_vendor.name }}</text>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" maxlength="50" id="id_ship_to_{{ forloop.counter }}" name="ship_to_{{ forloop.counter }}"  value="{{ add_data.ship_to|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<input type="text" maxlength="50" id="id_shiping_address_line_1_{{ forloop.counter }}" name="shiping_address_line_1_{{ forloop.counter }}" value="{{ add_data.shiping_address_line_1|stringformat:".2f" }}" /></input>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<input type="text" maxlength="50" id="id_shiping_address_line_2_{{ forloop.counter }}" name="shiping_address_line_2_{{ forloop.counter }}" value="{{ add_data.shiping_address_line_2|stringformat:".2f" }}"/></input>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" id="id_date_{{ forloop.counter }}" name="date_{{ forloop.counter }}">
+							<select id="id_sel_city" name="sel_city_{{ forloop.counter }}">>
+							{% for cur_city in add_data.city_opt %}
+								<option value="{{ cur_city.id }}" id="id_sel_city" name="sel_city_{{ forloop.counter }}" >{{ cur_city.name }}</option>
+							{% endfor %}
+							</select>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+							<select id="id_sel_state" name="sel_state_{{ forloop.counter }}">>
+							{% for cur_state in add_data.state_opt %}
+								<option value="{{ cur_state.id }}" id="id_sel_state" name="sel_state_{{ forloop.counter }}">{{ cur_state.name }}</option>
+							{% endfor %}
+							</select>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<input type="text" maxlength="50" id="id_date_{{ forloop.counter }}" name="date_{{ forloop.counter }}" value="{{ add_data.date|stringformat:".2f" }}"/></input>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<input value="{{ cur_vendor.id }}" id="id_vendor_id_{{ forloop.counter }}" name="vendor_id_{{ forloop.counter }}" hidden/></input>
+							</td>
+							</tr>
+							<thead>
+			 					<th scope="col" class="action-checkbox-column" style="width:10%">Item Name</th>
+			 					<th scope="col" class="action-checkbox-column" style="width:30%">Avaliable Stock</th>
+			 					<th scope="col" class="action-checkbox-column" style="width:30%">Mod Qty</th>
+								<th scope="col" class="action-checkbox-column" style="width:30%">Nested Qty</th>
+								
+							</thead>
+						<tbody>
+						{% for cur_nested in add_data.nested_list %}
+					
+						<tr class="{{ rowcolors }}">
+						<td class="form-row {{ rowcolors }}" style="width:60%" >
+								<div class="text">
+								<span>	
+								<text value="{{ cur_nested.name }}" id="id_item_name_{{ forloop.counter }}" name="item_name_{{ forloop.counter }}"> 
+								{{ cur_nested.0 }}</text>
+								</span>
+						</div></td>		
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<text value="{{ cur_nested.tot_qty }}" id="id_tot_qty_{{ forloop.counter }}" name="tot_qty_{{ forloop.counter }}">
+							{{ cur_nested.1 }}</text>
+							</span></div></td>	
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="number"><span>	
+								<input type="number" maxlength="50" id="id_mod_qty_{{ forloop.counter }}" name="mod_qty_{{ forloop.counter }}"  value="{{ add_data.mod_qty|stringformat:".2f" }}"/></input>
+							</span></td>	
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<text value="{{ cur_nested.req_qty }}" id="id_req_qty_{{ forloop.counter }}" name="req_qty_{{ forloop.counter }}">
+							{{ cur_nested.2 }}</text>
+							</span></div></td>	
+							
+							</tr>
+						
+						{% endfor %}
+						</tbody>
+					{% endfor %}
+						</div>
+					{% endwith %}	
+					{% endfor %}	
+				</tbody>						 	
+			</table>
+		</fieldset>
+		{% endif %}
+		{% if 'wc_dict' in data %}
+		<fieldset class="module aligned ">
+						<table id="new_inf_list">
+						<thead>
+		 					<th scope="col" class="action-checkbox-column" style="width:10%">Work Center Name</th>
+		 					<th scope="col" class="action-checkbox-column" style="width:10%">Completion Date</th>
+							<th scope="col" class="action-checkbox-column" style="width:10%"hidden></th>
+						</thead>
+					<tbody>
+					<fieldset class="module aligned " hidden>
+							<div style="float:left; width:50%">
+								<label class="required" for="id_item_group">Work Center Name:</label>
+								<select id="id_cur_sel_wc" name="cur_sel_wc" onchange="submit()">
+									<option>{{ data.sel_wc }}</option>
+		               			</select>
+							</div>
+							<div style="float:left; width:50%">
+								<label class="required" for="id_item_group">Vendor Name:</label>
+								<select id="id_cur_sel_vendor" name="cur_sel_vendor" onchange="submit()">
+									<option>{{ data.sel_vendor }}</option>
+			               		</select>
+							</div>
+					</fieldset>
+					{% for cur_inv_jour_id, cur_inv_jour in data.pro_inv_jour.items %}
+					{% with cur_inv_jour.1 as add_data %}					
+					<div>
+						{% for cur_work_center in add_data.wc_list_name %}
+						<tr class="{{ rowcolors }}">
+							
+							<td class="form-row {{ rowcolors }}" style="width:100%">
+								<text value="{{ cur_work_center.name }}" id="id_cur_work_center_{{ forloop.counter }}" name="cur_work_center_{{ forloop.counter }}" {% if add_data.sel_wc_id == cur_work_center.id %} selected {% endif %}/> 
+								{{ cur_work_center.name }}</text>
+							</td> 
+							<td class="form-row {{ rowcolors }}" style="width:30%" >
+								<div class="text"><span>	
+								<input type="text" maxlength="50" id="id_completion_date_{{ forloop.counter }}" name="completion_date_{{ forloop.counter }}"  value="{{ add_data.completion_date|stringformat:".2f" }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%">
+								<input value="{{ cur_work_center.id }}" id="id_wc_id_{{ forloop.counter }}" name="wc_id_{{ forloop.counter }}" hidden/></input>
+							</td>
+							</tr>
+							<thead>
+			 					<th scope="col" class="action-checkbox-column" style="width:10%">Item Name</th>
+			 					<th scope="col" class="action-checkbox-column" style="width:30%">Total Qty</th>
+			 					<th scope="col" class="action-checkbox-column" style="width:30%">Mod Qty</th>
+								<th scope="col" class="action-checkbox-column" style="width:30%">Nested Qty</th>
+								
+							</thead>
+							<tbody>
+						{% for cur_wc_nested in add_data.wc_nested_list %}
+						<tr class="{{ rowcolors }}">
+						<td class="form-row {{ rowcolors }}" style="width:40%" >
+								<div class="text">
+								<span>	
+								<text value="{{ cur_wc_nested.name }}" id="id_item_name_{{ forloop.counter }}" name="item_name_{{ forloop.counter }}"> 
+								{{ cur_wc_nested.0 }}</text>
+								</span>
+						</div></td>		
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<text value="{{ cur_nested.tot_qty }}" id="id_tot_qty_{{ forloop.counter }}" name="tot_qty_{{ forloop.counter }}">
+							{{ cur_wc_nested.1 }}</text>
+							</span></div></td>	
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="number"><span>	
+								<input type="number" maxlength="50" id="id_wc_mod_qty_{{ forloop.counter }}" name="wc_mod_qty_{{ forloop.counter }}"  value="{{ add_data.wc_mod_qty|stringformat:".2f" }}"/></input>
+							</span></td>	
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<text value="{{ cur_nested.req_qty }}" id="id_req_qty_{{ forloop.counter }}" name="req_qty_{{ forloop.counter }}">
+							{{ cur_wc_nested.2 }}</text>
+							</span></div></td>	
+							
+							</tr>
+						
+						{% endfor %}
+						</tbody>
+							{% endfor %}
+						</div>
+					{% endwith %}	
+					{% endfor %}	
+				</tbody>						 	
+			</table>
+		</fieldset>
+		{% endif %}
+		</div>
+		<div class="submit-row">
+			<input type="submit" value="Save & Submit" class="command-button button primary" name="save"/>
+			<input type="submit" value="preview" class="command-button button primary" name="preview"/>
+		</div>
+	
+	</div>
+    </form>
+    <br class="clear" />
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+</body>
+</html>

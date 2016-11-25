@@ -1,0 +1,72 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function filter_debit_journal(){
+		var box_debit_tref = document.getElementById("id_sel_debit_tref1");
+	    var debit_tref_val = box_debit_tref.options[box_debit_tref.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = 6;
+	    var nav_location =  "/journal_mgmt/transaction_ref/detail/id={{ data.object.id }}/?redirect_name=" + String({{ data.redirect_name }}) + "&redirect_data=" + String({{ data.redirect_data }}) + "&redirect_status=" + String({{ data.redirect_status }}) + "&sel_debit_tref1=" + String(debit_tref_val);
+	    window.location = nav_location;
+		}
+</script>
+
+{% block content %}
+    <head>
+        <meta charset="utf-8">
+        <title>Minimal Django File Upload Example</title>
+    </head>
+    <hl>{{ data.auto_pl.name }}</hl>
+    <body>
+    <!-- List of uploaded documents -->
+    {% if documents %}
+        <ul>
+        {% for document in documents %}
+            <li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a>
+            <a href="{% url 'journal_mgmt:doc_delete' document.id %}">
+            	<image type="image" src="/static/admin/img/icon_deletelink.gif" alt="DEL" style="height:12px"></image>
+            </a></li>
+        {% endfor %}
+        {{ data }}
+        </ul>
+    {% else %}
+        <p>No documents.</p>
+    {% endif %}
+
+        <!-- Upload form. Note enctype attribute! -->
+        <form enctype="multipart/form-data" action="" method="post" id="coa_group_form" novalidate>
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+            <p>{{ form.docfile }}</p>
+            <p><input type="submit" value="Upload" /></p>
+        </form>
+    </body>
+{% endblock %}

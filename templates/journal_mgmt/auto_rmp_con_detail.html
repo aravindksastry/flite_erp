@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> coa_group_detail | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-coa_group change-form">
+
+<!-- Container -->
+<div id="container">
+
+    <!-- Content -->
+    <div id="content" class="colM">
+        <h1>
+        {% if data.model %} Edit {% else %} Create {% endif %}
+        {% if data.type == "rmp" %} Raw Material Price {% else %} Constant Value {% endif %}</h1>
+        <div id="content-main">
+  <ul class="object-tools">
+    <li>
+        <a href="/admin/journal_mgmt/coa_group/23/history/" class="historylink">History</a>
+    </li>
+  </ul>
+
+<form enctype="multipart/form-data" action={% if data.type == "rmp" %} "{% url 'journal_mgmt:auto_rmp_save' %}" {% else %} "{% url 'journal_mgmt:constants_save' %}" {% endif %} method="post" id="coa_group_form" novalidate>
+<!--<form enctype="multipart/form-data" action="{% url 'journal_mgmt:test_response' %}" method="post" id="coa_group_form" novalidate>-->
+<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+{% csrf_token %}
+<div>
+	<fieldset class="module aligned ">
+		<div class="form-row field-auto_pl_id">
+			<div>
+               <label class="required" for="id_model_id">ID</label>
+               <input  class="vTextField" id="id_model_id" maxlength="200" name="model_id" type="text" value="{{ data.model.id }}" readonly/>
+			</div>
+        </div>
+		<div class="form-row field-auto_pl_name">
+			<div>
+               <label class="required" for="id_rmp_name">Name</label>
+               <input  class="vTextField" id="id_rmp_name"  maxlength="200" name="model_name" type="text" value="{{ data.model.name }}"/>
+			</div>
+        </div>
+		<div class="form-row field-Value">
+			<div>
+				{% if data.type == "rmp" %}
+					<label class="required" for="id_rmp_value">Raw Material Sale Rate</label>
+	              	<input  class="vTextField" id="id_rmp_value"  maxlength="200" name= "rmp_sale_rate" type="text" value="{{ data.model.rmp_sale_rate }}"/>
+              	{% else %}
+	              	<label class="required" for="id_rmp_value">Constant Value</label>
+	              	<input  class="vTextField" id="id_rmp_value"  maxlength="200" name= "constant_value" type="text" value="{{ data.model.constant_value }}"/>
+              	{% endif %}
+			</div>
+		</div>
+	</fieldset>
+
+<div class="submit-row">
+<input type="submit" value="Save" class="default" name="_save" />
+<p class="deletelink-box"><a href="" class="deletelink">Delete</a></p>
+<input type="submit" value="Save and add another" name="_addanother" />
+<input type="submit" value="Save and continue editing" name="_continue" />
+</div>
+</div>
+</form>
+</div><br class="clear" /></div>
+<!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+</body>
+</html>

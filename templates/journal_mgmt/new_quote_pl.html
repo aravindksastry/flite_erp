@@ -1,0 +1,206 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class="app-journal_mgmt model-transaction_ref change-list" style="width:1200px border:thin solid grey">
+{% load custom_temp_tags %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Content -->
+<div>
+    <h1>Technical Partlist</h1>
+	<div>
+		{% if data.quote_pl.parts %}
+		<fieldset class="module aligned ">
+		<table>
+			<col width="200">
+	  		<col width="400">
+			<thead>
+				<tr>
+					<th scope="col" class="column-__str__">Description</td>
+					<th class=scope="col" class="column-__str__" style="text-align:right">Value</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="form-row row1">Item Name</td>
+					<td class="form-row row1" style="text-align:right">{{ data.quote_pl.item_obj.1 }}</td>
+				</tr>
+				<tr>
+					<td class="form-row row2">Item Qty</td>
+					<td class="form-row row2" style="text-align:right">{{ data.quote_pl.spec.Quantity|stringformat:".0f" }}</td>
+				</tr>
+			
+				{% for item_id, item_data in data.quotation_obj.5.items.items %}
+					{% if  item_id == data.quote_pl.obj.3|stringformat:".0f" %}
+						<tr>
+							<td class="form-row row1">Cur Rate</td>
+							<td class="form-row row1" style="text-align:right">{{ item_data.c|stringformat:".1f" }}</td>
+						</tr>
+						<tr>
+							<td class="form-row row2">Cur Total Value</td>
+							<td class="form-row row2" style="text-align:right">{{ item_data.c|stringformat:".1f"|multiply:data.quote_pl.spec.Quantity|stringformat:".1f" }}</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+				<tr>
+					<td class="form-row row1">New Rate</td>
+					<td class="form-row row1" style="text-align:right">{{ data.new_tot_val|stringformat:".1f"|div:data.quote_pl.spec.Quantity|stringformat:".1f" }}</td>
+				</tr>
+				<tr>
+					<td class="form-row row2">New Value</td>		
+					<td class="form-row row2" style="text-align:right">{{ data.new_tot_val|stringformat:".1f" }}</td>
+				</tr>
+			</tbody>
+		</table>
+		</fieldset>
+		<fieldset class="module aligned ">
+		<table>
+			{% for cur_header, auto_pl_dict in data.new_quote_pl.items %}
+			{% if not cur_header == 'item' %}
+			<thead>
+			<th  colspan="{{ 9|add:data.region_count}}" class="row2">{{cur_header}}</th>
+			<tr class="row1">
+				<tr>
+					<th scope="col" class="column-__str__">
+				   	Sl No.
+				   	</th>
+				   	<th scope="col" class="column-__str__">
+				   	Part Description
+				   	</th>
+				   	<th scope="col" class="column-__str__">
+				   	Part Image
+				   	</th>
+				   	{% for cur_auto_pl_id, part_list in auto_pl_dict.items %}
+				   	{% if forloop.counter == 1 %}
+					   	{% for cur_param in part_list.0.0 %}
+					   	{% if forloop.counter > 4 and forloop.counter < 5|add:data.region_count %}
+					   	<th scope="col" class="column-__str__">
+					   	Q-R{{ forloop.counter }}
+					   	</th>
+					   	{% endif %}
+					   	{% endfor %}
+					{% endif %}   	
+				   	{% endfor %}
+				   	<th scope="col" class="column-__str__">
+				   	Quantity - Total
+				   	</th>
+				   	<th scope="col" class="column-__str__">
+				   	Norms
+				   	</th>
+				   	<th scope="col" class="column-__str__">
+				   	Rate
+				   	</th>
+				   	<th scope="col" class="column-__str__">
+				   	Value
+				   	</th>
+					<th scope="col" class="column-__str__">
+				   	New Rate
+				   	</th>
+				   	<th scope="col" class="column-__str__">
+				   	New Value
+				   	</th>
+				   	<!-- when col >= 11 -->
+				   	<th scope="col" class="column-__str__">
+				   	Link
+				   	</th>
+			   	</tr>
+		   	</tr>
+		   	</thead>
+	   		<tbody>
+		   	{% with 10|add:data.region_count as dict_location %}
+		   	{% for cur_auto_pl_id, part_list in auto_pl_dict.items %}
+		   	{% with forloop.counter|add:-1 as cur_serial %}
+		   	{% for cur_part in part_list %}
+			   	{% cycle 'row1' 'row2' as rowcolors silent %}
+			   	{% with cur_part|get_element:dict_location as data_dict %}
+				<tr class="{{ rowcolors }}">
+					<td class="form-row row{{ rowcolors }}">{{ cur_serial|add:forloop.counter }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ data_dict.item_master.name }}</td>
+					{% if forloop.counter == 1 %}
+						<td class="form-row row{{ rowcolors }}" rowspan="{{ part_list|length }}">
+						{% if data_dict.doc_obj.docfile %}
+						<img src="/media/{{ data_dict.doc_obj.docfile }}" style="width:250px;height:200px;">
+						{% endif %}
+						</td>
+					{% endif %}
+					{% for cur_param in cur_part %}
+			   			{% if forloop.counter > 4 and forloop.counter < dict_location|add:1 %}
+			   	   	   	<td scope="col" class="column-__str__">
+					   	{{ cur_param }}
+					   	</td>
+					   	{% endif %}
+				   	{% endfor %}
+				   	<!-- when col >= 11 -->
+				   	
+				   	<td class="form-row row{{ rowcolors }}">
+				   		{% if data_dict.auto_pl.id %}
+				   			<a href="{% url 'journal_mgmt:auto_pl_detail' data_dict.auto_pl.id %}?item_master={{ data_dict.item_master.id }}&vendor=0&work_center=0">[{{ data_dict.item_master.id }}]</a>
+				   		{% else %}
+				   			NO AUTOPL
+				   		{% endif %}
+				   	</td>
+				</tr>
+				{% endwith %}
+			{% endfor %}
+			{% endwith %}
+			{% endfor %}
+			{% endwith %}
+			</tbody>
+			{% endif %}
+			{% endfor %}
+		</table>
+		{% else %}
+		    <p>{% trans "You don't have permission to edit anything." %}</p>
+		{% endif %}
+		</fieldset>
+	</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>

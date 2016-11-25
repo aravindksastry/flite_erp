@@ -1,0 +1,328 @@
+{% extends "admin/change_form_custom.html" %}
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> Auto PL Matrix </title>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+</head>
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+	<div class="margin10" style="float: left; height:7x; width:100%">
+       	<ul class="breadcrumbs-custom">
+           <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			<li>Add {{ data.transaction_type.0.name }}</li>
+           </ul>
+     </div>
+	<br>
+{% endif %}
+{% endblock %}
+{% block content %}
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+
+<div id="content" class="colM">
+    <h1>Auto Pl Object Auto Fill</h1>
+	
+	<!--<div>
+		{{data}}
+	</div>-->
+	
+	<fieldset class="module aligned ">
+	<div id="content-main">
+		{% load custom_temp_tags %}
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:auto_pl_matrix' %}" method="post" id="coa_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+        	<div class="form-row field-name">
+        		<div style="float:left">
+		    	<label class="required" for="id_auto_pl_opt">Auto Pl Obj:</label>
+		         <select id ="id_auto_pl_id" name="auto_pl_id">
+		         	<option value="-None-">{{ cur_auto_pl.name }}</option>
+                    {% for cur_auto_pl in data.auto_pl_opt %}
+              		<option value="{{ cur_auto_pl.id }}" {% if data.sel_pl_id == cur_auto_pl.id %} selected {% endif %}>{{ cur_auto_pl.name }}</option>
+              		{% endfor %}
+           		</select>
+           		</div>
+           		<div style="float:left">
+           		<label class="required">Total items: {{ data.pl_count }}</label>
+           		</div>
+           		<div style="float:left">
+           		<label class="required"> &nbsp Name filter:</label>
+           		<input type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+           		</div>
+           		<div style="float:left">
+           		<label class="required">Min Count:</label>
+           		<input type="number" name="min_count" value="{{ data.min_count }}" style="width:40px"></input>
+           		</div>
+           		<input type="submit" class="command-button button primary" name="filter" value="filter" onclick="submit()"></input>
+           		<a href="/journal_mgmt/auto_price_list/detail/id={{ data.sel_pl_id }}/"></a> 
+	           	</div>
+		        <div class="form-row field-xyz">
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d1_start">D1 Start:</label>
+			                <input type="number" name="d1_start" value="{{ data.d1_start }}">
+			             </div>
+			        </div>
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d1_end">D1 End:</label>
+			                <input type="number" name="d1_end" value="{{ data.d1_end }}">
+			             </div>
+			        </div>
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d1_inc">D1 Increment:</label>
+			                <input type="number" name="d1_inc" value="{{ data.d1_inc }}">
+			             </div>
+			        </div>
+			    </div>
+			    <div class="form-row field-xyz">
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d2_start">D2 Start:</label>
+			                <input type="number" name="d2_start" value="{{ data.d2_start }}">
+			             </div>
+			        </div>
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d2_end">D2 End:</label>
+			                <input type="number" name="d2_end" value="{{ data.d2_end }}">
+			             </div>
+			        </div>
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d2_inc">D2 Increment:</label>
+			                <input type="number" name="d2_inc" value="{{ data.d2_inc }}">
+			             </div>
+			        </div>
+			    </div>
+			    <div class="form-row field-xyz">
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d3_val">D3 Value:</label>
+			                <input type="number" name="d3_val" value="{{ data.d3_val }}">
+			             </div>
+			        </div>
+			        <div style="float:left; width:33%">
+			            <div>
+			                <label class="required" for="id_d4_val">D4 Value:</label>
+			                <input type="number" name="d4_val" value="{{ data.d4_val }}">
+			             </div>
+			        </div>
+			       <div style="float:left; width:33%">
+			       		<div>
+			       		<input type="submit" class="command-button button primary" value="Auto fill" name="auto_fill"></input> 
+			    		<input type="submit" class="command-button button primary" value="Super fill" name="super_fill"></input>
+			    		</div>
+			    		<div>
+				    		<label class="required" for="id_d3_val">auto_pl_ids:</label>
+			                <input type="text" name="export_ids" value="{{ data.pl_opt_ids }}"> 
+				    		<input type="submit" class="command-button button primary" value="Export" name="spread_sheet"></input>
+			    		</div>
+			    		
+			    	</div>
+			   </div>
+			   <!-- padmanab 
+			   V3 - 9740029642 - manoj
+			   
+			   -->
+			   <fieldset id = "show_hide_panel1" class="module aligned collapse collapsed">
+    				<h2>Dim Options (<a id="switch_link1" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel1', 'switch_link1')">Show</a>)</h2>
+    				<table>
+    				<tr>
+	    				<td>D1</td>
+	    				{% for cur_d1 in data.d1_opt %}
+	    				<td>
+	    					{{ cur_d1 }}
+		    			</td>
+	    				{% endfor %}
+    				</tr>
+    				<tr>
+	    				<td>D2</td>
+	    				{% for cur_d2 in data.d2_opt %}
+	    				<td>
+    						{{ cur_d2 }}
+		    			</td>
+	    				{% endfor %}
+    				</tr>
+    				<tr>
+	    				<td>D3</td>
+	    				{% for cur_d3 in data.d3_opt %}
+	    				<td>
+		    				{{ cur_d3 }}
+		    			</td>
+	    				{% endfor %}
+    				</tr>
+    				<tr>
+	    				<td>D4</td>
+	    				{% for cur_d4 in data.d4_opt %}
+	    				<td>
+	    					{{ cur_d4 }}
+		    			</td>
+	    				{% endfor %}
+    				</tr>
+    				</table>
+			    </fieldset>
+			    <fieldset class="module aligned collapse">
+				<div style="float:left; width:50%">  
+			   	<h4 style="text-align:center">Actual Rate</h4>
+			   	<table>
+	 				<thead>
+		 				{% if data.sel_pl_obj %}
+	 					<tr>
+	 						{{ data.sel_pl_obj.name }}
+	 					</tr>
+		 				{% endif %}
+						<tr>
+						<th colspan="1" rowspan="1"><b>D1/D2</b></th>
+						{% for cur_x_head in data.disp_tab_x_head %}
+							<th class="required">
+								<input type="text" name="d1-{{forloop.counter}}" value="{{ cur_x_head }}" style="width:50px"></input>
+							</th>
+						{% endfor %}
+						</tr>
+					</thead>
+					<tbody>
+					{% for cur_y_head in data.disp_tab_y_head %}
+					{% with forloop.counter|add:-1 as x %}
+					<tr>
+						<th class="form-row row{{ rowcolors }}">
+							<input type="text" name="d2-{{forloop.counter}}" value="{{ cur_y_head }}" style="width:50px"></input>
+						</th>
+						{% for cur_cell in data.disp_tab_ip_data|get_element:x %}
+						<td>
+						{{ cur_cell }}
+						</td>
+						{% endfor %}
+					</tr>
+					{% endwith %}
+					{% endfor %}
+					</tbody>						 	
+				</table>
+		 	</div>
+		   	
+			</fieldset>
+			<fieldset class="module aligned collapse">
+				<div style="float:left; width:50%">
+			   	<h4 style="text-align:center">Actual after 1.067</h4>
+					<table>
+		 				<thead>
+			 				{% if data.sel_pl_obj %}
+		 					<tr>
+		 						{{ data.sel_pl_obj.name }} ({% now "d-b-Y f" %})
+		 					</tr>
+			 				{% endif %}
+							<tr>
+							<th><b>D1/D2</b></th>
+							{% for cur_x_head in data.disp_tab_x_head %}
+								<th class="required">
+									{{ cur_x_head }}
+								</th>
+							{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+						{% for cur_y_head in data.disp_tab_y_head %}
+						{% with forloop.counter|add:-1 as x %}
+						<tr>
+							<th class="form-row row{{ rowcolors }}">
+								{{ cur_y_head }}
+							</th>
+							{% for cur_cell in data.disp_tab_sp_data|get_element:x %}
+							<td>
+							{{ cur_cell|multiply:1.067|stringformat:".2f" }}
+							</td>
+							{% endfor %}
+						</tr>
+						{% endwith %}
+						{% endfor %}
+						</tbody>						 	
+					</table>
+				</div>
+				<div style="float:left; width:50%">
+			   	<h4 style="text-align:center">Rate Per Sqmt/RMT</h4>
+					<table>
+		 				<thead>
+		 					{% if data.sel_pl_obj %}
+			 					<tr>
+			 						{{ data.sel_pl_obj.name }} ({% now "d-b-Y f" %})
+			 					</tr>
+			 				{% endif %}
+							<tr>
+							<th><b>D1/D2</b></th>
+							{% for cur_x_head in data.disp_tab_x_head %}
+								<th class="required">
+									{{ cur_x_head }}
+								</th>
+							{% endfor %}
+							</tr>
+						</thead>
+						<tbody>
+						{% for cur_y_head in data.disp_tab_y_head %}
+						{% with forloop.counter|add:-1 as x %}
+						<tr>
+							<th class="form-row row{{ rowcolors }}">
+								{{ cur_y_head }}
+							</th>
+							{% for cur_cell in data.disp_tab_rate_data|get_element:x %}
+							<td>
+								{{ cur_cell|multiply:1.067|stringformat:".2f" }}
+							</td>
+							{% endfor %}
+						</tr>
+						{% endwith %}
+						{% endfor %}
+						</tbody>						 	
+					</table>	
+				</div>
+			</fieldset>
+			<div>
+			<input type="submit" class="command-button button primary" value="Get Price" name="get_price"></input>
+			</div>
+			    
+		</form>
+		</div>
+		</fieldset>
+	
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

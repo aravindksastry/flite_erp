@@ -1,0 +1,190 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class="app-journal_mgmt model-transaction_ref change-list" style="width:1200px border:thin solid grey">
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Content -->
+<div>
+{% load custom_temp_tags %}
+    <h1>Technical Partlist</h1>
+	<div>
+		{% if data.disp_part %}
+		<fieldset class="module aligned">
+		<!--<table>
+			<col width="200">
+	  		<col width="400">
+			<thead>
+				<tr>
+					<th scope="col" class="column-__str__">Description</td>
+					<th class=scope="col" class="column-__str__" style="text-align:right">Value</td>
+				</tr>
+			</thead>
+			<tbody>
+			<tr>
+				<td class="form-row row1">Item Name</td>
+				<td class="form-row row1" style="text-align:right">{{ data.quote_pl.item_obj.1 }}</td>
+			</tr>
+			<tr>
+				<td class="form-row row2">Item Qty</td>
+				<td class="form-row row2" style="text-align:right">{{ data.quote_pl.spec.Quantity|stringformat:".0f" }}</td>
+			</tr>
+				{% for item_id, item_data in data.quotation_obj.5.items.items %}
+					{% if  item_id == data.quote_pl.obj.3|stringformat:".0f" %}
+						<tr>
+							<td class="form-row row1">Cur Rate</td>
+							<td class="form-row row1" style="text-align:right">{{ item_data.c|stringformat:".1f" }}</td>
+						</tr>
+						<tr>
+							<td class="form-row row2">Cur Total Value</td>
+							<td class="form-row row2" style="text-align:right">{{ item_data.c|stringformat:".1f"|multiply:data.quote_pl.spec.Quantity|stringformat:".1f" }}</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+				<tr>
+					<td class="form-row row1">New Rate</td>
+					<td class="form-row row1" style="text-align:right"></td>
+				</tr>
+				<tr>
+					<td class="form-row row2">New Value</td>		
+					<td class="form-row row2" style="text-align:right">{{ data.new_tot_val|stringformat:".1f" }}</td>
+				</tr>
+			</tbody>
+		</table>-->
+		</fieldset>
+		<fieldset class="module aligned">
+		<table style="width:{{ data.cluster_count|multiply:25|add:800 }}px">
+			<thead>
+			<th  colspan="" class="row2">{{cur_header}}</th>
+			<tr class="row1">
+				<tr>
+					<th scope="col" class="column-__str__" style="width:20px">
+				   	Sl No.
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:500px">
+				   	Part Description
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">
+				   	Quantity - Total
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">
+				   	Rate
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">
+				   	Value
+				   	</th>
+				   	{% for cur_region_key in data.sorted_region_keys %}
+				   		{% for cur_cluster_key in data.sorted_cluster_keys|get_element:cur_region_key %}
+					   		{% with data.disp_cluster|get_element:cur_region_key as clst_region_dict %}
+					   		{% with clst_region_dict|get_element:cur_cluster_key as clst_cluster_arr %}
+					   		<th scope="col" class="column-__str__" style="width:25px">
+				   			{{ clst_cluster_arr.0 }}({{ clst_cluster_arr.2 }})
+				   			</th>
+				   			{% endwith %}
+				   			{% endwith %}
+				   		{% endfor %}
+				   	{% endfor %}
+				</tr>
+			   	<tr>
+					<th scope="col" class="column-__str__" style="width:20px"></th>
+				   	<th scope="col" class="column-__str__" style="width:500px"></th>
+				   	<th scope="col" class="column-__str__" style="width:50px">{{ data.tot_units }}</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">{{ data.tot_val|div:data.tot_units|stringformat:".1f"  }}</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">{{ data.tot_val|stringformat:".1f"  }}</th>
+				   	{% for cur_region_key in data.sorted_region_keys %}
+				   		{% for cur_cluster_key in data.sorted_cluster_keys|get_element:cur_region_key %}
+					   		{% with data.disp_cluster|get_element:cur_region_key as clst_region_dict %}
+					   		{% with clst_region_dict|get_element:cur_cluster_key as clst_cluster_arr %}
+					   		<th scope="col" class="column-__str__" style="width:25px">
+				   			{{ clst_cluster_arr.3|stringformat:".1f" }}({{ clst_cluster_arr.1 }})
+				   			</th>
+				   			{% endwith %}
+				   			{% endwith %}
+				   		{% endfor %}
+				   	{% endfor %}
+			   	</tr>
+		   	</tr>
+		   	</thead>
+	   		<tbody>
+	   		{% for cur_group_name, sorted_parts in data.segregated_parts.items %}
+	   			{% cycle 'row1' 'row2' as rowcolors silent %}
+		   		<tr class="{{ rowcolors }}"><td colspan="10">{{ cur_group_name }}</td></tr>
+		   		{% for cur_part_det in sorted_parts %}
+		   		{% cycle 'row1' 'row2' as rowcolors silent %}
+		   		<tr class="{{ rowcolors }}">
+		   			<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_part_det.0.name }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_part_det.1 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_part_det.0.bom_sale_price|multiply:data.def_markup|stringformat:".1f" }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_part_det.0.bom_sale_price|multiply:data.def_markup|multiply:cur_part_det.1|stringformat:".1f"  }}</td>
+			   		{% for cur_region_key in data.sorted_region_keys %}
+			   			{% for cur_cluster_key in data.sorted_cluster_keys|get_element:cur_region_key %}
+					   		{% with cur_part_det.2|get_element:cur_region_key as part_region_dict %}
+					   		{% with part_region_dict|get_element:cur_cluster_key as part_cluster_qty %}
+					   		<td class="form-row row{{ rowcolors }}">{% if part_cluster_qty %}{{ part_cluster_qty }}{% else %}0{% endif %}</td>
+					   		{% endwith %}
+				   			{% endwith %}
+		   				{% endfor %}
+			   		{% endfor %}
+		   		</tr>
+	   			{% endfor %}
+	   		{% endfor %}
+	   		</tbody>
+		</table>
+		</fieldset>
+		{% else %}
+		    <p>{% trans "You don't have permission to edit anything." %}</p>
+		{% endif %}
+		{{ data.error_message }}
+	</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>

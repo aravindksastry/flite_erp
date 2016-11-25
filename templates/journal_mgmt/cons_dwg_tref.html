@@ -1,0 +1,120 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class="app-journal_mgmt model-transaction_ref change-list" style="width:1200px border:thin solid grey">
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Content -->
+<div>
+{% load custom_temp_tags %}
+    <h1>Consolidated Technical Partlist</h1>
+    <div>
+		{% if data.auto_pl_obj_set %}
+		<fieldset class="module aligned">
+		<table style="width:{{ data.cluster_count|multiply:25|add:800 }}px">
+			<thead>
+			<tr>
+				<th scope="col" class="column-__str__" style="width:20px">
+			   	Auto PL Spec PDF
+			   	</th>
+			   	<th scope="col" class="column-__str__" style="width:20px">
+			   	Auto PL Spec Preview
+			   	</th>
+			   	<th scope="col" class="column-__str__" style="width:500px">
+			   	Item Master Name
+			   	</th>
+			   	<th scope="col" class="column-__str__" style="width:50px">
+			   	Quantity - Total
+			   	</th>
+			   	{% for cur_tref_id, cur_tref_dict in data.tref_obj_set.items %}
+			   		<th scope="col" class="column-__str__" style="width:25px">
+			   			{{ cur_tref_dict.obj.name }}({{ cur_tref_dict.obj.name }})
+			   		</th>
+			   	{% endfor %}
+		   	</tr>
+			</thead>
+	   		<tbody>
+	   		{% for auto_pl_spec_code, auto_pl_dict in data.auto_pl_obj_set.items %}
+	   			<tr class="{{ rowcolors }}">
+	   				<td>{{ auto_pl_spec_code }}</td>
+	   				<td><img></img></td>
+			   	{% for cur_item_det in auto_pl_dict.item_master_list %}
+			   		{% cycle 'row1' 'row2' as rowcolors silent %}
+			   		{% if forloop.counter > 1 %}
+			   		<tr><td></td>
+			   		{% endif %}
+					<td class="form-row row{{ rowcolors }}">{{ cur_item_det.obj.name }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_part_det.tot_qty }}</td>
+					{% for cur_tref_id, tref_det in data.tref_obj_set.items %}
+						<td class="form-row row{{ rowcolors }}">
+						{% if cur_tref_id in cur_item_det.tpl_qty %}
+							{{ cur_item_det.tpl_qty|get_element:cur_tref_id }}
+						{% else %}
+							0
+						{% endif %}
+						</td>
+					{% endfor %}
+					{% if forloop.counter > 1 %}
+			   		</tr>
+			   		{% endif %}
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		</fieldset>
+		{% else %}
+		    <p>{% trans "You don't have permission to edit anything." %}</p>
+		{% endif %}
+	</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>

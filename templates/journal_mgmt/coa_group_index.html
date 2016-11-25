@@ -1,0 +1,145 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+
+  
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+<!-- Container -->
+<div id="container">
+	<!-- Header -->
+	<!--
+	<div id="header">
+	    <div id="branding">
+			<h1 id="site-name"><a href="/admin/">Django administration</a></h1>
+	    </div>
+	    <div id="user-tools">
+	        Welcome,
+	        <strong>admin</strong>.
+	        <a href="/admin/password_change/">Change password</a> /
+	        <a href="/admin/logout/">Log out</a>
+	    </div>
+	</div>
+	-->
+	<!-- END Header -->	
+	
+	
+	{% block breadcrumbs %}	
+	<div class="breadcrumbs">
+	<a href="/admin/">Home</a>
+	&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+	&rsaquo; Transaction_refs
+	</div>
+	{% endblock %}
+	
+	{% block content %}
+	<!-- Content -->
+	<div id="content" class="flex">
+        <h1>Select {{data.pre_filter_param.ttype.name}} to change</h1>
+		<div id="content-main">
+			<ul class="object-tools">
+		        <li>
+		          	<a href="/journal_mgmt/transaction_ref/create/ttype={{data.pre_filter_param.ttype.id}}" class="addlink">
+		            Add {{data.pre_filter_param.ttype.name}}
+		          	</a>
+		        </li>
+		    </ul>
+		    <div class="module" id="changelist">
+		    	<div id="toolbar">
+		    		<form id="changelist-search" action="" method="get">
+						<div><!-- DIV needed for valid HTML -->
+							<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /></label>
+							<input type="text" size="40" name="q" value="" id="searchbar" />
+							<input type="submit" value="Search" />
+		    			</div>
+					</form>
+				</div>
+	    		<script type="text/javascript">document.getElementById("searchbar").focus();</script>
+	    		<form id="changelist-form" action="" method="post" novalidate><input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+	    		
+	    		<div class="actions">
+				    <label>Action: 
+				    	<select name="action">
+							<option value="" selected="selected">---------</option>
+							<option value="delete_selected">Delete selected transaction_refs</option>
+						</select>
+					</label>
+					<input class="select-across" name="select_across" type="hidden" value="0" />
+				    <button type="submit" class="button" title="Run the selected action" name="index" value="0">Go</button>
+				        <script type="text/javascript">var _actions_icnt="2";</script>
+				        <span class="action-counter">0 of 2 selected</span>
+			    </div>
+	    		
+	    		<div class="results">
+	    			{% if data.object_list %}
+					<table id="result_list">
+					<thead>
+					<tr>
+					<th scope="col"  class="action-checkbox-column">
+					   
+					   <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
+					   <div class="clear"></div>
+					</th>
+					<th scope="col"  class="column-__str__">
+					   <div class="text"><span>Transaction_ref</span></div>
+					   <div class="clear"></div>
+					</th>
+					</tr>
+					</thead>
+					<tbody>	
+					{% for tref in data.object_list %}
+					<tr class="row1">
+						<td class="form-row row{{ forloop.counter }}"><input class="action-select" name="_selected_action" type="checkbox" value={{tref.id}}/></td>
+						<th class="form-row row{{ forloop.counter }}"><a href="/journal_mgmt/transaction_ref/detail/id={{tref.id}}/">{{tref.name}}</a></th>
+					</tr>
+					{% endfor %}
+					</tbody>
+					</table>
+					{% else %}
+					    <p>{% trans "You don't have permission to edit anything." %}</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END Content -->
+	{% endblock %}
+</div>
+<!-- END Container -->
+</body>

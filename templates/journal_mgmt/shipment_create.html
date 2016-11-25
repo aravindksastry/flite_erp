@@ -1,0 +1,159 @@
+{% extends "admin/change_form.html" %}
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> Shipment Item </title>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+</head>
+
+<body class=" app-journal_mgmt model-coa_group change-form">
+    <!-- Header -->
+
+<div id="header">
+    <div id="branding">
+		<h1 id="site-name"><a href="/admin/">Flow Plus</a></h1>
+    </div>
+</div>
+
+    <!-- END Header -->
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/core/">Core</a>
+&rsaquo; <a href="/core/shipment/index">Shipment</a>
+&rsaquo; {{data.shipment.erp_prim_key}}
+</div>
+{% endblock %}
+<!-- Container -->
+<div id="container">
+{% block content %}
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+
+<!-- Content -->
+	<div>
+	{% load custom_temp_tags %}
+	    <h1>Shipment Detail</h1>
+	    <div >
+	  	<ul class="object-tools">
+	    <li>
+	        <a href="/admin/journal_mgmt/coa_group/23/history/" class="historylink">History</a>
+	    </li>
+	  	</ul>
+	
+		<fieldset class="module aligned">
+		<form id="changelist-search" action="{% url 'journal_mgmt:shipment_create' %}" method="post">
+			<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+			{% csrf_token %}
+			<div class="form-row field-search">
+				<div style="float:left">
+					<label for="id_project_name">Project Filter : </label>
+					<input type="text" size="25" name="project_name" value="{{data.project_name}}" id="id_project_name"/>
+				</div>
+				<div style="float:left">
+					<label for="id_oc_name">Name Filter : </label>
+					<input type="text" size="25" name="oc_name" value="{{data.oc_name}}" id="id_oc_name"/>
+				</div>
+				<div style="float:left">
+					<input type="submit" name="filter_so" value="GO"/>
+				</div>
+			</div>
+		</form>
+		<form id="changelist-search" action="{% url 'journal_mgmt:shipment_create' %}" method="post">
+			<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+			{% csrf_token %}
+			<input type="text" size="25" name="project_name" value="{{data.project_name}}" id="id_project_name" hidden/>
+			<input type="text" size="25" name="oc_name" value="{{data.oc_name}}" id="id_oc_name" hidden/>
+			<div class="form-row field-search">
+				<label for="searchbar">Order Confirmation:</label>
+				<select name="order_confirmation">
+					{% for cur_oc in data.oc_opt %}
+					<option value="{{ cur_oc.0.id }}"
+					{% if cur_oc.0.id = data.sel_oc.id %}
+					selected
+					{% endif %}>
+					{{ cur_oc.0.name }} - {{ cur_oc.1.field_list.project }}
+					</option>
+					{% endfor %}
+				</select>
+				<input type="submit" name="show_tpl" value="Show TPLs"/>
+			</div>
+		</form>
+		</fieldset>
+		<fieldset class="module aligned">
+			<table style="width:100%">
+				<thead>
+				<th  colspan="" class="row2">{{cur_header}}</th>
+				<tr class="row1">
+					<th scope="col" class="column-__str__" style="width:20px">
+				   	Sl No.
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:500px">
+				   	Part Description
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">
+				   	Quantity - Total
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">
+				   	Rate
+				   	</th>
+				   	<th scope="col" class="column-__str__" style="width:50px">
+				   	Value
+				   	</th>
+			   	</tr>
+			   	</thead>
+		   		<tbody>
+			   	{% for cur_tpl in data.app_tpl %}
+			   		{% cycle 'row1' 'row2' as rowcolors silent %}
+					<tr class="{{ rowcolors }}">
+						<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_tpl.0.name }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_tpl.1 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_tpl.0.sale_price }}</td>
+						<td class="form-row row{{ rowcolors }}">abc</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</fieldset>
+	</div>
+        
+    <br class="clear" />
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+</body>
+</html>

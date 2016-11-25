@@ -1,0 +1,168 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/journal_mgmt/coa/index/coa_group_id={{data.coa_group.0.id}}">{{data.coa_group.0.name}}</a>
+&rsaquo; Add {{ data.coa_group.0.name }}
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="colM">
+    <h1>{% if data.coa %} Edit {% else %} Create {% endif %} {{ data.coa_group.0.name }} - {{ data.coa.0.name }}</h1>
+	
+	<!--<div>
+		{{data}}
+	</div>-->
+	<div id="content-main">
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/coa/{{data.coa.0.id}}/history/" class="historylink">History</a>
+            </li>
+		</ul> 
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:coa_save' %}" method="post" id="coa_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+			<fieldset class="module aligned ">
+				<div class="form-row field-id" hidden="hidden">
+		            <div>
+		                <label class="required" for="id_pk">ID</label>
+		                <input class="vTextField" id="id_pk" maxlength="10" name="pk" type="text" value="{{data.coa.0.id}}"/>
+		            </div>
+		        </div>
+		    	<div class="form-row field-name">
+		            <div>
+		                <label class="required" for="id_name">Name:</label>
+		                <input class="vTextField" id="id_name" maxlength="100" name="name" type="text" value={% if data.coa.0.id %}"{{data.coa.0.name}}"{% else %}"Enter COA Name"{% endif %}/>
+		            </div>
+		        </div>
+		        <div class="form-row field-xyz">
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_coa_group">Coa group:</label>
+			                <select id="id_coa_group" name="coa_group">
+			                	<option value="{{data.coa_group.0.id}}">{{data.coa_group.0.name}}</option>
+							</select>
+			            </div>
+			        </div>
+			        <div style="float:left">
+			            <div>
+			                <label class="required" for="id_coa_no">Coa no:</label>
+		                    <input class="vIntegerField" readonly="readonly" id="id_coa_no" name="coa_no" type="text" value={% if data.coa %}"{{data.coa.0.coa_no}}"{% else %}""{% endif %}/>
+		                </div>
+			        </div>
+		        </div>
+		        
+		        {% for cur_coa_group_field in data.coa_group.1.field_list %}
+	        	
+	        	<!--[('LABEL', 'HTML TAG TYPE', DEFAULT VALUE, {TAG SPECIFICATIONS IN DICTIONARY})]
+	        	EXAMPLE: [('input_box_test', 'input', 0, {'type': 'text', 'max_length': 12}), ('select_box_test', 'select', '', {'type': ''})]-->
+	        	{% if not forloop.counter|divisibleby:"2" %}
+	        	<div class="form-row field-{{cur_coa_group_field.0}}">
+	        	{% endif %}
+	        		
+	        		<div style="float:left; width:50%">
+		        		<label class="required" for="id_{{ cur_coa_group_field.0 }}">{{ cur_coa_group_field.0 }}</label>
+		        		<!--{{cur_data}}-->
+		        		{% if cur_coa_group_field.1 == 'input' %}
+		        		
+		        		<input class="vTextField" id="id_{{ cur_coa_group_field.0 }}"
+		        		maxlength="{{ cur_coa_group_field.3.max_length }}"
+		        		name="{{ cur_coa_group_field.3.name }}"
+		        		type="{{ cur_coa_group_field.3.type }}"
+				        {% if data.submit == True %}
+		        		readonly
+						{% endif %}
+	        			value=
+				        {% for cur_data_key, cur_data_value in data.coa.1.field_list.items  %}
+				        {% if cur_data_key == cur_coa_group_field.3.name %}
+	        			
+	        			{{ cur_data_value }}
+        				
+        				{% endif %}
+        				{% endfor %}
+				        />
+				
+						{% elif cur_coa_group_field.1 == 'select' %}
+		        			{% for cur_data_key, cur_data_value in data.coa.1.field_list.items  %}
+		        			{% if cur_data_key == cur_coa_group_field.3.name %}
+			        		<select id="id_{{ cur_coa_group_field.3.name }}" name="{{ cur_coa_group_field.3.name }}">
+				        		<option value="{{ cur_data_value.0 }}">{{ cur_data_value.1 }}</option>
+				        		{% if not data.submit == 'True' %}
+				        		{% for cur_select_box in data.select_boxes %}
+				        			{% if cur_coa_group_field.3.name == cur_select_box.0 %}
+				        			{% for cur_opt in cur_select_box.1 %}
+				        			{% if not cur_opt.id == cur_data_value.0 %}
+				        			<option value="{{ cur_opt.id }}">{{ cur_opt.name }}</option>
+				        			{% endif %}
+				        			{% endfor %}
+				        			{% endif %}
+				        		{% endfor %}
+				        		{% endif %}
+				        	</select>
+			        		{% endif %}
+	        				{% endfor %}
+			        	{% endif %}
+		        	</div>
+		        	
+		        {% if forloop.counter|divisibleby:"2" %}
+	        	</div>
+	        	{% endif %}
+	        	
+        		{% endfor %}
+		        
+			</fieldset>
+			
+			<div class="submit-row">
+				<input type="submit" value="Save" class="default" name="_save" />
+				<p class="deletelink-box"><a href="/admin/journal_mgmt/coa/4/delete/" class="deletelink">Delete</a></p>
+				<input type="submit" value="Save and add another" name="_addanother" />
+				<input type="submit" value="Save and continue editing" name="_continue" />
+			</div>
+		</form>
+	</div>
+	<br class="clear" />
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

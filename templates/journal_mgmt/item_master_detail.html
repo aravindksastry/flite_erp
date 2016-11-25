@@ -1,0 +1,329 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<body class=" journal_mgmt model-coa change-form">
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/journal_mgmt/coa/index/coa_group_id={{data.coa_group.0.id}}">{{data.coa_group.0.name}}</a>
+&rsaquo; Add {{ data.coa_group.0.name }}
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+<script>
+	function auto_pl_text_filter() {
+	}
+</script>
+<script type="text/javascript">
+	function auto_pl_filter() {
+		var selectBox_item_group = document.getElementById("id_item_group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = document.getElementById("id_item_group").value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id=" + String(selectedValue_item_group);
+	    window.location = nav_location;
+	   }
+</script>
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+<script>
+	function auto_pl_text_filter() {
+		var text_box = document.getElementById("id_text_filter");
+	    var text_value = text_box.value;
+	    //document.getElementById("test").innerHTML = document.getElementById("id_item_group").value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id={{data.sel_item_group.id}}&filter_text=" + String(text_value);
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function finish_filter() {
+		var selectBox_item_group = document.getElementById("id_item_group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    var text_box = document.getElementById("id_text_filter");
+	    var text_value = text_box.value;
+	    var selectBox_auto_pl = document.getElementById("id_auto_pl");
+	    var selectedValue_auto_pl = selectBox_auto_pl.options[selectBox_auto_pl.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = document.getElementById("id_auto_pl").value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id=" + String(selectedValue_item_group) + "&filter_text=" + String(text_value) + "&auto_pl_id=" + String(selectedValue_auto_pl);
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function set_auto_pl() {
+		var selectBox_auto_pl = document.getElementById("id_auto_pl");
+	    var auto_pl_value = selectBox_auto_pl.options[selectBox_auto_pl.selectedIndex].value;
+		var nav_location = "/journal_mgmt/item_master/create/?group_id={{ data.sel_item_group.id }}&filter_text={{ data.filter_text }}&auto_pl_id=" + String(auto_pl_value);
+		window.location = nav_location;
+		var selectBox_item_group = document.getElementById("id_item_group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    var text_box = document.getElementById("id_text_filter");
+	    var text_value = text_box.value;
+	    var selectBox_auto_pl = document.getElementById("id_auto_pl");
+	    var selectedValue_auto_pl = selectBox_auto_pl.options[selectBox_auto_pl.selectedIndex].value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id=" + String(selectedValue_item_group) + "&filter_text=" + String(text_value) + "&auto_pl_id=" + String(selectedValue_auto_pl);
+	    var i = 1;
+	    while (i < 13){
+	    document.getElementById("test").innerHTML = i;
+	    	fin_elem_id = "id_f" + String(i)
+	    	fin_drop_box = document.getElementById(fin_elem_id);
+	    	fin_id = fin_drop_box.options[fin_drop_box.selectedIndex].value;
+	    	nav_location = nav_location + "&f" + String(i) + "=" + String(fin_id)
+	    	i++;
+	    }
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function preview() {
+		var auto_pl_select = document.getElementById("id_auto_pl");
+		var auto_pl_value = auto_pl_select.options[auto_pl_select.selectedIndex].value;
+		var d1 = document.getElementById("id_d1").value;
+		var d2 = document.getElementById("id_d2").value;
+		var d3 = document.getElementById("id_d3").value;
+		var d4 = document.getElementById("id_d4").value;
+	}
+</script>
+<div id="content" class="colM">
+	{% load custom_temp_tags %}
+    <h1>{% if data.coa %} Edit {% else %} Create {% endif %} {{ data.coa_group.0.name }} - {{ data.coa.0.name }}</h1>
+	<div id="test"></div>
+	<div id="content-main">
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/coa/{{data.coa.0.id}}/history/" class="historylink">History</a>
+            </li>
+		</ul>
+		
+			<fieldset class="module aligned ">
+			    <div class="form-row field-name">
+			    	<div style="float:left; width:20%">
+					    <label class="required" for="id_finish_no">Item ID</label>
+		                <input class="vTextField" id="id_finish_no" maxlength="50" name="finish_no" style="width:50px" type="text" value="{{ data.item_master.id }}" readonly/>
+				    </div>
+				    <div style="float:left; width:40%">
+					    <label class="required" for="id_part_no">Part No.</label>
+		                <input class="vTextField" id="id_part_no" maxlength="150" name="part_no" style="width:350px" type="text" value="{{ data.item_master.imported_item_code }}" readonly/>
+				    </div>
+				    <div style="float:left; width:40%">
+					    <label class="required" for="id_finish_no">Finish No.</label>
+		                <input class="vTextField" id="id_finish_no" maxlength="150" name="finish_no" style="width:350px" type="text" value="{{ data.item_master.imported_item_finish }}" readonly/>
+				    </div>
+			    </div>
+			    <div class="form-row field-name">
+				    <div style="float:left; width:100%">
+					    <label class="required" for="id_name">Name</label>
+		                <input class="vTextField" id="id_name" maxlength="400" name="name" style="width:800px" type="text" value="{{ data.item_master.name }}" readonly/>
+				    </div>
+				</div>
+				<div class="form-row field-name">
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_created_date">Created Date</label>
+		                <input class="vTextField" id="id_created_date" maxlength="100" name="created_date" style="width:200px" type="text" value="{{ data.item_master.created_date }}" readonly/>
+				    </div>
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_last_updated">Last Updated</label>
+		                <input class="vTextField" id="id_last_updated" maxlength="100" name="last_updated" style="width:200px" type="text" value="{{ data.item_master.last_updated }}" readonly/>
+				    </div>
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_last_updated">UOM</label>
+		                <input class="vTextField" id="id_last_updated" maxlength="100" name="last_updated" style="width:100px" type="text" value="{{ data.item_master.uom.name }}" readonly/>
+				    </div>
+				</div>
+				<div class="form-row field-name">
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_sale_price">Sale Price</label>
+		                <input class="vTextField" id="id_sale_price" maxlength="100" name="sale_price" style="width:200px" type="text" value="{{ data.item_master.sale_price }}" readonly/>
+				    </div>
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_process_valuation_sale">Process Valuation</label>
+		                <input class="vTextField" id="id_process_valuation_sale" maxlength="100" name="process_valuation_sale" style="width:200px" type="text" value="{{ data.item_master.process_valuation_sale }}" readonly/>
+				    </div>
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_adhoc_sale_price">Adhoc Sale Price</label>
+		                <input class="vTextField" id="id_adhoc_sale_price" maxlength="100" name="adhoc_sale_price" style="width:100px" type="text" value="{{ data.item_master.adhoc_sale_price }}" readonly/>
+				    </div>
+				</div>
+				<div class="form-row field-name">
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_current_stock_inhouse">Stock In-house</label>
+		                <input class="vTextField" id="id_current_stock_inhouse" maxlength="100" name="current_stock_inhouse" style="width:200px" type="text" value="{{ data.item_master.current_stock_inhouse }}" readonly/>
+				    </div>
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_safety_stock">Safety Stock</label>
+		                <input class="vTextField" id="id_safety_stock" maxlength="100" name="safety_stock" style="width:200px" type="text" value="{{ data.item_master.safety_stock }}"/>
+				    </div>
+				    <div style="float:left; width:33%">
+					    <label class="required" for="id_re_order_level">Re-order Level</label>
+		                <input class="vTextField" id="id_re_order_level" maxlength="100" name="re_order_level" style="width:100px" type="text" value="{{ data.item_master.re_order_level }}"/>
+				    </div>
+				</div>
+		    </fieldset>
+		    <fieldset id = "show_hide_panel1" class="module aligned collapse collapsed">
+			<h2>Immediate BOM (<a id="switch_link1" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel1', 'switch_link1')">Show</a>)</h2>
+		    <div class="form-row field-name">
+				<div>
+			        <table id="new_inf_list">
+						<thead>
+							<tr>
+								<th scope="col"  class="action-checkbox-column">
+								   <div class="text"><span>Part No.</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Name</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Qty</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Rate</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Value</span></div>
+								   <div class="clear"></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+						<!--<p>{{data.infinite_bom}}</p>-->
+						{% if data.item_master.bom %}
+						{% for cur_imm_bom in data.imm_bom %}
+							{% cycle 'row1' 'row2' as rowcolors silent %}
+							<tr class="{{ rowcolors }}">
+								<td class="form-row {{ rowcolors }}">{{ cur_imm_bom.0.id }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_imm_bom.0.name }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_imm_bom.1 }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_imm_bom.0.process_valuation_sale }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_imm_bom.1|stringformat:".1f"|multiply:cur_imm_bom.0.process_valuation_sale|stringformat:".1f" }}</td>
+							</tr>
+						{% endfor %}
+						{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		    </fieldset>
+		    <fieldset id = "show_hide_panel2" class="module aligned collapse collapsed">
+		    <h2>Infinite BOM (<a id="switch_link2" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel2', 'switch_link2')">Show</a>)</h2>
+		    <div class="form-row field-name">
+			    <div>
+			    Infinite BOM
+				    <table id="new_inf_list">
+						<thead>
+							<tr>
+								<th scope="col"  class="action-checkbox-column">
+								   <div class="text"><span>Part No.</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Name</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Qty</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Rate</span></div>
+								   <div class="clear"></div>
+								</th>
+								<th scope="col" width="275px" class="action-checkbox-column">
+								   <div class="text"><span>Value</span></div>
+								   <div class="clear"></div>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+						<!--<p>{{data.infinite_bom}}</p>-->
+						{% if data.item_master.infinite_bom %}
+						{% for cur_inf_bom in data.inf_bom %}
+							{% cycle 'row1' 'row2' as rowcolors silent %}
+							<tr class="{{ rowcolors }}">
+								<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.id }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.name }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.1 }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.process_valuation_sale }}</td>
+								<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.1|stringformat:".1f"|multiply:cur_inf_bom.0.process_valuation_sale|stringformat:".1f" }}</td>
+							</tr>
+						{% endfor %}
+						{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		    </fieldset>
+			
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:item_master_create' %}" method="post" id="coa_form" novalidate>
+			<input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+	        {% csrf_token %}    
+		    <div class="submit-row">
+				<input type="submit" value="Save" class="default" name="_save" />
+				<p class="deletelink-box"><a href="/admin/journal_mgmt/coa/4/delete/" class="deletelink">Delete</a></p>
+				<input type="submit" value="Save and add another" name="_addanother" />
+				<input type="submit" value="Save and continue editing" name="_continue" />
+			</div>
+		</form>
+	</div>
+	<br class="clear" />
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

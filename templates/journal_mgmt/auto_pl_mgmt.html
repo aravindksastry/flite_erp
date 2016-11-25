@@ -1,0 +1,416 @@
+{% extends "admin/change_list_custom.html" %}
+{% load i18n admin_static %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-icons.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-responsive.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-schemes.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/docs.css" />
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+<script language="javascript" type="text/javascript">
+		function popitup(url) {
+		    newwindow=window.open(url,'{{title}}','height=1,width=1,left=1,top=1,addressbar=no,scrollbar=no');
+		    if (window.focus) {newwindow.focus()}
+		    return false;
+		}
+	</script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+	
+	<!--{% load custom_temp_tags %}
+	{% block breadcrumbs %}
+	<div class="margin5" style="float: left; height:7x; width:90%">
+		<ul class="breadcrumbs-custom">
+			<li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			<li><a href="/journal_mgmt/home_view/index/dept={{data.dept_data.id}}">{{data.dept_data.name}}</a></li>
+			<li>{{data.pre_filter_param.ttype.name}}</li>
+		</ul>
+	</div>
+    {% endblock %}
+    -->
+	{% block content %}
+
+   	<script type="text/javascript">
+	(function($) {
+	    $(document).ready(function($) {
+	        $("tr input.action-select").actions();
+	    });
+	})(django.jQuery);
+	</script>
+	
+	  <div id="container">
+	  
+		<div class="flex">
+	     <div id="content-main">
+	     <h3>AUTO PL MGMT</h3>
+		   <form enctype="multipart/form-data" action="{% url 'journal_mgmt:auto_pl_mgmt' %}" method="post" id="coa_group_form" novalidate>
+			 <input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+   	    	   <fieldset class="module aligned ">
+   	    	   <div style="float:left; width:50%" class="form-row field-xyz">
+   	    		{% csrf_token %}
+	    		<tbody>
+					<label class="required" for="id_raw_material">RAW MATERIAL : </label>
+	                
+	                <select id="id_raw_material" name="raw_material" onchange=submit()>
+							<option value="{{ data.sel_derivative_id }}" {% if data.sel_derivative_id == 0 %} selected {% endif %}> ---- </option>
+							{% for cur_raw_material in data.raw_material_list %}
+								<option value="{{ cur_raw_material.id }}" name="{{ cur_raw_material.name }}" {% if data.sel_raw_material_id == cur_raw_material.id %} selected {% endif %}>{{ cur_raw_material.name }} </option>
+							{% endfor %}
+					</select> 
+					</tbody>
+				<div><!-- DIV needed for valid HTML -->
+						<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /></label>
+						<input type="text" size="40" name="searched_param" value="{{ data.searched_param }}" id="searchbar" />
+						<input type="submit" value="Search" />
+	    			</div>
+				</div>
+			</fieldset>
+			</form>
+			 
+			 
+			 <form enctype="multipart/form-data" action="{% url 'journal_mgmt:auto_pl_mgmt' %}" method="post" id="coa_group_form" novalidate>
+			 <input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+			 {% csrf_token %}
+	                <select id="id_raw_material" name="raw_material" onchange="submit()" hidden>
+							<option value="{{ data.sel_derivative_id }}" {% if data.sel_derivative_id == 0 %} selected {% endif %}> ---- </option>
+							{% for cur_raw_material in data.raw_material_list %}
+								<option value="{{ cur_raw_material.id }}" name="{{ cur_raw_material.name }}" {% if data.sel_raw_material_id == cur_raw_material.id %} selected {% endif %}>{{ cur_raw_material.name }} </option>
+							{% endfor %}
+					</select> 
+			 <div hidden><!-- DIV needed for valid HTML -->
+						<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /></label>
+						<input type="text" size="40" name="searched_param" value="{{ data.searched_param }}" id="searchbar" />
+						<input type="submit" value="Search" />
+	    			</div>
+			 <fieldset class="module aligned ">
+			 <div style="float:left; width:50%" class="form-row field-xyz">
+   	    			 
+						<label class="required" for="id_raw_material">PRICE LIST : </label>
+		                <select id="id_pl_item" name="pl_item" onchange="submit()">
+								<option value="{{ data.sel_derivative_id }}" {% if data.sel_derivative_id == 0 %} selected {% endif %}> ---- </option>
+								{% for cur_pl_item in data.item_list %}
+									<option value="{{ cur_pl_item.id }}" name="{{ cur_pl_item.name }}" {% if data.sel_pl_id == cur_pl_item.id %} selected {% endif %}>{{ cur_pl_item.name }}</option>
+								{% endfor %}
+						</select> 
+				</fieldset>
+			{% if data.item_list %}	 
+		 	<fieldset class="module aligned ">
+				<table id="result_list" style="width:100%">
+				<lable><h2><b>Parent Table</b></h2></lable>
+				<thead>
+				<tr>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>SL NO</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>ID</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>Item Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Derivative Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Qty</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Edit</span></div>
+				   <div class="clear"></div>
+				</th>
+				</tr>
+				</thead>
+				
+				<tbody>
+				{% for cur_pl in data.parent_list %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<div class="expandable-panel-heading">
+					<tr class="{{ rowcolors }}" onclick="submit()">
+						<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.0 }}</td>
+						<td><a id="ancherComplaint" href="?raw_material_id={{ data.sel_raw_material_id }}&searched_name={{ data.searched_param }}&parent_pl_item_id={{ cur_pl.0 }}&pl_item_id={{ cur_pl.0 }}">{{ cur_pl.1 }}</a></td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.2 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.3 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.4 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.5 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.6 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.7 }}</td>
+						<td class="form-row row{{ rowcolors }}"><button name="edit" value="{{ cur_pl.8 }}" >Edit</td>
+					</tr>
+				</div>
+				{% endfor %}
+				</tbody>
+				</table>
+				
+				{% if data.edit %}
+				
+							 <table id="new_inf_list">
+							<head>
+						<tr>
+							<th scope="col" class="action-checkbox-column" style="width:2.5%">
+							   <div class="text"><span>D1</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>D2</span></div>
+							</th>
+							
+							<th scope="col" class="action-checkbox-column" style="width:2%">
+							   <div class="text"><span>D3</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column" style="width:5%">
+							   <div class="text"><span>D4</span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column">
+							   <div class="text"><span>Qty
+							   </span></div>
+							</th>
+							<th scope="col" class="action-checkbox-column" >
+							   <div class="text"><span>Save
+							   </span></div>
+							</th>
+						</tr>
+					</thead>
+						{% for cur_id in data.derivative_id_list %}	
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_d1" name="d1"  value="{{ data.d1}}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_d2" name="d2"  value="{{ data.d2 }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_d3" name="d3"  value="{{ data.d3 }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_d4" name="d4"  value="{{ data.d4 }}"/></input>
+							</span>
+							</td>
+							<td class="form-row {{ rowcolors }}" style="width:7%" >
+								<div class="text"><span>	
+								<input type="text" style="width:70px" maxlength="50" id="id_qty" name="qty"  value="{{ data.qty }}"/></input>
+							</span>
+							</td>
+							<td class="form-row row{{ rowcolors }}"><button name="add" value="{{ cur_id.0 }}" >Update</td>
+						{% endfor %}
+				</head>
+				
+				</table>
+				
+				</fieldset>
+				{% endif %}
+				<fieldset class="module aligned ">
+				<table id="result_list" style="width:100%">
+				<lable><h2><b>BOM Table</b> 
+				<a href="pl_bom_add/detail/id={{ data.pl_obj.id }}"  class="add-another" id="add_id_auto_pl">  <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"></a></h2> </lable>
+				<thead>
+				<tr>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>SL NO</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>ID</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>Item Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D1</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D2</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D3</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>D4</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Qty</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Delete</span></div>
+				   <div class="clear"></div>
+				</th>
+				</tr>
+				</thead>
+				<tbody>
+				
+				{% for cur_pl in data.bom_pl_list %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<tr class="{{ rowcolors }}">
+					<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.0 }}</td>
+					<td><a id="ancherComplaint" href="?raw_material_id={{ data.sel_raw_material_id }}&searched_name={{ data.searched_param }}&parent_pl_item_id={{ cur_pl.0 }}&pl_item_id={{ cur_pl.0 }}">{{ cur_pl.1 }}</a></td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.2 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.3 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.4 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.5 }}</td>
+					<td class="form-row row{{ rowcolors }}">{{ cur_pl.6 }}</td>
+					<td class="form-row row{{ rowcolors }}" hidden><input name="value" value="{{ cur_pl.0 }}"></td>
+					<td class="form-row row{{ rowcolors }}"><button type="submit" name="delete_{{ forloop.counter }}" value="{{ cur_pl.0 }}">Delete</td>
+				
+				
+				
+				
+				</tr>
+				{% endfor %}
+				</tbody>
+				</table>
+				</fieldset>
+				</form> 
+				 
+			<fieldset class="module aligned ">
+				<table id="result_list" style="width:100%">
+				<lable><h2><b>Price List Calculation Table</b></h2></lable>
+				<thead>
+				<tr>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>SL NO</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Input Calc</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>Bom Calculation</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Margin</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Input Calc</span></div>
+				   <div class="clear"></div>
+				
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Weight Calc Eqn</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Volume Calc Eqn</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Department</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-name">
+				   <div class="text"><span>Save</span></div>
+				   <div class="clear"></div>
+				</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for cur_pl in data.price_list_object_list %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<div>
+					<tr class="{{ rowcolors }} " >
+						<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.37}}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.38 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.42 }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.41 }}</td>
+						
+						<td>	
+						<input type="text" style="width:120px" maxlength="50" id="id_weight_calc_eqn" name="weight_calc_eqn"  value="{{ cur_pl.43 }}"/></input>
+						</span>
+						</td>
+						<td><span>	
+						<input type="text" style="width:120px" maxlength="50" id="id_volume_calc_eqn" name="volume_calc_eqn"  value="{{ cur_pl.44 }}"/></input>
+						</span>
+						</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_pl.39 }}</td>
+						<td class="form-row row{{ rowcolors }}"><button type="submit" name="add_pl_eqn">Save</td>
+						
+					</tr>
+					
+				</div>
+				{% endfor %}
+				</tbody>
+			 </table>
+			 </fieldset>
+			{% endif %}
+			</div>
+		</div>
+		<div class="expandable-panel-heading">
+             <h2>
+                 
+             </h2>
+        </div>
+<script>
+$(".expandable-panel-heading").on("click",function (e) {
+    if (e.target.id =="ancherComplaint") {
+        e.preventDefault()
+        markActiveLink(e.target);
+    }    
+     else   alert('123');   
+ });
+function markActiveLink(el) {   
+    alert(el.id);
+} 
+</script>
+	<!-- END Content -->
+	{% endblock %}
+<!-- END Container -->
+</body>

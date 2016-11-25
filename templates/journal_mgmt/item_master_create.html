@@ -1,0 +1,267 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<body class=" journal_mgmt model-coa change-form">
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/journal_mgmt/coa/index/coa_group_id={{data.coa_group.0.id}}">{{data.coa_group.0.name}}</a>
+&rsaquo; Add {{ data.coa_group.0.name }}
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+<script>
+	function auto_pl_text_filter() {
+	}
+</script>
+<script type="text/javascript">
+	function auto_pl_filter() {
+		var selectBox_item_group = document.getElementById("id_item_group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = document.getElementById("id_item_group").value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id=" + String(selectedValue_item_group);
+	    window.location = nav_location;
+	   }
+</script>
+	
+<script>
+	function auto_pl_text_filter() {
+		var text_box = document.getElementById("id_text_filter");
+	    var text_value = text_box.value;
+	    //document.getElementById("test").innerHTML = document.getElementById("id_item_group").value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id={{data.sel_item_group.id}}&filter_text=" + String(text_value);
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function finish_filter() {
+		var selectBox_item_group = document.getElementById("id_item_group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    var text_box = document.getElementById("id_text_filter");
+	    var text_value = text_box.value;
+	    var selectBox_auto_pl = document.getElementById("id_auto_pl");
+	    var selectedValue_auto_pl = selectBox_auto_pl.options[selectBox_auto_pl.selectedIndex].value;
+	    //document.getElementById("test").innerHTML = document.getElementById("id_auto_pl").value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id=" + String(selectedValue_item_group) + "&filter_text=" + String(text_value) + "&auto_pl_id=" + String(selectedValue_auto_pl);
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function set_auto_pl() {
+		var selectBox_auto_pl = document.getElementById("id_auto_pl");
+	    var auto_pl_value = selectBox_auto_pl.options[selectBox_auto_pl.selectedIndex].value;
+		var nav_location = "/journal_mgmt/item_master/create/?group_id={{ data.sel_item_group.id }}&filter_text={{ data.filter_text }}&auto_pl_id=" + String(auto_pl_value);
+		window.location = nav_location;
+		var selectBox_item_group = document.getElementById("id_item_group");
+	    var selectedValue_item_group = selectBox_item_group.options[selectBox_item_group.selectedIndex].value;
+	    var text_box = document.getElementById("id_text_filter");
+	    var text_value = text_box.value;
+	    var selectBox_auto_pl = document.getElementById("id_auto_pl");
+	    var selectedValue_auto_pl = selectBox_auto_pl.options[selectBox_auto_pl.selectedIndex].value;
+	    var nav_location =  "/journal_mgmt/item_master/create/?group_id=" + String(selectedValue_item_group) + "&filter_text=" + String(text_value) + "&auto_pl_id=" + String(selectedValue_auto_pl);
+	    var i = 1;
+	    while (i < 13){
+	    document.getElementById("test").innerHTML = i;
+	    	fin_elem_id = "id_f" + String(i)
+	    	fin_drop_box = document.getElementById(fin_elem_id);
+	    	fin_id = fin_drop_box.options[fin_drop_box.selectedIndex].value;
+	    	nav_location = nav_location + "&f" + String(i) + "=" + String(fin_id)
+	    	i++;
+	    }
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function preview() {
+		var auto_pl_select = document.getElementById("id_auto_pl");
+		var auto_pl_value = auto_pl_select.options[auto_pl_select.selectedIndex].value;
+		var d1 = document.getElementById("id_d1").value;
+		var d2 = document.getElementById("id_d2").value;
+		var d3 = document.getElementById("id_d3").value;
+		var d4 = document.getElementById("id_d4").value;
+	}
+</script>
+<div id="content" class="colM">
+	{% load custom_temp_tags %}
+    <h1>{% if data.coa %} Edit {% else %} Create {% endif %} {{ data.coa_group.0.name }} - {{ data.coa.0.name }}</h1>
+	<div id="test"></div>
+	<div id="content-main">
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/coa/{{data.coa.0.id}}/history/" class="historylink">History</a>
+            </li>
+		</ul>
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:item_master_create' %}" method="get" id="coa_form" novalidate>
+        <fieldset class="module aligned ">
+			<div class="form-row field-id" hidden="hidden">
+	            <div>
+	                <label class="required" for="id_pk">ID</label>
+	                <input class="vTextField" id="id_pk" maxlength="10" name="pk" type="text" value="{{data.item_master.id}}"/>
+	            </div>
+	        </div>
+	    	<div class="form-row field-name">
+	            <div>
+	                <label class="required" for="id_name">Name:</label>
+	                <input class="vTextField" id="id_name" maxlength="200" style="width:500px" name="name" type="text" value="{% if data.item_master.id %}{{data.item_master.name}}{% else %}-{% endif %}"/>
+	            </div>
+	        </div>
+	        <div class="form-row field-xyz">
+		        <div style="float:left; width:50%">
+		            <div>
+		                <label class="required" for="id_item_group">Item Group:</label>
+		                <select id="id_item_group" name="group_id" onchange="auto_pl_filter()">
+	                		{% if data.item_group_opt %}
+		                		{% for cur_item_group in data.item_group_opt %}
+		                			<option value="{{ cur_item_group.id }}"{% if data.sel_item_group.id == cur_item_group.id %} selected {% endif %}>{{ cur_item_group.name }}</option>
+			                	{% endfor %}
+			                {% else %}
+			                	<option value="{{ data.sel_item_group.id }}" selected >{{ data.sel_item_group.name }}</option>
+			                {% endif %}	
+		                </select>
+		            </div>
+		        </div>
+		        <div style="float:left; width:50%">
+		            <div>
+		                <label class="required" for="id_d1">Filter Auto PL</label>
+		                <input class="vTextField" id="id_filter_text" maxlength="100" name="filter_text" style="width:300px" type="text" value="{% if data.filter_text %}{{ data.filter_text}}{% endif %}"/>
+		                <input type="submit" name="text_search" value="Filter"></input>
+		                <input class="vTextField" id="id_sel_filter_text" maxlength="100" name="sel_filter_text" style="width:20px" type="text" readonly value="{% if data.filter_text %}{{ data.filter_text}}{% endif %}"/>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="form-row field-name">
+	            <div>
+	            
+	                <label class="required" for="id_auto_pl">Auto Pricelist:</label>
+                    <select id="id_auto_pl" name="auto_pl_id">
+                		{% for cur_auto_pl in data.auto_pl_opt %}
+                			<option value="{{ cur_auto_pl.id }}"{% if data.sel_auto_pl.id == cur_auto_pl.id %} selected {% endif %}>{{ cur_auto_pl.name }}</option>
+	                	{% endfor %}
+	                </select>
+	                <input type="submit" name="apply_auto_pl" value="Apply Auto PL"></input>
+	                <input class="vTextField" id="id_sel_auto_pl_id" maxlength="10" name="sel_auto_pl_id" style="width:20px" type="text" readonly value="{% if data.sel_auto_pl %}{{ data.sel_auto_pl.id}}{% endif %}"/>
+                </div>
+	        </div>
+	    </fieldset>
+	    {% if data.sel_auto_pl %}
+	    <fieldset class="module aligned ">
+			<div class="form-row field-name">
+			{% for cur_dim in data.sel_dim %}
+	            <div style="float:left; width:15%">
+	                <label class="required" for="id_d{{forloop.counter}}">D{{forloop.counter}}:</label>
+	                <input class="vTextField" id="id_d{{forloop.counter}}" maxlength="100" name="d{{forloop.counter}}" style="width:50px" type="text" value="{{ cur_dim }}"/>
+	            </div>
+	        {% endfor %}
+	        <div style="float:left; width:40%">
+                <label class="required" for="id_fin_type">Fin Type:</label>
+                <input class="vTextField" id="id_fin_type" maxlength="200" name="fin_type" style="width:200px" type="text" value="{% if data.pl_availability %}{{data.fin_type.1}}{% else %}360 PL Unavailable{% endif %}" readonly/>
+            </div>
+        </div>
+		</fieldset>
+		<fieldset class="module aligned ">
+			{% for cur_finish_opt in data.finish_opt %}
+				{% if forloop.counter == 1 or forloop.counter == 4 or forloop.counter == 7 or forloop.counter == 10 %}
+				<div class="form-row field-name">
+				{% endif %}
+				<div style="float:left; width:33%">
+				    <label class="required" for="id_f{{ forloop.counter }}">F{{ forloop.counter }} : </label>
+	                <select id="id_fin{{ forloop.counter }}" name="f{{ forloop.counter }}">
+                		{% for cur_finish in cur_finish_opt.opt %}
+                			<option value="{{ cur_finish.0 }}" {% if cur_finish_opt.sel.0 == cur_finish.0 %} selected {% endif %}>{{ cur_finish.1 }}</option>
+	                	{% endfor %}
+		            </select>
+	            </div>
+			    {% if forloop.counter == 3 or forloop.counter == 6 or forloop.counter == 9 or forloop.counter == 12 %}
+		        </div>
+		        {% endif %}
+	        {% endfor %}
+	    </fieldset>
+	    <input type="submit" value="Preview" name="preview" onclick="preview()"/>
+	    {% endif %}
+	    </form>
+	    
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:item_master_save' %}" method="post" id="coa_form" novalidate>
+			<input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+	        {% csrf_token %}
+			<fieldset class="module aligned ">
+		    <div class="form-row field-name">
+			    <div style="float:left; width:50%">
+				    <label class="required" for="id_part_no">Part No.</label>
+	                <input class="vTextField" id="id_dart_no" maxlength="200" name="part_no" style="width:400px" type="text" value="{{ data.part_no }}" readonly/>
+			    </div>
+			    <div style="float:left; width:50%">
+				    <label class="required" for="id_part_description">Part Description</label>
+	                <input class="vTextField" id="id_part_description" maxlength="200" name="part_description" style="width:400px" type="text" value="{{ data.part_description }}" readonly/>
+			    </div>
+		    </div>
+		    <div class="form-row field-name">
+			    <div style="float:left; width:50%">
+				    <label class="required" for="id_fin_no">Finish No.</label>
+	                <input class="vTextField" id="id_fin_no" maxlength="200" name="fin_no" style="width:400px" type="text" value="{{ data.fin_no }}" readonly/>
+			    </div>
+			    <div style="float:left; width:50%">
+				    <label class="required" for="id_fin_description">Finish Description</label>
+	                <input class="vTextField" id="id_fin_description" maxlength="200" name="fin_description" style="width:400px" type="text" value="{{ data.finish_description }}" readonly/>
+			    </div>
+		    </div>
+		    </fieldset>
+		    {% if data.item_availability.status == True %}
+		    	Item Already Available, Item ID : <a href="{% url 'journal_mgmt:item_master_detail' data.item_availability.obj.id %}">{{ data.item_availability.obj.id }}</a>
+		    {% endif %}
+		    {% if data.item_availability.status == False %}
+			<div class="submit-row">
+				<input type="submit" value="Save and exit" class="default" name="_save" />
+				<input type="submit" value="Save and add another" name="_addanother" />
+				<input type="submit" value="Save and continue editing" name="_continue" />
+			</div>
+			{% endif %}
+		</form>
+	</div>
+	<br class="clear" />
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

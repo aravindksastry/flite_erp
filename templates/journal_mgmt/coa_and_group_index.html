@@ -1,0 +1,223 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+
+  
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+<!-- Container -->
+<div id="container">
+		
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+	
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Demo Expandable list</title>
+        <link rel="stylesheet" href="/static/journal_mgmt/css/style.css" type="text/css" media="screen, projection">
+        <script type="text/javascript" src="/static/journal_mgmt/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="/static/journal_mgmt/js/scripts.js"></script>
+    </head>
+    <body>
+        <h1><b>Chart Of Accounts</b></h1>
+        <!--{{ data }}-->
+        <div id="listContainer">
+            <div class="listControl">
+                <a id="expandList">Expand All</a>
+                <a id="collapseList">Collapse All</a>
+            </div>
+            <ul id="expList">
+            {% for cur_level1 in data.tree %}
+            	<li>{{ cur_level1.0.name }}
+            		{% if cur_level1.1|length > 0 %}
+	            	<ul>
+		            	{% for cur_level2 in cur_level1.1 %}
+		            	<li>{{ cur_level2.0.name }}
+		            		{% if cur_level2.1|length > 0 %}
+			            	<ul>
+				            	{% for cur_level3 in cur_level2.1 %}
+				            	<li>{{ cur_level3.0.name }}
+				            		{% if cur_level3.1|length > 0 %}
+					            	<ul>
+						            	{% for cur_level4 in cur_level3.1 %}
+						            	<li>{{ cur_level4.0.name }}
+						            		{% if cur_level4.1|length > 0 %}
+							            	<ul>
+								            	{% for cur_level5 in cur_level5.1 %}
+								            	<li>{{ cur_level5.0.name }}
+								            		{% if cur_level5.1|length > 0 %}
+									            	<ul>
+										            	{% for cur_level6 in cur_level6.1 %}
+										            	<li>{{ cur_level6.0.name }}
+										            		{% if cur_level6.1|length > 0 %}
+											            	<ul>
+												            	{% for cur_level7 in cur_level7.1 %}
+												            	<li>{{ cur_level7.0.name }}
+													            	{% if cur_level7.1|length > 0 %}
+													            	<ul>
+														            	{% for cur_level8 in cur_level8.1 %}
+														            	<li>{{ cur_level8.0.name }}
+														            		{% if cur_level8.1|length > 0 %}
+															            	<ul>
+																            	{% for cur_level9 in cur_level9.1 %}
+																            	<li>{{ cur_level9.0.name }}
+																            	</li>
+																            	{% endfor %}
+															            	</ul>
+														            		{% endif %}
+														            	</li>
+														            	{% endfor %}
+													            	</ul>
+												            		{% endif %}
+												            	</li>
+												            	{% endfor %}
+											            	</ul>
+										            		{% endif %}
+										            	</li>
+										            	{% endfor %}
+									            	</ul>
+								            		{% endif %}
+								            	</li>
+								            	{% endfor %}
+							            	</ul>
+						            		{% endif %}
+						            	</li>
+						            	{% endfor %}
+					            	</ul>
+				            		{% endif %}
+				            	</li>
+				            	{% endfor %}
+			            	</ul>
+		            		{% endif %}
+		            	</li>	
+		            	{% endfor %}
+	            	</ul>
+            		{% endif %}
+            	</li>
+            {% endfor %}
+                <!--<li>
+                    Item A
+                    <ul>
+                        <li>
+                            Item A.1
+                            <ul>
+                                <li>
+                                    <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Item A.2 <input type="text">Test</input>
+                        </li>
+                        <li>
+                            Item A.3
+                            <ul>
+                                <li>
+                                    <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Item B
+                </li>
+                <li>
+                    Item C
+                    <ul>
+                        <li>
+                            Item C.1
+                        </li>
+                        <li>
+                            Item C.2
+                            <ul>
+                                <li>
+                                    <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>-->
+            </ul>
+        </div>
+    </body>
+</html>
+{% endblock %}
+	
+</div>
+<!-- END Container -->
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

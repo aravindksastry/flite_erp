@@ -1,0 +1,67 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+{% block breadcrumbs %}
+			
+    <div class="margin5" style="float: left; height:10x; width:90%">
+	<ul class="breadcrumbs-custom">
+        <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+    	<li>{{data.chosen_dept}}</li>
+    </ul>
+    </div>
+          
+{% endblock %}
+
+{% block content %}
+
+
+<style> 
+ h4 {
+    text-align: center;
+}
+
+</style>
+</head>
+<div class="container page-content"> 
+    <div data-role="charm" data-position="left" id="left-charm" style="overflow:auto; float: left; width:25%"><h1 class="text-light">My Shortcuts</h1>
+      	{% for cur_dept in data.dept_data %}
+      	<div class="cell" >
+      		<ul class="sidebar2" style="width:100%">
+	            <li class="stick">
+	          	<a class="dropdown-toggle"><span class="{{cur_dept.1.dept_icon}}"></span>{{cur_dept.0.name}}
+	          	 <a href="/journal_mgmt/homeview/index/dept={{ cur_dep.0.id  }}"></a>
+	          	<ul class="d-menu" data-role="dropdown">
+                  	<div class="form-row field-child_trefs">
+					<div style="float:left; width:100%">
+					{% for cur_ttype in data.ttype_data_all %}
+					{% if cur_ttype.0.ttype_department_ref_id == cur_dept.0.id %}
+					<li><a href="/journal_mgmt/transaction_ref/index/ttype={{ cur_ttype.0.id }}" id="navigate_parent">{{cur_ttype.0.name}}</a></li>
+					{% endif %}
+					{% endfor %}
+					</div>
+					</div>
+				</ul>
+				</li>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+<body>
+     <div style="float:center; width:100%">
+	 	<div style="float:center; text-align:center; width:80%; margin-left:10%; margin-right:10%">
+		{% for cur_ttype in data.ttype_data %}
+			<a href="/journal_mgmt/transaction_ref/index/ttype={{ cur_ttype.0.id }}" class="tile-label" >
+ 			<div class="{{cur_ttype.1.color}}" style="height:170px; width: 20%; float:left; margin:2.5%;" data-role="tile">
+            <span class="tile-label-custom-ttype" style="text-align:center; width:100%" ><h4 style="text-align:center; width:100%">{{ cur_ttype.0.name}}<h4></span>
+    		</div>
+            </a>
+        {% endfor%} 
+        </div>
+     </div>  
+</body> 
+
+{% endblock %}

@@ -1,0 +1,528 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<script language="javascript" type="text/javascript">
+function popitup(url) {
+    newwindow=window.open(url,'{{title}}','height=650,width=950');
+    if (window.focus) {newwindow.focus()}
+    return false;
+}
+</script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/journal_mgmt/auto_price_list/index/">Auto Price List</a>
+&rsaquo; Edit {{ data.price_list.name }}
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function show_bom() {
+	    var selectBox_item = document.getElementById("id_item_master");
+	    var selectedValue_item = selectBox_item.options[selectBox_item.selectedIndex].value;
+	    var selectBox_vendor = document.getElementById("id_vendor");
+	    var selectedValue_vendor = selectBox_vendor.options[selectBox_vendor.selectedIndex].value;
+	    var selectBox_work = document.getElementById("id_work_center");
+	    var selectedValue_work = selectBox_work.options[selectBox_work.selectedIndex].value;
+	    var nav_location =  "/journal_mgmt/auto_price_list/detail/id={{ data.price_list.id }}/?item_master=" + String(selectedValue_item) + "&vendor=" + String(selectedValue_vendor) + "&work_center=" + String(selectedValue_work)
+	    window.location = nav_location;
+	   }
+</script>
+
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+
+<script language="javascript" type="text/javascript">
+
+function popitup(url) {
+    newwindow=window.open(url,'{{title}}','height=650,width=950');
+    if (window.focus) {newwindow.focus()}
+    return false;
+}
+</script>
+<div>
+    <h1>Edit {{ data.price_list.name }}</h1>
+	<!--<p id="test">abcd - {{ data.compiled_infinite_bom }}</p>
+	<div>
+		{{data}}
+	</div>-->
+	{% load custom_temp_tags %}
+	<div>
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/auto_price_list/{{data.price_list.id}}/history/" class="historylink">History</a>
+            </li>
+		</ul>
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:auto_pl_save' data.price_list.id %}" method="post" id="coa_form" novalidate>
+        <!--<form enctype="multipart/form-data" action="{% url 'journal_mgmt:test_response' %}" method="post" id="coa_form" novalidate>--->
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+			<fieldset class="module aligned ">
+				<div class="form-row field-id" hidden="hidden">
+		            <div>
+		                <label class="required" for="id_pk">ID</label>
+		                <input class="vTextField" id="id_pk" maxlength="10" name="pk" type="text" value="{{ data.price_list.id }}"/>
+		            </div>
+		        </div>
+		    	<div class="form-row field-name">
+		            <div>
+		                <label class="required" for="id_name">Name:</label>
+		                <input id="id_name" name="name" type="text" size="100%" value="{{ data.price_list.name }}" disabled />
+		            </div>
+		        </div>
+		        <fieldset id = "show_hide_panel1" class="module aligned collapse collapsed">
+    			<h2>Raw Material Price (<a id="switch_link1" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel1', 'switch_link1')">Show</a>)</h2>
+		        {% for cur_rmp_obj_set in data.rmp_obj_set %}
+		        {% if forloop.counter == 1 or forloop.counter == 5 or forloop.counter == 9 or forloop.counter == 13 or forloop.counter == 17 %}
+		        <div class="form-row field-{{cur_rmp_obj_set.0}}">
+	        	{% endif %}
+		        	<div style="float:left; width:25%">
+			        	<div style="float:center; text-align:center">
+				        	<!--<label class="required" for="id_rmp{{forloop.counter}}" style="text-align:right">P{{forloop.counter}}</label>-->
+				        	<b>P{{forloop.counter}} : </b>
+				        	<!--<a href="/journal_mgmt/auto_rmp_supplier/detail/auto_rmp_id={{ cur_rmp_obj_set.id }}/type=vendor/sup_id={{ data.sel_vendor.id }}/?auto_pl_id={{ data.price_list.id }}&item_master_id={{ data.sel_item_master.id }}" class="add-another" id="add_id_auto_pl">--> 
+							<a href="popupex.html" onclick="return popitup('/journal_mgmt/auto_rmp/create/')" class="add-another" id="add_id_auto_pl">
+							<img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another">
+							</a>
+							R:
+							<a href="popupex.html" onclick="return popitup('/journal_mgmt/auto_rmp/detail/id={{cur_rmp_obj_set.id}}')" class="add-another" id="add_id_auto_pl"> 
+							<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="Add Another">
+							</a>
+				        	V:
+				        	<a href="/journal_mgmt/auto_rmp_supplier/detail/auto_rmp_id={{ cur_rmp_obj_set.id }}/type=vendor/sup_id={{ data.sel_vendor.id }}/?auto_pl_id={{ data.price_list.id }}&item_master_id={{ data.sel_item_master.id }}" class="add-another" id="add_id_auto_pl"> 
+							<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="Add Another">
+							</a>
+				        	WC:
+				        	<a href="/journal_mgmt/auto_rmp_supplier/detail/auto_rmp_id={{ cur_rmp_obj_set.id }}/type=work_center/sup_id={{ data.sel_work_center.id }}/?auto_pl_id={{ data.price_list.id }}&item_master_id={{ data.sel_item_master.id }}" class="add-another" id="add_id_auto_pl"> 
+							<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="Add Another">
+							</a>
+						</div>
+						<div style="float:center; text-align:center">
+			        	<select id="id_rmp{{forloop.counter}}" name="rmp{{forloop.counter}}">
+			        	{% for cur_rmp in data.raw_material_prices %}
+			        	<option value="{{ cur_rmp.id }}" {% if cur_rmp_obj_set.id == cur_rmp.id %} selected {% endif %}>{{ cur_rmp.name }}</option>
+			        	{% endfor %}
+			        	</select>
+			        	</div>
+		        	</div>
+		        {% if forloop.counter == 4 or forloop.counter == 8 or forloop.counter == 12 or forloop.counter == 16 or forloop.counter == 20 %}
+	        	</div>
+	        	{% endif %}
+	        	{% endfor %}
+	        	<div class="form-row field-{{cur_rmp_obj_set.0}}">
+	           	    <label class="required" for="id_format_calc">General Norms : </label>
+                	<input id="id_format_calc" name="format_calc" type="text" value="{{ data.price_list.input_rate_sale }}"/>
+	            </div>
+	        	</fieldset>
+		        	
+		        <fieldset id = "show_hide_panel2" class="module aligned collapse collapsed" type='hidden'>
+    			<h2>Constants (<a id="switch_link2" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel2', 'switch_link2')">Show</a>)</h2>
+		        {% for cur_con_obj_set in data.con_obj_set %}
+		        {% if forloop.counter == 1 or forloop.counter == 5 or forloop.counter == 9 or forloop.counter == 13 or forloop.counter == 17 %}
+	        	<div class="form-row field-{{cur_con_obj_set.0}}">
+	        	{% endif %}
+		        	<div style="float:left; width:25%">
+			        	<div style="float:center; text-align:center">
+				        	<b>K{{forloop.counter}} : </b>
+				        	<a href="popupex.html" onclick="return popitup('/journal_mgmt/constants/create/')" class="add-another" id="add_id_constants"> 
+							<img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another">
+							</a>
+				        	_
+							<a href="popupex.html" onclick="return popitup('/journal_mgmt/constants/detail/id={{cur_con_obj_set.id}}/')" class="add-another" id="add_id_constants"> 
+							<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="Add Another">
+							</a>
+						</div>
+						<div style="float:center; text-align:center">
+				        	<select id="id_con{{forloop.counter}}" name="con{{forloop.counter}}">
+				        	{% for cur_con in data.constants %}
+				        	<option value="{{ cur_con.id }}" {% if cur_con_obj_set.id == cur_con.id %} selected {% endif %}>{{ cur_con.name }}</option>
+				        	{% endfor %}
+				        	</select>
+				        </div>
+			        </div>
+		        {% if forloop.counter == 4 or forloop.counter == 8 or forloop.counter == 12 or forloop.counter == 16 or forloop.counter == 20 %}
+	        	</div>
+	        	{% endif %}
+	        	{% endfor %}
+		        </fieldset>
+			        	
+		        <fieldset id = "show_hide_panel3" class="module aligned collapse collapsed">
+    			<h2>Calculation Methods (<a id="switch_link3" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel3', 'switch_link3')">Show</a>)</h2>
+    			
+    			 <div class="form-row field-con15_20">
+    			 	<div style="float:left; width:50%">
+		           	    <label class="required" for="id_job_work_calc">Job Work Price Calc:</label>
+	                	<input id="id_job_work_calc" name="job_work_calc" type="text" size="100%" value="{{ data.price_list.job_work_price_calc_eqn }}"/>
+		            </div>
+		            <div style="float:left; width:50%">
+		           	    <label class="required" for="id_shop_order_calc">Shop Order Price Calc:</label>
+	                	<input id="id_shop_order_calc" name="shop_order_calc" type="text" size="100%" value="{{ data.price_list.shop_order_price_calc_eqn }}"/>
+		            </div>
+    			 </div>
+    			 <div class="form-row field-con15_20">
+    			 	<div style="float:left; width:50%">
+		           	    <label class="required" for="id_purchase_calc">Purchase Price Calc:</label>
+	                	<input id="id_purchase_calc" name="purchase_calc" type="text" size="100%" value="{{ data.price_list.purchase_price_calc_eqn }}"/>
+		            </div>
+		            <div style="float:left; width:50%">
+		           	    <label class="required" for="id_format_calc">Purchase Factor Calc:</label>
+	                	<input id="id_format_calc" name="format_calc" type="text" size="100%" value="{{ data.price_list.purchase_factor_calc_eqn }}"/>
+		            </div>
+    			 </div>
+    			 <div class="form-row field-sale">
+    			 	<div style="float:left; width:50%">
+		           	    <label class="required" for="id_sale_factor_calc">Sale Factor Calc:</label>
+	                	<input id="id_sale_factor_calc" name="sale_factor_calc" type="text" size="100%" value="{{ data.price_list.sale_price_calc_eqn }}"/>
+		            </div>
+		            <div style="float:left; width:50%">
+		           	    <label class="required" for="id_adhoc_sale_factor_calc">Adhoc Sale Factor Calc:</label>
+	                	<input id="id_adhoc_sale_factor_calc" name="adhoc_sale_factor_calc" type="text" size="100%" value="{{ data.price_list.adhoc_sale_price_calc_eqn }}"/>
+		            </div>
+    			 </div>
+    			 <div class="form-row field-sale">
+    			 <div style="float:left">
+				            <div style="float:left; text-align:right">
+				            	<label class="required" for="id_auto_price_list" style="text-align:left">Process Name:</label>
+				           	    <select id="id_auto_price_list" name="auto_price_list">
+								<option value="{{ cur_price_list.process.id }}" >{{ data.price_list.process.name }}</option>
+								</select>
+			                </div>
+				        </div>
+				        </div>
+    			 <div class="form-row field-auto_pl_id">
+					<div>
+						<label class="required" for="re_auto_pl_id">Redirect</label>
+						Auto PL ID
+						<input  class="vIntegerField" id="re_auto_pl_id" name="re_auto_pl_id" type="text" value="{{ data.price_list.id }}" readonly />
+						Item Master ID
+						<input  class="vIntegerField" id="re_item_master_id" name="re_item_master_id" type="text" value="{{ data.sel_item_master.id }}" readonly />
+						PL Vendor ID
+						<input  class="vIntegerField" id="re_pl_vendor_id" name="re_pl_vendor_id" type="text" value="{% if data.sel_vendor == 0 %} 0 {% else %} {{ data.sel_vendor.id }} {% endif %}" readonly />
+						PL Work Center ID
+						<input  class="vIntegerField" id="re_pl_work_center_id" name="re_pl_work_center_id" type="text" value="{% if data.sel_work_center == 0 %} 0 {% else %} {{ data.sel_work_center.id }} {% endif %}" readonly />
+					</div>
+		        </div>
+    			</fieldset>
+		    </fieldset>
+			
+			<div class="submit-row">
+				<input type="submit" value="Save" class="default" name="_save" />
+				<input type="submit" value="Save and continue editing" name="_continue" />
+			</div>
+		</form>
+		
+		
+		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:auto_pl_update' data.price_list.id %}" method="get" id="coa_form" novalidate>
+		<!--<form enctype="multipart/form-data" action="{% url 'journal_mgmt:test_response' %}" method="get" id="coa_form" novalidate>-->
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+			<fieldset class="module aligned ">
+			    <div class="form-row field-xyz">
+				    <div>
+				        <div style="float:left">
+				            <div style="float:left; text-align:right">
+				            	<label class="required" for="id_item_master" style="text-align:left">Preview Item Master:</label>
+				           	    <select id="id_item_master" name="item_master" onchange="show_bom()">
+								<!--{% if data.item_master_opt|length == 0 or data.item_master_opt|length == 1 %}
+									<option value="0" selected >-</option>
+								{% endif %}-->
+								{% for cur_item_master in data.item_master_opt %}
+								<option value="{{ cur_item_master.id }}" {% if data.sel_item_master.id == cur_item_master.id %} selected {% endif %} onclick="show_bom()">{{ cur_item_master.name }}</option>
+								{% endfor %}
+								</select>
+			                </div>
+				        </div>
+				        <div style="float:right; width:450px">
+					        <div style="float:left; width:200px">
+					        	<input type="submit" value="Update Infinite BOM" name="update_infinite_bom"></input>
+					        	<br>
+					        	<br>
+					        	<input type="submit" value="Update BOM sale price" name="update_bom_sale_price"></input>
+					        	<br>
+					        	<br>
+					        	<input type="submit" value="Update Wt. Vol." name="update_weight_vol"></input>
+					        </div>
+					        <div style="float:left">
+					        	<input type="submit" value="Update Infinite BOM for All" name="update_all_infinite_bom" onClick="show_bom()"></input>
+					        	<br>
+					        	<br>
+					        	<input type="submit" value="Update  BOM sale price for All" name="update_bom_sale_price_for_all_variants" onClick="show_bom()"></input>
+					        	<br>
+					        	<br>
+					        	<input type="submit" value="Update Wt. Vol. for All" name="update_weight_vol_for_all_variants" onClick="show_bom()"></input>
+					        </div>
+				        </div>
+				    </div>
+		        </div>
+		        <div class="form-row field-xyz">
+			        <div style="float:left; width:33%">
+			        	Last Updated:{{ data.sel_item_master.last_updated }}
+			        </div>
+			        <div style="float:left; width:33%">
+			        	BOM Last Updated:{{ data.sel_item_master.bom_last_updated }}
+			        </div>
+			        <div style="float:left; width:33%">
+			        	Price Last Updated:{{ data.sel_item_master.price_last_updated }}
+			        </div>
+		        </div>
+		        <div class="form-row field-xyz">
+			    	<div style="float:left; width:50%" >
+			    		<p>Sale Factor Calculation: {{ data.bom_sale_interpret }} = {{ data.new_bom_sale_rate }} (<b>{{ data.sel_item_master.sale_price }}</b>)</p>
+			    	</div>
+			    	<div style="float:left; width:50%">
+			    		<p>Adhoc Sale Rate Calculation: {{ data.adhoc_sale_interpret }} = {{ data.new_adhoc_sale_rate }} (<b>{{ data.sel_item_master.adhoc_sale_price }}</b>)</p>
+			    	</div>
+		    	</div>
+	    	
+		    </fieldset>
+	    <fieldset class="module aligned ">
+	    <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        	<div class="form-row field-xyz">
+		        <div style="float:left">
+		            <div style="float:left; text-align:right">
+		            	<label class="required" for="id_vendor" style="text-align:left">Vendor:</label>
+		           	    <select id="id_vendor" name="vendor" onchange="show_bom()">
+						{% if data.vendor_opt|length == 0 or data.vendor_opt|length == 1%}
+							<option value="0" selected >-</option>
+						{% endif %}
+						{% for cur_vendor in data.vendor_opt %}
+						<option value="{{ cur_vendor.id }}" {% if data.sel_vendor.id == cur_vendor.id %} selected {% endif %}>{{ cur_vendor.name }}</option>
+						{% endfor %}
+						</select>
+						<a href="/journal_mgmt/auto_price_list_supplier/create/auto_pl_id={{ data.price_list.id }}/?type=vendor" class="add-another" id="add_id_auto_pl">
+						<!--<a href="popupex.html" onclick="return popitup('{% url 'journal_mgmt:auto_pl_sup_create' data.price_list.id %}')" class="add-another" id="add_id_auto_pl">-->
+						<img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another">
+						</a>
+	                </div>
+		        </div>
+		        <div style="float:right; width:450px">
+			        <div style="float:left; width:200px">
+		        	<input type="submit" value="Update Vendor Price" name="update_vendor_price"></input>
+		        	</div>
+			        <div style="float:left">
+		        	<input type="submit" value="Update Vendor Price for All Variants" name="update_all_vendor_price"></input>
+		        	</div>
+		        </div>
+	        </div>
+	    <div class="form-row preview">
+	    	<p>Job Work Calculation: {{ data.jw_interpret }} = {{ data.jw_rate }} (<b> {{ data.vendor_pl.job_work_rate }} </b>)</p>
+	    	<div>
+		    	<div style="float:left; width:50%">
+		    		<p>Purchase Calculation: {{ data.pur_interpret }} = {{ data.pur_rate }} (<b> {{ data.vendor_pl.purchase_rate }} </b>)</p>
+		    	</div>
+		    	<div style="float:left; width:50%">
+		    		<p>Purchase Factor Calculation: {{ data.pur_factor_interpret }} = {{ data.pur_factor_rate }} (<b> {{ data.vendor_pl.purchase_factor }} </b>)</p>
+		    	</div>
+	    	</div>
+	    </div>
+	    </fieldset>
+	    
+	    <fieldset class="module aligned ">
+	    <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+            <div class="form-row field-xyz">
+		        <div style="float:left">
+		            <div style="float:left; text-align:right">
+		            	<label class="required" for="id_work_center" style="text-align:left">Work Center:</label>
+		           	    <select id="id_work_center" name="work_center" onchange="show_bom()">
+		           	    {% if data.work_center_opt|length == 0 or data.work_center_opt|length == 1 %}
+							<option value="0" selected >-</option>
+						{% endif %}
+						{% for cur_work_center in data.work_center_opt %}
+						<option value="{{ cur_work_center.id }}" {% if data.sel_work_center.id == cur_work_center.id %} selected {% endif %}>{{ cur_work_center.name }}</option>
+						{% endfor %}
+						</select>
+						<a href="/journal_mgmt/auto_price_list_supplier/create/auto_pl_id={{ data.price_list.id }}/?type=work_center" class="add-another" id="add_id_auto_pl"> 
+						<img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another">
+						</a>
+	                </div>
+		        </div>
+		        <div style="float:right; width:450px">
+		        	<div style="float:left; width:200px">
+			    		<input type="submit" value="Update Shop Order Price" name="update_work_center_price"></input>
+			    	</div>
+			        <div style="float:left">
+		        		<input type="submit" value="Update Shop Order Price for All Variants" name="update_all_work_center_price"></input>
+		        	</div>
+		        </div>
+		    </div>
+		
+		    <div class="form-row preview">
+		    	<p>Shop Order Preview: {{ data.so_interpret }} = {{ data.so_rate }} ( {{ data.work_center_pl.rate }} )</p>
+		    </div>
+	    </fieldset>
+	    </form>
+	    <fieldset class="module aligned ">
+    	<div style="float:left">
+	    <table id="new_inf_list">
+			<thead>
+				<tr>
+				<th scope="col"  class="action-checkbox-column">
+				   <div class="text"><span>Part No.</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col" width="150px" class="action-checkbox-column">
+				   <div class="text"><span>Imported Part No.</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col" width="175px" class="action-checkbox-column">
+				   <div class="text"><span>Fin Code</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  width="400px" class="action-checkbox-column">
+				   <div class="text"><span>Description</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>Process Type</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>Qty</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>IP Rate Calc</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>IP Rate</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>IP Value</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>Pur Factor Rate</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>Pur Factor Value</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>Wt. Factor</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="column-__str__">
+				   <div class="text"><span>Auto Pricelist</span></div>
+				   <div class="clear"></div>
+				</th>
+				
+				</tr>
+			</thead>
+			<tbody>
+			<!--<p>{{data.infinite_bom}}</p>-->
+			{% if data.sel_item_master %}
+			{% for cur_inf_bom in data.compiled_infinite_bom %}
+				{% cycle 'row1' 'row2' as rowcolors silent %}
+				<tr class="{{ rowcolors }}">
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.id }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.imported_item_code }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.imported_item_finish }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.name }}</td>
+					<td class="form-row {{ rowcolors }}">{% if cur_inf_bom.2.has_bom == True %}{{ cur_inf_bom.2.auto_pl_obj.process.name }} (JW){% else %} Purchased (BOC){% endif %}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.1 }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.2.sp_interpret }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.input_factor }}</td>
+					{% with cur_inf_bom.0.input_factor|multiply:cur_inf_bom.1 as x  %}
+					<td class="form-row {{ rowcolors }}">{{ x|stringformat:".2f" }}</td>
+					<!--<td class="form-row {{ rowcolors }}"><a href="/journal_mgmt/auto_price_list/detail/id={{ cur_inf_bom.3.id }}/">-->
+					{% endwith %} 
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.2.vendor_pl.purchase_factor }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.2.vendor_pl.purchase_factor|multiply:cur_inf_bom.1 }}</td>
+					<td class="form-row {{ rowcolors }}">{{ cur_inf_bom.0.weight_factor|multiply:cur_inf_bom.1|stringformat:".4f" }}</td>
+					<td class="form-row {{ rowcolors }}">
+						<a href="popupex.html" onclick="return popitup('/journal_mgmt/auto_price_list/detail/id={{ cur_inf_bom.2.auto_pl_obj.id }}/?item_master={{ cur_inf_bom.0.id }}&vendor=0&work_center=0')" class="add-another" />
+							<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="Add Another">
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+				<tr class="row2">
+					<th class="form-row row2" colspan="5">Total Input Rate</th>
+					<th class="form-row row2">{{ data.sel_item_master.bom_input_price }}</th>
+				</tr>
+				<tr class="row2">
+					<th class="form-row row2" colspan="5">Margin</th>
+					<th class="form-row row2">{{ data.auto_pl_obj.sale_margin }}</th>
+				</tr>
+				<tr class="row2">
+					<th class="form-row row2" colspan="5">Total Sale Price</th>
+					<th class="form-row row2">{{ data.sel_item_master.bom_sale_price }}</th>
+				</tr>
+				<tr class="row2">
+					<th class="form-row row2" colspan="5">Total Weight</th>
+					<th class="form-row row2">{{ data.sel_item_master.item_weight|stringformat:".2f" }}</th>
+				</tr>
+			{% endif %}
+			
+			</tbody>
+			
+		</table>
+		<!-- Test Code
+			<p>{{ data.get_data }}</p>
+			<p>{{ data.infinite_bom }}</p>
+			<p>{{ data.item_master }}</p>
+			<p>{{ data.test }}</p>
+			<p>{{ data.new_sale_price }}</p>
+			<p>{{ data.item_master.sale_price }}</p>-->
+		</div>
+	    </fieldset>
+	</div>
+	<br class="clear" />
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

@@ -1,0 +1,630 @@
+{% extends "admin/change_form_custom.html" %}
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> Auto PL Matrix </title>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+</head>
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+	<div class="margin10" style="float: left; height:7x; width:100%">
+       	<ul class="breadcrumbs-custom">
+           <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			<li>Add {{ data.transaction_type.0.name }}</li>
+           </ul>
+     </div>
+	<br>
+{% endif %}
+{% endblock %}
+{% block content %}
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+   }
+</script>
+
+<div id="content" class="colM">
+    <h1>Auto Pl Object Auto Fill</h1>
+	
+	<!------------------------------------<div>
+		{{data}}
+	</div>-------------------------------------->
+	
+	<fieldset class="module aligned ">
+	<div id="content-main">
+		{% load custom_temp_tags %}
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_auto_pl_mgmt' %}" method="post" id="coa_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+        <!------------------------------------ Form for filtering Main Pricelist Dropbox -------------------------------------->
+    	<div class="form-row field-name">
+       	<div>
+       		<div style="float:left">
+	    		<label class="required" for="id_unique_id">Auto Pl Obj:</label>
+	        	<select id ="id_auto_pl_id" name="unique_id">
+		         	<option value="*select*" {% if data.sel_unique_id == '*select*' %} selected {% endif %} >*select*</option>
+                    {% for cur_unique in data.unique_opt %}
+              			<option value="{{ cur_unique.id }}" {% if data.sel_unique_id == cur_unique.id %} selected {% endif %}>{{ cur_unique.name }}</option>
+              		{% endfor %}
+          			</select>
+          		</div>
+          		<div style="float:left">
+          			<label class="required"> &nbsp Name filter:</label>
+          			<input type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+          			
+          		</div>
+          		<div style="float:left; margin-left:5%">
+           		<label class="required" for="id_change_rm">Change RM:</label>
+           		<input type="checkbox" name="change_rm" value="change_rm">
+          		</div>
+          		
+          		<div style="float:left; margin-left:2%"><input type="submit" class="command-button button primary" name="filter" value="filter" onclick="submit()"></input></div>
+          	</div>
+          	<div>
+       		<div style="float:left">
+	    		<label class="required" for="id_auto_pl_opt">Auto Pl Obj:</label>
+	        	<select id ="id_auto_pl_id" name="auto_pl_id">
+		         	<option value="*select*" {% if data.auto_pl_id == '*select*' %} selected {% endif %} >*select*</option>
+                     {% for cur_auto_pl in data.auto_pl_opt %}
+              			<option value="{{ cur_auto_pl.id }}" {% if data.sel_pl_id == cur_auto_pl.id %} selected {% endif %}>{{ cur_auto_pl.name }}</option>
+              		{% endfor %}
+          			</select>
+          		</div>
+          	</div>
+          	</div>
+   		</form>
+   		<!------------------------------------ Form for Updating Pricelist
+   		<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_auto_pl_mgmt' %}" method="post" id="pl_update_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+        
+        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+ 			<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+ 			<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+ 			<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+        {% if data.sel_pl %}
+           	<fieldset id = "show_hide_panel2" class="module aligned collapse collapsed">
+   				<h2>PL Modify (<a id="switch_link2" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel2', 'switch_link2')">Show</a>)</h2>
+   				<div class="form-row field-xyz">
+   					<div style="float:left; width:33%">
+    					<div><b>Basic Calculation:</b></div>
+    					<div>
+    					<input id="calculation" style="width:95%" type="text" name="calculation" value="{{ data.sel_pl.calculation }}"></input>
+    					</div>
+   					</div>
+   					<div style="float:left; width:33%">
+    					<div><b>OLD BOM Calculation:</b></div>
+    					<div>
+    					<input id="calculation_bom"  style="width:95%"type="text" name="calculation_bom" value="{{ data.sel_pl.calculation_bom }}"></input>
+    					</div>
+    					
+   					</div>
+    				<div style="float:left; width:33%">
+    					<div><b>Input Calc:</b></div>
+    					<div>
+    					<input id="input_calc" type="text" style="width:95%" name="input_calc" value="{{ data.sel_pl.input_calc }}"></input>
+    					</div>
+    				</div>
+   				</div>
+   				<div class="form-row field-xyz">
+   					<div style="float:left; width:33%">
+    					<label class="required" for="id_margin">Margin</label>
+    					<input id="sale_margin" type="text" name="sale_margin" value="{{ data.sel_pl.sale_margin }}"></input>
+   					</div>
+   					<div style="float:left; width:33%">
+    					<label class="required" for="id_price">Rate (C)</label>
+    					<input id="price" type="text" name="price" value="{{ data.sel_pl.price }}"></input>
+   					</div>
+   					<div style="float:left; width:33%">
+    					<input type="submit" class="command-button button primary" name="filter" value="Update PL" onclick="submit()"></input>
+   					</div>
+   				</div>
+   				<div class="form-row field-xyz">
+   					{% for cur_intp in data.int_p20 %}
+    					{% if cur_intp == 'p1' or cur_intp == 'p5' or cur_intp == 'p9' or cur_intp == 'p13'  or cur_intp == 'p17'%}
+    					<div class="form-row field-xyz">
+    					{% endif %}
+		    				<div style="float:left; width:25%; text-align:center">
+			    				<label class="required" for="id_p1">{{ cur_intp }}:</label>
+		    					<select id ="id_{{ cur_intp }}" name="{{ cur_intp }}">
+					        		{% for cur_rm_price in data.rm_price_opt %}
+					        		{% if data.sel_pl|get_element:cur_intp == cur_rm_price.id and not data.change_bom %}
+				              			<option value="{{ cur_rm_price.id }}" {% if data.sel_pl|get_element:cur_intp == cur_rm_price.id %} selected {% endif %}>{{ cur_rm_price.name }} {% if not cur_rm_price.id == 1 %} ({{ cur_rm_price.value }} {{ cur_rm_price.definition }}) {% endif %}</option>
+				              		{% endif %}
+				              		{% endfor %}
+				              	</select>
+			           		</div>
+		           		{% if cur_intp == 'p4' or cur_intp == 'p8' or cur_intp == 'p12' or cur_intp == 'p16'  or cur_intp == 'p20' %}
+		           		</div>
+		           		{% endif %}
+	           		{% endfor %}
+          			</div>
+		    </fieldset>
+           	{% endif %}
+           	 
+        </form>-------------------------------------->
+           	<fieldset class="module aligned collapse">
+	           	<div>
+				   	<!------------------------------------ Form for Filtering BOM PL selection dropbox
+				   	<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_auto_pl_mgmt' %}" method="post" id="bom_pl_filter" novalidate>
+			        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+			        {% csrf_token %}
+			         
+			        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+		        	<div class="form-row field-name">
+	      				<div>
+			        		<div style="float:left">
+					    		<label class="required" for="id_unique_id">Auto Pl Obj:</label>
+					        	<select id ="id_auto_pl_id" name="bom_unique_id">
+						         	<option value="*select*" {% if data.sel_unique_id == '*select*' %} selected {% endif %} >*select*</option>
+				                    {% for cur_unique in data.unique_opt %}
+				              			<option value="{{ cur_unique.id }}" {% if data.bom_sel_unique_id == cur_unique.id %} selected {% endif %}>{{ cur_unique.name }}</option>
+				              		{% endfor %}
+			           			</select>
+			           		</div>
+			           		<div style="float:left">
+			           			<label class="required"> &nbsp Name filter:</label>
+			           			<input type="text" name="bom_searched_str" value="{{ data.bom_searched_str }}"></input>
+			           		</div>
+			           		<div style="float:left; margin-left:2%"><input type="submit" class="command-button button primary" name="filter" value="filter" onclick="submit()"></input></div>
+			           	</div>
+			           	<div>
+			        		<div style="float:left">
+					    		<label class="required" for="id_bom_auto_pl_opt">Auto Pl Obj:</label>
+					        	<select id ="id_bom_auto_pl_id" name="bom_auto_pl_id">
+						         	<option value="*select*" {% if data.bom_auto_pl_id == '*select*' %} selected {% endif %}>*select*</option>
+				                     {% for cur_auto_pl in data.bom_auto_pl_opt %}
+				              			<option value="{{ cur_auto_pl.id }}" {% if data.bom_sel_pl_id == cur_auto_pl.id %} selected {% endif %}>{{ cur_auto_pl.name }}</option>
+				              		{% endfor %}
+			           			</select>
+			           		</div>
+			           		<div sty>
+			           		<div style="float:left; margin-left:2%"><input type="submit" class="command-button button primary" name="bom_filter" value="bom_filter" onclick="submit()"></input></div></div>
+			           	</div>
+			        </div>
+		       		</form>-------------------------------------->
+	       		</fieldset>
+	       		<fieldset class="module aligned collapse">
+		       	<h4 style="text-align:center">BOM</h4>
+		        <table>
+			        <thead>
+			        	<th>ID</th>
+			        	<th>Name</th>
+			        	<th>D1</th>
+			        	<th>D2</th>
+			        	<th>D3</th>
+			        	<th>D4</th>
+			        	<th>Qty</th>
+			        	<th>F1</th>
+			        	<th>GO</th>
+			        	<th>Derivative opt</th>
+			        	<th>save</th>
+				    </thead>
+			        <tbody>
+			        	{% for cur_bom_det in data.bom_det%}
+			        	<!------------------------------------ Form for Updating bom
+			        	<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'update' 'bom' %}" method="post" id="fg_derivative" novalidate>
+				        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+				        {% csrf_token %}
+				        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+	      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+	      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+	      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+				        {% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+				        	<td>{{ cur_bom_det.bom_record.id }}</td>
+				        	<td>{{ cur_bom_det.pl_record.name }}</td>
+				        	<td>{{ cur_bom_det.derivative_record.d1 }}</td>
+				        	<td>{{ cur_bom_det.derivative_record.d2 }}</td>
+				        	<td>{{ cur_bom_det.derivative_record.d3 }}</td>
+				        	<td>{{ cur_bom_det.derivative_record.d4 }}</td>
+				        	<td>{{ cur_bom_det.derivative_record.qty }}</td>
+				        	<td>{{ cur_bom_det.derivative_record.f1 }}</td>
+				        	<td><a href="{% url 'journal_mgmt:crm_auto_pl_mgmt' %}?crm_pl_id={{ cur_bom_det.bom_record.bom_id }}" class="add-another" />
+								<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="GO"></a>
+							</td>
+							<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'update' 'fg_bom' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+							<td>
+								<select id ="id_bom_{{cur_bom_det.bom_record.id}}" name="derivative_id">
+						         	{% for cur_derivative in cur_bom_det.derivative_opt %}
+				              			<option value="{{ cur_derivative.id }}" {% if cur_bom_det.bom_record.derivative_id == cur_derivative.id %} selected {% endif %}>{{ cur_derivative.name }}</option>
+				              		{% endfor %}
+			           			</select>
+			           			<input type="text" name=id value="{{ cur_bom_det.id }}" hidden></input>
+		           			</td>
+							<td><input type=submit name="bom_update" value="bom_update"></input>
+							</td>
+						</tr>
+						
+				        </form>
+				        -------------------------------------->
+				        {% endfor %}
+				        <tr></tr>
+				        {% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<td>-</td>
+				        	<!------------------------------------ Form for Creating bom
+							<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'create' 'bom' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					         
+					        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+		      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+		      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+		      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+							<td>
+								<select id ="id_bom_{{cur_bom_det.bom_record.id}}" name="derivative_id">
+						         	{% for cur_derivative in cur_bom_det.derivative_opt %}
+				              			<option value="{{ cur_derivative.id }}" {% if cur_bom_det.bom_record.derivative_id == cur_derivative.id %} selected {% endif %}>{{ cur_derivative.name }}</option>
+				              		{% endfor %}
+			           			</select>
+			           			<input type="text" name=id value="{{ data.sel_pl_id }}" hidden></input>
+		           			</td>
+							<td><input type=submit name="fg_bom_create" value="fg_bom_create"></input>
+							</td>
+							
+							</form>
+							-------------------------------------->
+						</tr>
+				    </tbody>
+		        </table>
+				</div>
+				</fieldset>
+				<fieldset class="module aligned collapse">
+	           	<div class="form-row field-xyz">
+			        <h4 style="text-align:center">Production BOM</h4>
+			        <table>
+				        <thead>
+				        	<th>ID</th>
+				        	<th>Name</th>
+				        	<th>D1</th>
+				        	<th>D2</th>
+				        	<th>D3</th>
+				        	<th>D4</th>
+				        	<th>Qty</th>
+				        	<th>F1</th>
+				        	<th>GO</th>
+				        	<th>Derivative opt</th>
+			        		<th>save</th>
+					    </thead>
+				        <tbody>
+				        	{% for cur_bom_det in data.fg_bom_det%}
+				        	<!------------------------------------ Form for Updating FG bom
+				        	<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'update' 'bom' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					        
+					        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+		      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+		      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+		      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+					        {% cycle 'row1' 'row2' as rowcolors silent %}
+							<tr class="{{ rowcolors }}">
+					        	<td>{{ cur_bom_det.bom_record.id }}</td>
+					        	<td>{{ cur_bom_det.pl_record.name }}</td>
+					        	<td>{{ cur_bom_det.derivative_record.d1 }}</td>
+					        	<td>{{ cur_bom_det.derivative_record.d2 }}</td>
+					        	<td>{{ cur_bom_det.derivative_record.d3 }}</td>
+					        	<td>{{ cur_bom_det.derivative_record.d4 }}</td>
+					        	<td>{{ cur_bom_det.derivative_record.qty }}</td>
+					        	<td>{{ cur_bom_det.derivative_record.f1 }}</td>
+					        	<td><a href="{% url 'journal_mgmt:crm_auto_pl_mgmt' %}?crm_pl_id={{ cur_bom_det.bom_record.bom_id }}" class="add-another" />
+									<img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="GO"></a>
+								</td>
+								<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'update' 'bom' %}" method="post" id="fg_derivative" novalidate>
+						        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+						        {% csrf_token %}
+								<td>
+									<select id ="id_bom_{{cur_bom_det.bom_record.id}}" name="derivative_id">
+							         	{% for cur_derivative in cur_bom_det.derivative_opt %}
+					              			<option value="{{ cur_derivative.id }}" {% if cur_bom_det.bom_record.derivative_id == cur_derivative.id %} selected {% endif %}>{{ cur_derivative.name }}</option>
+					              		{% endfor %}
+				           			</select>
+				           			<input type="text" name=id value="{{ cur_bom_det.id }}" hidden></input>
+			           			</td>
+								<td><input type=submit name="bom_update" value="bom_update"></input></td>
+								 
+								</form>
+								-------------------------------------->
+							</tr>
+					        
+					        {% endfor %}
+					        <tr></tr>
+					        <!------------------------------------ Form for creating FG BOM
+					        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'create' 'derivative' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					        
+					        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+		      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+		      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+		      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+					        {% cycle 'row1' 'row2' as rowcolors silent %}
+							<tr class="{{ rowcolors }}">
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+					        	<td>-</td>
+								<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_bom_crud' data.sel_pl_id 'create' 'bom' %}" method="post" id="fg_derivative" novalidate>
+						        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+						        {% csrf_token %}
+								<td>
+									<select id ="id_bom_{{cur_bom_det.bom_record.id}}" name="derivative_id">
+							         	{% for cur_derivative in cur_bom_det.derivative_opt %}
+					              			<option value="{{ cur_derivative.id }}" {% if cur_bom_det.bom_record.derivative_id == cur_derivative.id %} selected {% endif %}>{{ cur_derivative.name }}</option>
+					              		{% endfor %}
+				           			</select>
+				           		</td>
+								<td><input type=submit name="fg_bom_create" value="FG bom_create"></input>
+								</td>
+								 
+								</form>
+								-------------------------------------->
+							</tr>
+					    </tbody>
+			        </table>
+				</div>
+				</fieldset>
+			   	
+
+			   <fieldset id = "show_hide_panel1" class="module aligned collapse collapsed">
+    				<h2>Dim Options (<a id="switch_link1" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel1', 'switch_link1')">Show</a>)</h2>
+    				<h4 style="text-align:center">Derivative Options</h4>
+    				<table>
+				        <thead>
+				        	<th>ID</th>
+				        	<th>Name</th>
+				        	<th>D1</th>
+				        	<th>D2</th>
+				        	<th>D3</th>
+				        	<th>D4</th>
+				        	<th>Qty</th>
+				        	<th>F1</th>
+				        	<th>F2</th>
+				        	<th>F3</th>
+				        	<th>F4</th>
+				        	<th>F5</th>
+				        	<th>F6</th>
+				        	<th>F7</th>
+				        	<th>F8</th>
+				        	<th>F9</th>
+				        	<th>F10</th>
+				        	<th>F11</th>
+				        	<th>F12</th>
+				        	<th>save</th>
+					    </thead>
+				        <tbody>
+				        	{% for cur_derivative in data.derivative_index %}
+				        	<!------------------------------------ Form for Updating derivative
+				        	<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_derivative_crud' data.sel_pl_id 'update' 'derivative' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					        
+					        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+		      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+		      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+		      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+					        {% cycle 'row1' 'row2' as rowcolors silent %}
+								<tr class="{{ rowcolors }}">
+						        	<td><input type="text" name=id value="{{ cur_derivative.id }}" hidden></input></td>
+						        	<td><input type="text" name=name value="{{ cur_derivative.name }}"></input></td>
+						        	<td><input type="text" name=d1 value="{{ cur_derivative.d1 }}"></input></td>
+						        	<td><input type="text" name=d2 value="{{ cur_derivative.d2 }}"></input></td>
+						        	<td><input type="text" name=d3 value="{{ cur_derivative.d3 }}"></input></td>
+						        	<td><input type="text" name=d4 value="{{ cur_derivative.d4 }}"></input></td>
+						        	<td><input type="text" name=qty value="{{ cur_derivative.qty }}"></input></td>
+						        	<td><input type="text" name=f1 value="{{ cur_derivative.f1 }}"></input></td>
+						        	<td><input type="text" name=f2 value="{{ cur_derivative.f2 }}"></input></td>
+						        	<td><input type="text" name=f3 value="{{ cur_derivative.f3 }}"></input></td>
+						        	<td><input type="text" name=f4 value="{{ cur_derivative.f4 }}"></input></td>
+						        	<td><input type="text" name=f5 value="{{ cur_derivative.f5 }}"></input></td>
+						        	<td><input type="text" name=f6 value="{{ cur_derivative.f6 }}"></input></td>
+						        	<td><input type="text" name=f7 value="{{ cur_derivative.f7 }}"></input></td>
+						        	<td><input type="text" name=f8 value="{{ cur_derivative.f8 }}"></input></td>
+						        	<td><input type="text" name=f9 value="{{ cur_derivative.f9 }}"></input></td>
+						        	<td><input type="text" name=f10 value="{{ cur_derivative.f10 }}"></input></td>
+						        	<td><input type="text" name=f11 value="{{ cur_derivative.f11 }}"></input></td>
+						        	<td><input type="text" name=f12 value="{{ cur_derivative.f12 }}"></input></td>
+						        	<td><input type=submit name="derivative_update" value="derivative_update"></input></td>
+						        </tr>
+						    
+					        </form>
+					        -------------------------------------->
+					        {% endfor %}
+					        <tr><td></td></tr>
+					        <!------------------------------------ Form for Creating derivative
+					        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_derivative_crud' data.sel_pl_id 'create' 'derivative' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					        
+						        {% cycle 'row1' 'row2' as rowcolors silent %}
+								<tr class="{{ rowcolors }}">
+						        	<td><input type="text" name=id value="{{ cur_derivative.id }}" hidden></input></td>
+						        	<td><input type="text" name=name value="{{ cur_derivative.name }}"></input></td>
+						        	<td><input type="text" name=d1 value="{{ cur_derivative.d1 }}"></input></td>
+						        	<td><input type="text" name=d2 value="{{ cur_derivative.d2 }}"></input></td>
+						        	<td><input type="text" name=d3 value="{{ cur_derivative.d3 }}"></input></td>
+						        	<td><input type="text" name=d4 value="{{ cur_derivative.d4 }}"></input></td>
+						        	<td><input type="text" name=qty value="{{ cur_derivative.qty }}"></input></td>
+						        	<td><input type="text" name=f1 value="{{ cur_derivative.f1 }}"></input></td>
+						        	<td><input type="text" name=f2 value="{{ cur_derivative.f2 }}"></input></td>
+						        	<td><input type="text" name=f3 value="{{ cur_derivative.f3 }}"></input></td>
+						        	<td><input type="text" name=f4 value="{{ cur_derivative.f4 }}"></input></td>
+						        	<td><input type="text" name=f5 value="{{ cur_derivative.f5 }}"></input></td>
+						        	<td><input type="text" name=f6 value="{{ cur_derivative.f6 }}"></input></td>
+						        	<td><input type="text" name=f7 value="{{ cur_derivative.f7 }}"></input></td>
+						        	<td><input type="text" name=f8 value="{{ cur_derivative.f8 }}"></input></td>
+						        	<td><input type="text" name=f9 value="{{ cur_derivative.f9 }}"></input></td>
+						        	<td><input type="text" name=f10 value="{{ cur_derivative.f10 }}"></input></td>
+						        	<td><input type="text" name=f11 value="{{ cur_derivative.f11 }}"></input></td>
+						        	<td><input type="text" name=f12 value="{{ cur_derivative.f12 }}"></input></td>
+						        	<td><input type=submit name="fg_derivative_update" value="fg_derivative_update"></input></td>
+						        </tr>
+						        
+					        </form>
+					        -------------------------------------->
+			        </table>
+			        <h4 style="text-align:center">FG Derivative Options</h4>
+    				<table>
+				        <thead>
+				        	<th>ID</th>
+				        	<th>Name</th>
+				        	<th>D1</th>
+				        	<th>D2</th>
+				        	<th>D3</th>
+				        	<th>D4</th>
+				        	<th>Qty</th>
+				        	<th>F1</th>
+				        	<th>F2</th>
+				        	<th>F3</th>
+				        	<th>F4</th>
+				        	<th>F5</th>
+				        	<th>F6</th>
+				        	<th>F7</th>
+				        	<th>F8</th>
+				        	<th>F9</th>
+				        	<th>F10</th>
+				        	<th>F11</th>
+				        	<th>F12</th>
+				        	<th>save</th>
+					    </thead>
+				        <tbody>
+				        	{% for cur_derivative in data.fg_derivative_index %}
+				        	<form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_derivative_crud' data.sel_pl_id 'update' 'fg_derivative' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					        <!------------------------------------ Form for creating FG Derivative
+					        <input hidden type="text" name="searched_str" value="{{ data.searched_str }}"></input>
+		      				<input hidden type="number" name="auto_pl_id" value="{{ data.sel_pl_id }}"></input>
+		      				<input hidden type="number" name="unique_id" value="{{ data.sel_unique_id }}"></input>
+		      				<input hidden type="checkbox" name="change_rm" value="{{ data.change_rm }}"></input>
+					        {% cycle 'row1' 'row2' as rowcolors silent %}
+								<tr class="{{ rowcolors }}">
+						        	<td><input type="text" name=id value="{{ cur_derivative.id }}" hidden></input></td>
+						        	<td><input type="text" name=name value="{{ cur_derivative.name }}"></input></td>
+						        	<td><input type="text" name=d1 value="{{ cur_derivative.d1 }}"></input></td>
+						        	<td><input type="text" name=d2 value="{{ cur_derivative.d2 }}"></input></td>
+						        	<td><input type="text" name=d3 value="{{ cur_derivative.d3 }}"></input></td>
+						        	<td><input type="text" name=d4 value="{{ cur_derivative.d4 }}"></input></td>
+						        	<td><input type="text" name=qty value="{{ cur_derivative.qty }}"></input></td>
+						        	<td><input type="text" name=f1 value="{{ cur_derivative.f1 }}"></input></td>
+						        	<td><input type="text" name=f2 value="{{ cur_derivative.f2 }}"></input></td>
+						        	<td><input type="text" name=f3 value="{{ cur_derivative.f3 }}"></input></td>
+						        	<td><input type="text" name=f4 value="{{ cur_derivative.f4 }}"></input></td>
+						        	<td><input type="text" name=f5 value="{{ cur_derivative.f5 }}"></input></td>
+						        	<td><input type="text" name=f6 value="{{ cur_derivative.f6 }}"></input></td>
+						        	<td><input type="text" name=f7 value="{{ cur_derivative.f7 }}"></input></td>
+						        	<td><input type="text" name=f8 value="{{ cur_derivative.f8 }}"></input></td>
+						        	<td><input type="text" name=f9 value="{{ cur_derivative.f9 }}"></input></td>
+						        	<td><input type="text" name=f10 value="{{ cur_derivative.f10 }}"></input></td>
+						        	<td><input type="text" name=f11 value="{{ cur_derivative.f11 }}"></input></td>
+						        	<td><input type="text" name=f12 value="{{ cur_derivative.f12 }}"></input></td>
+						        	<td><input type=submit name="fg_derivative_update" value="fg_derivative_update"></input></td>
+						        </tr>
+						     
+					        </form>
+					        -------------------------------------->
+					        {% endfor %}
+					        <tr><td></td></tr>
+					        <!------------------------------------ Form for creating FG Derivative
+					        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:crm_derivative_crud' data.sel_pl_id 'create' 'fg_derivative' %}" method="post" id="fg_derivative" novalidate>
+					        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+					        {% csrf_token %}
+					        
+						        {% cycle 'row1' 'row2' as rowcolors silent %}
+								<tr class="{{ rowcolors }}">
+						        	<td><input type="text" name=id value="{{ cur_derivative.id }}" hidden></input></td>
+						        	<td><input type="text" name=name value="{{ cur_derivative.name }}"></input></td>
+						        	<td><input type="text" name=d1 value="{{ cur_derivative.d1 }}"></input></td>
+						        	<td><input type="text" name=d2 value="{{ cur_derivative.d2 }}"></input></td>
+						        	<td><input type="text" name=d3 value="{{ cur_derivative.d3 }}"></input></td>
+						        	<td><input type="text" name=d4 value="{{ cur_derivative.d4 }}"></input></td>
+						        	<td><input type="text" name=qty value="{{ cur_derivative.qty }}"></input></td>
+						        	<td><input type="text" name=f1 value="{{ cur_derivative.f1 }}"></input></td>
+						        	<td><input type="text" name=f2 value="{{ cur_derivative.f2 }}"></input></td>
+						        	<td><input type="text" name=f3 value="{{ cur_derivative.f3 }}"></input></td>
+						        	<td><input type="text" name=f4 value="{{ cur_derivative.f4 }}"></input></td>
+						        	<td><input type="text" name=f5 value="{{ cur_derivative.f5 }}"></input></td>
+						        	<td><input type="text" name=f6 value="{{ cur_derivative.f6 }}"></input></td>
+						        	<td><input type="text" name=f7 value="{{ cur_derivative.f7 }}"></input></td>
+						        	<td><input type="text" name=f8 value="{{ cur_derivative.f8 }}"></input></td>
+						        	<td><input type="text" name=f9 value="{{ cur_derivative.f9 }}"></input></td>
+						        	<td><input type="text" name=f10 value="{{ cur_derivative.f10 }}"></input></td>
+						        	<td><input type="text" name=f11 value="{{ cur_derivative.f11 }}"></input></td>
+						        	<td><input type="text" name=f12 value="{{ cur_derivative.f12 }}"></input></td>
+						        	<td><input type=submit name="fg_derivative_update" value="fg_derivative_update"></input></td>
+						        </tr>
+						    </form>
+					        -------------------------------------->
+					    </tbody>
+			        </table>
+			    </fieldset>
+		    <fieldset class="module aligned collapse">
+			<p>abc</p>
+		   	
+			</fieldset>
+			<fieldset class="module aligned collapse">
+				<p>abc</p>
+				
+			</fieldset>
+			<div>
+			<input type="submit" class="command-button button primary" value="Get Price" name="get_price"></input>
+			</div>
+		</div>
+		</fieldset>
+</div>
+    <!------------------------------------ END Content -------------------------------------->
+<div id="footer"></div>
+</div>
+<!------------------------------------ END Container -------------------------------------->
+{% endblock %}
+</body>

@@ -1,0 +1,347 @@
+{% extends "admin/base_site_custom.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+<div class="margin10" style="float: left; height:7x; width:100%">
+        	<ul class="breadcrumbs">
+            <li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			
+						<li>Add {{ data.transaction_type.0.name }}</li>
+                 
+                </ul>
+               </div>
+               <br>
+              {% endif %}
+{% endblock %}
+{% block content %}
+<script type="text/javascript">
+	function show_hide(panel_id, link_id) {
+	   var panel = document.getElementById(panel_id);
+	   var link = document.getElementById(link_id);
+	   
+	   if (link.innerHTML == 'Show'){
+	   	link.innerHTML = 'Hide'
+	   	panel.className = "module aligned collapse"
+	   }
+	   else if (link.innerHTML == 'Hide') {
+   		link.innerHTML = 'Show'
+	   	panel.className = "module aligned collapse collapsed"
+	   }
+	   }
+</script>
+
+
+<script>
+    function showDialog(id){
+        var dialog = $(id).data('dialog');
+        dialog.open();
+    }
+</script>
+
+<div id="content" class="colM">
+    <h1>Edit {{ data.pl_obj.name }} - {{data.vendor_obj.name}}</h1>
+	
+	<!--<div>
+		{{data}}
+	</div>-->
+	
+	<fieldset class="module aligned ">
+	<div id="content-main">
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/vendor_pl/{{data.pl_obj.id}}/history/" class="historylink">History</a>
+            </li>
+		</ul> 
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:vendor_pl_detail' %}" method="post" id="coa_form" novalidate>
+        	<input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        	{% csrf_token %}
+        		<div class="form-row field-xyz" hidden>
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_item_master">Item name search:</label>
+			                <input id="id_item_master"  name="item_name_search" onchange="submit()" value="{{ data.item_name_search }}">
+			            </div>
+			        </div>
+			    </div>
+		        
+				<div class="form-row field-name">
+		    	<label class="required" for="id_sel_vendor">Vendor:</label>
+		         <select id ="id_sel_vendor" name="sel_vendor" onchange="submit()" value="{{data.sel_vendor.name}}">
+		                    {% for cur_vendor in data.vendor_opt %}
+              		<option value="{{ cur_vendor.id }}" {% if data.sel_vendor_id == cur_vendor.id %} selected {% endif %} onclick="submit()">{{ cur_vendor.name }}</option>
+              		{% endfor %}
+            		</select>
+	           	</div>
+	           
+		        <div class="form-row field-xyz">
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_item_master">Item Group:</label>
+			                <select id="id_item_master" name="sel_item_group" onchange="submit()">
+			                	<option value="*All*" selected >*All*</option>
+			                	{% for cur_item_group in data.item_group_opt %}
+			                	<option value="{{ cur_item_group.id }}" {% if data.sel_item_group_id == cur_item_group.id %} selected {% endif %}>{{ cur_item_group.name }}</option>
+			                	{% endfor %}
+			                	
+							</select>
+						</div>
+			        </div>
+			    </div>
+			    <div class="form-row field-xyz">
+			        <div style="float:left;%">
+			            <div>
+			                <label class="required" for="id_item_master">Item name search:</label>
+			                <input style="width:200%" id="id_item_master" name="item_name_search" onchange="submit()" value="{{ data.item_name_search }}">
+			                <input type="submit" class="command-button button primary" value="search" name="search"></input>
+			            </div>
+			        </div>
+			    </div>
+			    
+			    <div class="form-row field-xyz">
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_item_master">Item master:</label>
+			                <select id="id_item_master" name="sel_item_master" onchange="submit()">
+			                	{% for cur_item_master in data.item_master_opt %}
+			                	<option value="{{ cur_item_master.id }}" {% if data.sel_item_master_id == cur_item_master.id %} selected {% endif %}>{{ cur_item_master.name }}</option>
+			                	{% endfor %}
+			                </select>
+			             	
+			                {% if not 'sel_pl_obj' in data %}
+			                <div style="float:left; width:200px">
+			                <input type="submit" class="command-button button primary" value="Create" name="create"></input>
+							</div>
+							{% endif %} 
+						</div>
+			        </div>
+			    </div>
+		        
+		     		<div class="form-row field-xyz">
+            		
+            		<fieldset id = "show_hide_panel1" class="module aligned collapse collapsed">
+    				<h2>Raw Material Price (<a id="switch_link1" class="collapse-toggle" href="#" onclick="show_hide('show_hide_panel1', 'switch_link1')">Show</a>)</h2>
+		        	{% for cur_rmp_obj_set in data.vendor_rmp_obj_set %}
+		        		
+		        	{% if forloop.counter == 1 or forloop.counter == 5 or forloop.counter == 9 or forloop.counter == 13 or forloop.counter == 17 %}
+		        	<div class="form-row field-{{cur_rmp_obj_set.0}}">
+	        		{% endif %}
+		        	<div style="float:left; width:25%">
+			        	<div style="float:center; text-align:center">
+				        	<!--<label class="required" for="id_rmp{{forloop.counter}}" style="text-align:right">P{{forloop.counter}}</label>-->
+				        	<b>P{{forloop.counter}} : </b>
+							<text>{{ cur_rmp_obj_set.0 }} @ {{ cur_rmp_obj_set.1 }}</text>
+							
+				        	{% if cur_rmp_obj_set.6 == False %}
+				        	<a href="/journal_mgmt/wc_vendor_rmp_supplier/detail/auto_rmp_id={{ cur_rmp_obj_set.2}}/type=vendor/sup_id={{ cur_rmp_obj_set.3 }}/?auto_pl_id={{ cur_rmp_obj_set.4 }}&item_master_id={{ cur_rmp_obj_set.5 }}" class="add-another" id="add_id_auto_pl"> 
+							<img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another">
+							</a>
+							{% endif %}
+						</div>
+					</div>
+		        	
+		        	{% if forloop.counter == 4 or forloop.counter == 8 or forloop.counter == 12 or forloop.counter == 16 or forloop.counter == 20 %}
+	        		</div>
+	        		{% endif %}
+	        		{% endfor %}
+		        	</fieldset>
+		        			
+			        	
+            		</div>  
+		    </form>
+		    <form enctype="multipart/form-data" action="{% url 'journal_mgmt:vendor_pl_detail' %}" method="post" id="coa_form" novalidate>
+		        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+		        {% csrf_token %}
+
+			       
+		       <div class="form-row field-name"hidden>2
+		    		<label class="required" for="id_sel_vendor">Vendor:</label>
+		         	<select id ="id_sel_vendor" name="sel_vendor" onchange="submit()" value="{{data.sel_vendor.name}}">
+		                    {% for cur_vendor in data.vendor_opt %}
+              		<option value="{{ cur_vendor.id }}" {% if data.sel_vendor_id == cur_vendor.id %} selected {% endif %} onclick="submit()">{{ cur_vendor.name }}</option>
+              		{% endfor %}
+            		</select>
+	           </div>
+	           
+			   <div class="form-row field-xyz" hidden>
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_item_master">Item Group:</label>
+			                <select id="id_item_master" name="sel_item_group" onchange="submit()">
+			                	<option value="*All*" selected >*All*</option>
+			                	{% for cur_item_group in data.item_group_opt %}
+			                	<option value="{{ cur_item_group.id }}" {% if data.sel_item_group_id == cur_item_group.id %} selected {% endif %}>{{ cur_item_group.name }}</option>
+			                	{% endfor %}
+			                </select>
+						</div>
+			        </div>
+			    </div>
+			    
+			    <div class="form-row field-xyz" hidden>
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_item_master">Item name search:</label>
+			                <input id="id_vendor" name="sel_vendor_id" onchange="submit()" value="{{ data.sel_vandor_id }}">
+			                <input id="id_item_group" name="sel_item_group_id" onchange="submit()" value="{{ data.sel_item_group_id }}">
+			                <input id="id_item_name_search" name="item_name_search" onchange="submit()" value="{{ data.item_name_search }}">
+			            </div>
+			        </div>
+			    </div>
+	       		<div class="form-row field-xyz">
+	        		<div style="float:left; width:50%">
+		            	<div>
+		                	<label class="required" for="id_item_master">Vendor Price List:</label>
+		                	<select id="id_item_master" name="sel_pl" onchange="submit()">
+		                	<option value="-" selected >-</option>
+		                	{% for cur_pl in data.pl_opt %}
+		                	<option value="{{ cur_pl.id }}" {% if data.sel_pl == cur_pl.id %} selected {% endif %}>{{ cur_pl.item.name }} - Dt:{{ cur_pl.last_updated }} ({{ cur_pl.item.id }})</option>
+		                	{% endfor %}
+		               	 	</select>
+						</div>
+	        		</div>
+	        	</div>
+		    	<br>
+        		
+        		{% if 'sel_pl_obj' in data %}
+        		<div>
+  					<div class="form-row field-xyz">
+	  					<div style="width:30%; float:left">
+		                	<label class="required" for="id_coa_no" style="width:20%; float:left">Job Work Rate:</label>
+	                    	<input id="id_jw_rate" name="jw_rate" type="number" value="{{ data.sel_pl_obj.job_work_rate }}"/>
+	                    </div>
+	                    
+	        
+	                    <div style="width:30%; float:left">
+			                <label class="required" for="id_coa_no"style="width:20%; float:left">Job Work Tax:</label>
+		                    <select id="id_jw_tax" name="jw_tax"/>
+								{% for cur_tax in data.tax_format_opt %}
+		                		<option value="{{ cur_tax.id }}" {% if data.sel_pl_obj.purchase_tax_format.id == cur_tax.id %} selected {% endif %}>{{ cur_tax.name }}</option>
+		                		{% endfor %}
+							</select>
+						</div>
+						<div style="width:30%; float:right">
+							<div>
+								<input type="submit" value="Update - similar sizes" class="command-button button primary" name="jw_rate_similar_sizes" />
+								<input type="submit" value="Update - all sizes" class="command-button button primary" name="jw_rate_all_variants" />
+								
+							</div>
+							</div>
+						
+                	</div>
+            		<div class="form-row field-xyz">
+            		<div style="width:100%; float:left">
+			                <label class="required" for="id_coa_no" style="width:10%; float:left">Job Calc Equation:</label>
+		                    	{% for cur_jc_calc in data.spec_code_list %}
+		                		{% if cur_jc_calc.0 == data.sel_pl_obj.item_id %}
+		                		<input id="id_jc_id" name="jc_id" style="width:400px; float:center" value="{{ cur_jc_calc.1.id }}" hidden ></input>
+								<input id="id_jc_eqn" name="jc_eqn" style="width:400px; float:center" value="{{ cur_jc_calc.1.job_work_price_calc_eqn }}" ></input>
+								{% endif %}		                	
+		                		{% endfor %}
+							<div style="width:30%; float:right">
+							<div>
+								<input type="submit" value="Update - With eqn for similar sizes" class="command-button button primary" name="eqn_jw_rate_similar_sizes" />
+								<input type="submit"value="Update - With eqn for all sizes"  class="command-button button primary" name="eqn_jw_rate_all_variants" />
+							</div>
+							</div>
+							
+							<div style="width:25%; float:right">
+	                        	<div class="checkbox-row">
+	                        	<input id="id_change_eqn" name="change_eqn" type="checkbox"/><label class="vCheckboxLabel" for="id_change_eqn"><b>Job cal eqn</b></label>
+	                        	</div>
+	                       		</div>
+	                       </div>
+            			<div style="width:90%; float:right">
+							{% if data.constant_val %}
+							<label><b>C = </b>{{ data.constant_val }}</label>
+							{% endif %}	
+							</div>
+            		</div>
+            		<br>
+        			<div class="form-row field-xyz">
+	        			<div style="width:30%; float:left">
+			                <label class="required" for="id_coa_no">Purchase Rate:</label>
+		                    <input id="id_pur_rate" name="pur_rate" type="number" value="{{ data.sel_pl_obj.purchase_rate }}"/>
+	                	</div>
+	                	<div style="width:30%; float:left">
+			        		<label class="required" for="id_coa_no">Purchase Tax:</label>
+		                    <select id="id_pur_tax" name="pur_tax" value="{{ data.tax_format_opt.purchase_tax_format }}"/>
+		                		{% for cur_tax in data.tax_format_opt %}
+			                	<option value="{{ cur_tax.id }}" {% if data.sel_pl_obj.purchase_tax_format.id == cur_tax.id %} selected {% endif %}>{{ cur_tax.name }}</option>
+			                	{% endfor %}
+		                	</select>
+                		</div>
+                	</div>
+                		<div class="form-row field-xyz">
+                		<div style="width:100%; float:left">
+			                <label class="required" for="id_coa_no" style="width:15%; float:left">Purchase Calc Equation:</label>
+		                    	{% for cur_pc_calc in data.spec_code_list %}
+		                		{% if cur_pc_calc.0 == data.sel_pl_obj.item_id %}
+		                		<input id="id_pc_id" name="pc_id" style="width:400px; float:center" value="{{ cur_pc_calc.1.id }}" hidden ></input>
+								<input id="id_pc_eqn" name="pc_eqn" style="width:400px; float:center" value="{{ cur_pc_calc.1.purchase_price_calc_eqn }}" ></input>
+								{% endif %}		                	
+		                		{% endfor %}
+								<div style="width:25%; float:right">
+							
+                				<input type="submit" value="Update - similar sizes" class="command-button button primary" name="pur_rate_similar_sizes" />
+                		
+	                       			</div>
+								<div style="width:20%; float:right">
+	                        	
+	                        	<input id="id_change_eqn_pur" name="change_eqn_pur" type="checkbox"/><label class="vCheckboxLabel" for="id_change_eqn"><b>Purchase cal eqn</b></label>
+	                        	
+	                       		</div>
+	                       
+	                       
+						</div>
+                		</div>
+                		
+                	
+	        	 	<div class="form-row field-xyz">
+		        		<label class="required" for="id_coa_no">Remarks:</label>
+	                    <input class="vTextField" id="id_remarks" name="remarks" type="text" value="{{ data.pl_obj.remarks }}"/>
+                	</div>
+                </div>
+	            <div class="submit-row">
+					<input type="submit" value="Save" class="command-button button primary" name="save" />
+				</div>
+				{% endif %}
+		</form>
+		</div>
+		</fieldset>
+	
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

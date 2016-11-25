@@ -1,0 +1,168 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+  
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+
+<!-- Header -->
+<!--
+<div id="header">
+    <div id="branding">
+		<h1 id="site-name"><a href="/admin/">Django administration</a></h1>
+    </div>
+    <div id="user-tools">
+        Welcome,
+        <strong>admin</strong>.
+        <a href="/admin/password_change/">Change password</a> /
+        <a href="/admin/logout/">Log out</a>
+    </div>
+</div>
+-->
+<!-- END Header -->	
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Container -->
+<div id="container">
+<div id="" class="flex">
+<h1>Select Item Master to change</h1>
+	<div id="content-main">
+	<!-- Content -->
+		<ul class="object-tools">
+	        <li>
+	          	<a href="/journal_mgmt/item_master/create/" class="addlink">
+	            Add Item Master
+	          	</a>
+	        </li>
+	    </ul>
+	    <div class="module" id="changelist">
+	    	<div id="toolbar">
+	    		<form id="changelist-search" action="" method="get">
+					<div><!-- DIV needed for valid HTML -->
+						<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /></label>
+						<label for="searchbar">Item Group:</label>
+						<select name="group_id">
+								{% for cur_item_group in data.item_group_opt %}
+								<option value="{{ cur_item_group.id }}" 
+								{% if not data.sel_item_group == '*All*' %}
+								{% if cur_item_group.id = data.sel_item_group.id %}
+								selected 
+								{% endif %}
+								{% endif %}>
+								{{ cur_item_group.name }}
+								</option>
+								{% endfor %}
+							<option value="*All*"{% if data.sel_item_group == '*All*' %} selected {% endif %}>*All*</option>
+						</select>
+						<label for="searchbar">Name:</label>
+						<input type="text" size="40" name="name_search" value="{{data.searched_name}}" id="searchbar" />
+						<input type="submit" value="Search" />
+	    			</div>
+				</form>
+			</div>
+    		<script type="text/javascript">document.getElementById("searchbar").focus();</script>
+    		<form id="changelist-form" action="" method="post" novalidate>
+    		<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+    		{% csrf_token %}
+    		<p class="paginator">
+			    <span class="this-page"></span>
+			    {% for i in data.page_range %}
+			    	<a href="{{data.index_url}}&page_no={{i}}">{% if data.page_no = i %} >{% endif %}{{i}}</a>
+			    {% endfor %}
+				 Total : {{data.result_tot}} records
+			</p>
+    		<div class="results">
+    			{% if data.result_list %}
+				<table id="result_list">
+				<thead>
+				<tr>
+				<th scope="col"  class="action-checkbox-column">
+				   <div class="text"><span><input type="checkbox" id="action-toggle" /></span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Item Code</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-Item Group">
+				   <div class="text"><span>Imported Item Code</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-spec_code">
+				   <div class="text"><span>Imported Finish Code</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col" class="sortable column-name">
+				   <div class="text"><span>Item Name</span></div>
+				   <div class="clear"></div>
+				</th>
+				<th scope="col"  class="sortable column-last_updated">
+				   <div class="text"><span>Last Updated</span></div>
+				   <div class="clear"></div>
+				</th>
+				</tr>
+				</thead>
+				<tbody>
+					{% for cur_object in data.result_list %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+					<tr class="{{ rowcolors }}">
+						<td class="form-row row{{ rowcolors }}">
+							<input class="action-select" name="_selected_action" type="checkbox" value={{cur_object.id}}/>
+						</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_object.id }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_object.imported_item_code }}</td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_object.imported_finish_code }}</td>
+						<td class="form-row row{{ rowcolors }}"><a href="/journal_mgmt/item_master/detail/id={{cur_object.id}}/">{{cur_object.name}}</a></td>
+						<td class="form-row row{{ rowcolors }}">{{ cur_object.last_updated }}</a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+				</table>
+				{% else %}
+				    <p>{% trans "You don't have permission to edit anything." %}</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+</div>
+<!-- END Container -->
+</body>

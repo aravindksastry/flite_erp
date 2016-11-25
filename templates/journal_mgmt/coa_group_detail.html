@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title> coa_group_detail | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-coa_group change-form">
+
+<!-- Container -->
+<div id="container">
+
+    
+    <!-- Header -->
+    <div id="header">
+        <div id="branding">
+			<h1 id="site-name"><a href="/admin/">Featherlite_ERP</a></h1>
+        </div>
+   </div>
+    <!-- END Header -->
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/admin/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/admin/journal_mgmt/coa_group/">Coa_groups</a>
+&rsaquo; Customer
+</div>
+    <!-- Content -->
+    <div id="content" class="colM">
+        <h1>Coa_group_detail</h1>
+        <div id="content-main">
+  <ul class="object-tools">
+    <li>
+        <a href="/admin/journal_mgmt/coa_group/23/history/" class="historylink">History</a>
+    </li>
+  </ul>
+
+<form enctype="multipart/form-data" action="" method="post" id="coa_group_form" novalidate>
+<input type='hidden' name='csrfmiddlewaretoken' value='9cKGBV5JDqNhoFw1smDgRw99CGglyEt9' />
+{% csrf_token %}
+<div>
+  <fieldset class="module aligned ">
+        <div class="form-row field-name">
+			<div>
+               <label class="required" for="id_name">Name:</label>
+               <input  class="vTextField" id="id_name" maxlength="100" name="name" type="text" value={{data.coa_group.name}} />
+			</div>
+        </div>
+        
+        <div class="form-row field-coa_group_no">
+			<div>
+				<label class="required" for="id_coa_group_no">Coa group no:</label>
+				<input  class="vIntegerField" id="id_coa_group_no" name="coa_group_no" type="text" value={{data.coa_group.coa_group_no}} />
+			</div>
+        </div>
+        
+        <div class="form-row field-parent_coa_group">
+            <div>
+				<label class="required" for="id_parent_coa_group">Parent coa group:</label>
+				<select id="id_parent_coa_group" name="parent_coa_group">
+					<option value="{{ data.coa_group.parent_coa_group.id }}" selected="selected">{{ data.coa_group.parent_coa_group.name }}</option>
+				</select>
+				<a href="/admin/journal_mgmt/coa_group/add/?_to_field=id" class="add-another" id="add_id_parent_coa_group" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add Another"/></a>
+            </div>
+        </div>
+
+        <div class="form-row field-data">
+	        <div>
+		        <label class="required" for="id_data">Data:</label>
+		        <textarea class="vLargeTextField" cols="40" id="id_data" name="data" rows="10">
+				</textarea>
+	        </div>
+        </div>
+
+	</fieldset>
+
+<div class="submit-row">
+<input type="submit" value="Save" class="default" name="_save" />
+<p class="deletelink-box"><a href="/admin/journal_mgmt/coa_group/23/delete/" class="deletelink">Delete</a></p>
+<input type="submit" value="Save and add another" name="_addanother" />
+<input type="submit" value="Save and continue editing" name="_continue" />
+</div>
+
+<script type="text/javascript">
+(function($) {
+    var field;
+})(django.jQuery);
+</script>
+
+</div>
+</form></div>
+        
+        <br class="clear" />
+    </div>
+    <!-- END Content -->
+
+    <div id="footer"></div>
+</div>
+<!-- END Container -->
+</body>
+</html>

@@ -1,0 +1,167 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+
+<body class=" journal_mgmt model-coa change-form">
+
+
+{% block breadcrumbs %}
+{% if not is_popup %}
+
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; <a href="/journal_mgmt/vendor_pl/index/">{{data.vendor_pl.name}}</a>
+&rsaquo; Add {{ data.vendor_pl.0.name }}
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="colM">
+    <h1>Edit {{ data.pl_obj.name }} - {{data.vendor_obj.name}}</h1>
+	
+	<!--<div>
+		{{data}}
+	</div>-->
+	<div id="content-main">
+		<ul class="object-tools">
+        	<li>
+            	<a href="/admin/journal_mgmt/vendor_pl/{{data.pl_obj.id}}/history/" class="historylink">History</a>
+            </li>
+		</ul> 
+        <form enctype="multipart/form-data" action="{% url 'journal_mgmt:vendor_pl_detail' data.pl_obj.id %}" method="post" id="coa_form" novalidate>
+        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+        {% csrf_token %}
+			<fieldset class="module aligned ">
+				<div class="form-row field-id" hidden="hidden">
+		            <div>
+		                <label class="required" for="id_pk">ID</label>
+		                <input class="vTextField" id="id_pk" maxlength="10" name="pk" type="text" value="{{data.pl_obj.id}}"/>
+		            </div>
+		        </div>
+		    	<div class="form-row field-name">
+		            <div>
+		                <label class="required" for="id_name">Vendor Name:</label>
+		                <div class="related-widget-wrapper">
+    					<select id="id_transaction_type" name="transaction_type">
+							<select id ="vendor id" id="vendor" onchange="submit()">
+		                		{% for cur_vendor in data.vendor_obj %}
+			                	<option value="{{ cur_vendor.id }}" >{{ cur_vendor.vendor }}</option>
+			                	{% endfor %}
+			             </select>
+    
+        
+        <a class="related-widget-wrapper-link change-related" id="change_id_transaction_type" data-href-template="/admin/journal_mgmt/transaction_type/__fk__/?_to_field=id&amp;_popup=1" title="Change selected transaction_type">
+            <img src="/static/admin/img/icon_changelink.gif" width="10" height="10" alt="Change">
+        </a>
+        
+        
+        <a class="related-widget-wrapper-link add-related" id="add_id_transaction_type" href="/coa/create/coa_group_id=(/add/?_to_field=id&amp;_popup=1" title="Add another transaction_type">
+            <img src="/static/admin/img/icon_addlink.gif" width="10" height="10" alt="Add">
+        </a>
+        
+        
+    
+</div>
+		                
+		            </div>
+		        </div>
+		        <div class="form-row field-xyz">
+			        <div style="float:left; width:50%">
+			            <div>
+			                <label class="required" for="id_item_master">Item:</label>
+			                <select id="id_pl" name="pl_id" onchange="submit()">
+			                	{% for cur_pl in data.pl_opt %}
+			                	<option value="{{ cur_pl.id }}" {% if cur_pl.id == data.pl_obj.id %} selected {% endif %}>{{ cur_pl.item }}</option>
+			                	{% endfor %}
+			                	
+							</select>
+						</div>
+			        </div>
+			    </div>
+		    </form>
+		    <form enctype="multipart/form-data" action="{% url 'journal_mgmt:vendor_pl_save' data.pl_obj.id %}" method="post" id="coa_form" novalidate>
+		        <input type='hidden' name='csrfmiddlewaretoken' value='ehAo1ovx9UUGPQ0UxcAyB9gb9NCPwEsJ'/>
+		        {% csrf_token %}
+			    <div class="form-row field-xyz">  
+			        <div style="float:left">
+			            <div>
+			                <label class="required" for="id_coa_no">Job Work Rate:</label>
+		                    <input class="vIntegerField" id="id_jw_rate" name="jw_rate" type="text" value="{{ data.pl_obj.job_work_rate }}"/>
+		                </div>
+		                		<br>
+			        	<div>
+			                <label class="required" for="id_coa_no">Purchase Rate:</label>
+		                    <input class="vIntegerField" id="id_jw_rate" name="pur_rate" type="text" value="{{ data.pl_obj.purchase_rate }}"/>
+		                </div>
+			       				<br>
+			        	<div>
+			                <label class="required" for="id_coa_no">Job Work Tax Format:</label>
+		                    <select class="vIntegerField" id="id_jw_rate" name="jwt_format" type="text" value="{{ data.pl_obj.job_work_tax_format }}"/>
+								{% for cur_pl in data.pl_opt %}
+			                	<option value="{{ cur_pl.id }}" {% if cur_pl.id == data.pl_obj.id %} selected {% endif %}>{{ cur_pl.job_work_tax_format }}</option>
+			                	{% endfor %}
+							</select>		                
+		                </div>
+		                		<br>
+			        	<div>
+			                <label class="required" for="id_coa_no">Purchase Tax Format:</label>
+		                    <select class="vIntegerField" id="id_jw_rate" name="pt_format" type="text" value="{{ data.pl_obj.purchase_tax_format }}"/>
+		                		{% for cur_pl in data.pl_opt %}
+			                	<option value="{{ cur_pl.id }}" {% if cur_pl.id == data.pl_obj.id %} selected {% endif %}>{{ cur_pl.purchase_tax_format }}</option>
+			                	{% endfor %}
+		                	</select>
+		                </div>
+			        		 	<br>
+			        	<div>
+			                <label class="required" for="id_coa_no">Remarks:</label>
+		                    <input class="vIntegerField" id="id_jw_rate" name="remarks" type="text" value="{{ data.pl_obj.remarks }}"/>
+		                </div>
+	                 </div>
+	               </div>
+	         </div>
+		       </div>
+			    <div class="submit-row">
+					<input type="submit" value="Save" class="default" name="_save" />
+					<input type="submit" value="Save and add another" name="_addanother" />
+					<input type="submit" value="Save and continue editing" name="_continue" />
+				</div>
+			
+		</form>
+	</div>
+	<br class="clear" />
+</div>
+    <!-- END Content -->
+<div id="footer"></div>
+</div>
+<!-- END Container -->
+{% endblock %}
+</body>

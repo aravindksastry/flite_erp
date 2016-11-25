@@ -1,0 +1,66 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}" />{% endblock %}
+
+{% block bodyclass %}{{ block.super }} login{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+{% load custom_temp_tags %}
+{% if form.errors and not form.non_field_errors %}
+<p class="errornote">
+{% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
+</p>
+{% endif %}
+
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
+<p class="errornote">
+    {{ error }}
+</p>
+{% endfor %}
+{% endif %}
+
+<div id="content-main">
+<form action="{% url 'journal_mgmt:login_authenticate' %}" method="post" id="login-form">{% csrf_token %}
+  <div class="form-row" style="text-align:center">
+	  <div class="form-row">
+		  <div class="form-row" style="width:25%; float:left">
+		  <label for="id_username" class="required"><b>Username:</b></label>
+		  </div>
+		  <div class="form-row" style="width:75%; float:left">
+		  <input type="text" name="username" style="width:200px"/>
+		  </div>
+	  </div>
+	  <div class="form-row">
+	      <div class="form-row" style="width:25%; float:left">
+	      <label for="id_password" class="required"><b>Password:</b></label> 
+	      </div>
+	  	  <div class="form-row" style="width:75%; float:left">
+	      <input type="password" name="password" style="width:200px"/>
+	  	  </div>
+	  </div>
+  </div>
+  {% url 'admin_password_reset' as password_reset_url %}
+  {% if password_reset_url %}
+  <div class="password-reset-link">
+    <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+  </div>
+  {% endif %}
+  <div class="submit-row">
+    <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}" />
+  </div>
+</form>
+
+<script type="text/javascript">
+document.getElementById('id_username').focus()
+</script>
+</div>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends "admin/change_list_custom.html" %}
+{% load i18n admin_static %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-icons.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-responsive.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-schemes.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/docs.css" />
+<!--  <link href="{{STATIC_URL}}css/popup_css.css" rel="stylesheet">-->
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<!-- <script type="text/javascript" src= "{% static "js/custom_scripts.js" %}"></script> -->
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+<script language="javascript" type="text/javascript">
+		function popitup(url) {
+		    newwindow=window.open(url,'{{title}}','height=1,width=1,left=1,top=1,addressbar=no,scrollbar=no');
+		    if (window.focus) {newwindow.focus()}
+		    return false;
+		}
+	</script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+	
+	{% load custom_temp_tags %}
+	{% block breadcrumbs %}
+	<div class="margin5" style="float: left; height:7x; width:90%">
+		<ul class="breadcrumbs-custom">
+			<li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			<li><a href="/journal_mgmt/home_view/index/dept={{data.dept_data.id}}">{{data.dept_data.name}}</a></li>
+			<li>{{data.pre_filter_param.ttype.name}}</li>
+		</ul>
+	</div>
+    {% endblock %}
+	{% block content %}
+
+   	<script type="text/javascript">
+	(function($) {
+	    $(document).ready(function($) {
+	        $("tr input.action-select").actions();
+	    });
+	})(django.jQuery);
+	</script>
+
+	
+	<div id="container">
+	
+	<div class="container page-content">    
+		<div data-role="charm" data-position="left" id="left-charm" style="overflow:auto; float: left; width:25%"><h1 class="text-light">My Shortcuts</h1>
+         	<div class="cell" >
+				<ul class="sidebar2" style="width:100%">
+				<li class="stick">
+				<a class="dropdown-toggle"><span class="{{data.dept_logo.dept_icon}}"></span>{{data.dept_data.name}}</a>
+					<ul class="d-menu" data-role="dropdown">
+	               	<div class="form-row field-child_trefs">
+		   				<div style="float:left; width:100%">
+		   					{% for cur_ttype in data.ttype_charm %}
+		    				<li><a href="/journal_mgmt/transaction_ref/index/ttype={{ cur_ttype.0.id }}" id="navigate_parent"> {{cur_ttype.0.name}}</a></li>
+		    				{% endfor %}
+	    				</div>
+		    		</div>
+		    		</ul>
+	    		</li> 
+	    		</ul>
+			</div>
+		</div>
+	</div>
+	</div>
+	<div>
+		<div id="container" style="float: left; height: 40px; width:75%">
+			<h3>{{data.pre_filter_param.ttype.name}}</h3>
+		</div>
+		<div style="height:30px; width:25%; float:right">
+			<button class="command-button new" onclick="window.location.href='{% url 'journal_mgmt:tref_create' data.ttype.id %}'"style="float:left">Create New</button>
+			<button class="command-button new" onclick="showDialog('dialog9')" style="float:left"><img src="/static/img/search1.png" alt="Search" />Global Search</button>
+		</div>
+	</div>
+	<!-- Content -->
+	<div class="flex">
+		<div id="content-main">
+   	    	<div class="module" id="xyz">
+		    <div id="block1" class="block_popup "></div>
+			<div id="container1" class = "container_popup">
+				<iframe id="iframe1" style="width:100%; height: 100%; outline: 1px solid red;"></iframe>
+			<span id="closebtn1" class="closebtn_popup " onclick="close('#block1', '#container1')">Close</span>
+			</div>
+				<div id="">
+		    		<form id="changelist-search" action="{% url 'journal_mgmt:tref_index' data.ttype.id %}" method="post">
+		    		<div data-role="dialog" id="dialog9" class="padding20" data-close-button="true" data-overlay="true" data-overlay-color="op-dark" style="float: left; width:250%">
+			    		<input type='hidden' name='csrfmiddlewaretoken' value='alaLLRkqN3XslnvZCPy6I5zN3PC5nqFB' />
+						{% csrf_token %}
+						<div><!-- DIV needed for valid HTML -->
+						<div style="float:left;">
+							<label for="searchbar"><img src="/static/admin/img/icon_searchbox.png" alt="Search" /><b>Name</b></label>
+							<input type="text" size="40" name="searched_name" value="{{data.searched_name}}" id="searchbar" />
+							<label class="required" for="id_status"><b>Status</b></label>
+							<select name="status_filter">
+								<option value="show_all" {% if data.index_filter == "show_all" %} selected {% endif %} >Show All</option>
+								<option value="show_draft" {% if data.index_filter == "show_draft" %} selected {% endif %}>Show Drafts</option>
+								<option value="show_active" {% if data.index_filter == "show_active" %} selected {% endif %}>Show Active Records</option>
+								<option value="show_archive" {% if data.index_filter == "show_archive" %} selected {% endif %}>Show Archives</option>
+							</select>
+						{% for cur_ttype_field in data.ttype_data.field_list %}
+						{% if 'search' in cur_ttype_field.3 %}
+						</div>
+							<div style="float:left;">
+				        		<label class="required" for="id_{{ cur_ttype_field.0 }}"><b>{{ cur_ttype_field.0 }}</b></label>
+				        		{% with data.dsearch|get_element:cur_ttype_field.3.name as x %}
+				        		{% if cur_ttype_field.1 == 'input' %}
+					        		<input class="vTextField" id="id_{{ cur_ttype_field.0 }}"
+					        		maxlength="{{ cur_ttype_field.3.max_length }}"
+					        		name="ds_{{ cur_ttype_field.3.name }}" type="{{ cur_ttype_field.3.type }}"
+				        			value="{% if x %}{{x.0}}{% endif %}"/>
+				        		{% elif cur_ttype_field.1 == 'select' %}
+					        		<select id="id_{{ cur_ttype_field.3.name }}" name="ds_{{ cur_ttype_field.3.name }}">
+	        		        		{% for cur_select_box in data.select_boxes %}
+					        			{% if cur_ttype_field.3.name == cur_select_box.0 %}
+					        			{% for cur_opt in cur_select_box.1 %}
+					        			<option value="{{ cur_opt.id }}" {% if cur_opt.id|stringformat:".0f" == data.dsearch|get_element:cur_ttype_field.3.name %} selected {% endif %}>{{ cur_opt.name }}</option>
+					        			{% endfor %}
+					        			{% endif %}
+					        		{% endfor %}
+					        		<option value="*All*" {% if data.dsearch|get_element:cur_ttype_field.3.name ==  '*All*' %} selected {% endif %}>*All*</option>
+									</select>
+					        	{% endif %}
+					        	{% endwith %}
+			        		</div>
+		        		{% endif %}
+						{% endfor %}
+						<input type="submit" value="Search" />
+						</div>
+		    			<div>
+		    			</div>
+		    		</div>	
+					</form>
+				</div>
+	    		<script type="text/javascript">document.getElementById("searchbar").focus();</script>
+	    		
+	    		<!--  <form id="changelist-form" action="" method="post" novalidate><input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+	    		
+	    		<div class="actions">
+				    <label>Action: 
+				    	<select name="action">
+							<option value="" selected="selected">---------</option>
+							<option value="delete_selected">Delete selected transaction_refs</option>
+						</select>
+					</label>
+					<input class="select-across" name="select_across" type="hidden" value="0" />
+				    <button type="submit" class="button" title="Run the selected action" name="index" value="0">Go</button>
+				        <script type="text/javascript">var _actions_icnt="2";</script>
+				        <span class="action-counter">0 of 2 selected</span>
+			    </div>
+	    		-->
+	    		<div class="results">
+	    			{% if data.object_list %}
+					<table id="result_list" class="dataTable striped border bordered" data-role="datatable" data-searching="true">
+					<thead>
+					<tr>
+					<th scope="col" style="width:3%" class="action-checkbox-column">
+					   <div class="text"><span>Sl No.</span></div>
+					   <div class="clear"></div>
+					</th>
+					<th scope="col" style="width:15%" class="column-__str__">
+					   <div class="text"><span>Transaction_ref</span></div>
+					   <div class="clear"></div>
+					</th>
+					<th scope="col" style="width:10%" class="column-__str__">
+					   <div class="text"><span>Ref Name</span></div>
+					   <div class="clear"></div>
+					</th>
+					<th scope="col" style="width:10%" class="column-__str__">
+					   <div class="text"><span>Submit Date</span></div>
+					   <div class="clear"></div>
+					</th>
+					{% for cur_ttype_data in data.ttype_data.field_list %}
+					{% if 'index' in cur_ttype_data.3 %}
+					<th scope="col" style="width:10%" class="column-__str__">
+					   <div class="text"><span>{{ cur_ttype_data.0 }}</span></div>
+					   <div class="clear"></div>
+					</th>
+					{% endif %}
+					{% endfor %}
+					<th scope="col" style="width:2%" class="column-__str__">
+					   <div class="text"><span>Report</span></div>
+					   <div class="clear"></div>
+					</th>
+					<th scope="col" style="width:2%" class="column-__str__">
+					   <div class="text"><span>Popup</span></div>
+					   <div class="clear"></div>
+					</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for tref in data.object_list %}
+					{% cycle 'row1' 'row2' as rowcolors silent %}
+					<tr class="{{ rowcolors }}">
+						<td class="form-row row{{ rowcolors }}">{{ forloop.counter }}</td>
+						<th class="form-row row{{ rowcolors }}">
+						<a href="/journal_mgmt/transaction_ref/detail/id={{tref.0.id}}/?redirect_name={{data.searched_name}}&redirect_data={{data.searched_data}}&redirect_status={{data.index_filter}}">{{tref.0.name}}</a>
+						</th>
+						<td class="form-row row{{ rowcolors }}">
+						{% if not tref.0.ref_name == None %}
+						{{ tref.0.ref_name }}
+						{% endif %}
+						</td>
+						<td class="form-row row{{ rowcolors }}">{{tref.0.submit_date}}</td>
+						{% for cur_param in data.index_params %}
+						<td class="form-row row{{ rowcolors }}">
+						{% if cur_param in tref.1.field_list %}
+						{% with tref.1.field_list|get_element:cur_param as x %}
+						{{ x|tref_data_index:'abc' }}
+						{% endwith %}
+						{% endif %}
+						</td>
+						{% endfor %}
+						<td class="form-row row{{ rowcolors }}">
+						<!-- <input type="image" onclick=submit() name="export" value="spread_sheet" src="/static/img/pdficon.png" alt:"pdfreport" style="height:24px">-->
+						<span class="empli_popup" onclick="open('/journal_mgmt/pdf_view?tref_id={{tref.0.id}}', '#block1', '#container1', '#iframe1')"/><img src="/static/img/pdficon.png" alt="pdfreport" >
+						</td> 
+						</a>
+						<td class="form-row {{ rowcolors }}">
+						<br/>
+						<span class="empli_popup" onclick="open('/journal_mgmt/transaction_ref/detail_popup/id={{tref.0.id}}', '#block1', '#container1', '#iframe1')">Preview</span>
+						<!--<span class="empli_popup" onclick="open('/journal_mgmt/transaction_ref/detail/id={{tref.0.id}}/?redirect_name={{data.searched_name}}&redirect_data={{data.searched_data}}&redirect_status={{data.index_filter}}', '#block1', '#container1', '#iframe1')">Preview</span>-->
+						<!-- <span class="empli_popup" onclick="open('/journal_mgmt/transaction_ref/index/ttype=62', '#block1', '#container1', '#iframe1')">Preview</span> -->
+						</td>
+					</tr>
+					{% endfor %}
+					</tbody>
+					</table>
+					{% else %}
+					    <p>{% trans "You don't have permission to edit anything." %}</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	
+	<!-- END Content -->
+	{% endblock %}
+<!-- END Container -->
+</body>

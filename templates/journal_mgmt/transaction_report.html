@@ -1,0 +1,137 @@
+{% extends "admin/change_list_custom.html" %}
+{% load i18n admin_static %}
+
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-icons.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-responsive.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-schemes.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/docs.css" />
+
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+
+</head>
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+	{% load custom_temp_tags %}
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+
+
+{% block breadcrumbs %}	
+<div class="breadcrumbs">
+<a href="/admin/">Home</a>
+&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+&rsaquo; Transaction_refs
+</div>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+<script>
+  	$(document).ready(function() {
+	$("#datepicker").datepicker({ dateFormat: 'M dd, yy' });
+  	});
+ </script>
+ <script>
+  	$(document).ready(function() {
+	$("#datepicker1").datepicker({ dateFormat: 'M dd, yy' });
+  	});
+ </script>
+<!-- Container -->
+<div class="module" id="xyz">
+	<div id="container">
+	<div id="" class="flex">
+	<h3>Select Auto Pricelist to change</h3>
+		<div id="content-main">
+		<!-- Content -->
+		    	
+		    		<script type="text/javascript">document.getElementById("searchbar").focus();</script>
+		    		<fieldset class="module aligned ">
+		   			<br>
+			   			<form id="changelist-form" action="{% url 'journal_mgmt:transaction_report' %}" method="post">
+			    		<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+			    		{% csrf_token %}
+			    		<div style="float:left">
+			   				<!-- DIV needed for valid HTML -->
+			   				<label for="searchbar">Report Type : </label>
+				   			<select id="id_report_type" name="sel_report_type" onchange="submit()">
+				   				{% for cur_report in data.report_opt %}
+									<option value="{{ cur_report }}" {% if cur_report == data.sel_report_type %}selected{% endif %}>{{ cur_report }}</option>
+								{% endfor %}
+							</select>
+			   			
+				   			<label for="searchbar">Date from:</label>
+						    <input type="date" name="sel_start_date" id="" value="{{data.sel_start_date}}"/>
+						    <label for="searchbar">Date to:</label>
+						    <input type="date" name="sel_end_date" id="" value="{{data.sel_end_date}}"/>
+			   			
+			   				<!-- DIV needed for valid HTML -->
+			   				<label for="searchbar">Page No : </label>
+				   			<select id="id_page_no" name="page_no" onchange="submit()">
+				   			{% if data.page_range|length > 0 %}
+				   				{% for cur_page_no in data.page_range %}
+									<option value="{{ cur_page_no }}" {% if cur_page_no == data.page_no %}selected{% endif %}>{{ cur_page_no }}</option>
+								{% endfor %}
+							{% else %}
+								<option value="1" selected>1</option>
+							{% endif %}
+							</select>
+			   			<button type="submit" value="GO" name="GO"/> GO </button>
+			   			<input type="image" onclick=submit() name="export" value="spread_sheet" src="/static/img/spreadsheet_icon.png" alt:"print" style="height:24px">
+					    </div>
+			   			</form>
+			   			</fieldset>
+		   		<fieldset class="module aligned ">
+	    		<div class="results">
+	 				{% if data.table_body|length > 0 %}
+					<table id="result_list" class="dataTable striped border bordered" data-role="datatable" data-searching="true" style="width:100%">
+						<thead>
+						{% for cur_head_row in data.table_header %}
+							<tr>
+							{% for cur_head_dict in cur_head_row %}
+								<th colspan="{{ cur_head_dict.col_span }}" rowspan="{{ cur_head_dict.row_span }}">
+								{{ cur_head_dict.val }}
+								</th>
+							{% endfor %}
+						</tr>
+						{% endfor %}
+						</thead>
+						<tbody>
+						{% for cur_table_row in data.table_body %}
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							{% for cur_cell in cur_table_row %}
+								<td class="form-row row{{ rowcolors }}" colspan="{{ cur_cell.col_span }}" rowspan="{{ cur_cell.row_span }}">{{ cur_cell.val }}</td>
+							{% endfor %}
+						</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+					{% else %}
+					    <p>{% trans "You don't have permission to edit anything." %}</p>
+					{% endif %}
+				</div>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>

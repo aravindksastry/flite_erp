@@ -1,0 +1,136 @@
+{% extends "admin/change_list_custom.html" %}
+{% load i18n admin_static %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-icons.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-responsive.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/metro-schemes.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/docs.css" />
+<!--  <link href="{{STATIC_URL}}css/popup_css.css" rel="stylesheet">-->
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+
+<!-- <script type="text/javascript" src= "{% static "js/custom_scripts.js" %}"></script> -->
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+<script type="text/javascript">
+	function navigate(location_link) {
+	    var nav_location =  location_link;
+	    window.location = nav_location;
+	   }
+</script>
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+	
+	<!--{% load custom_temp_tags %}
+	{% block breadcrumbs %}
+	<div class="margin5" style="float: left; height:7x; width:90%">
+		<ul class="breadcrumbs-custom">
+			<li><a href="/journal_mgmt/"><span class="icon mif-home"></span></a></li>
+			<li><a href="/journal_mgmt/home_view/index/dept={{data.dept_data.id}}">{{data.dept_data.name}}</a></li>
+			<li>{{data.pre_filter_param.ttype.name}}</li>
+		</ul>
+	</div>
+    {% endblock %}
+    -->
+	{% block content %}
+
+   	<script type="text/javascript">
+	(function($) {
+	    $(document).ready(function($) {
+	        $("tr input.action-select").actions();
+	    });
+	})(django.jQuery);
+	</script>
+	
+	  <div id="container">
+	  
+		<div class="flex">
+	     <div id="content-main">
+	     <h1>TPL Consolidation</h1>
+		   <fieldset class="module aligned ">
+			 <form id="changelist-search" action="{% url 'journal_mgmt:tpl_consolidation' %}" method="post">
+   	    	   <div style="float:left; width:50%" class="form-row field-xyz">
+   	    		{% csrf_token %}
+	    		{% if data.oc_object_list %}
+					<tbody>
+					<label class="required" for="id_order_confirmation">Order Confirmation: </label>
+	                <select id="id_order_confirmation" name="order_confirmation" onchange="submit()">
+							{% for tref in data.oc_object_list %}
+								<option value="{{ tref.0.id }}" name="{{ tref.0.name }}" {% if data.sel_oc_id == tref.0.id %} selected {% endif %} onclick="submit()">{{tref.0.name}}</option>
+							{% endfor %}
+					</select> 
+					</tbody>
+				{% endif %}
+				</div>
+				
+				  
+				  
+				  <div style="float:left; width:50%" class="form-row field-xyz">
+	    			{% if data.tpl_object_list %}
+					<div class="form-row field-xyz">
+	                  <label class="required" for="id_sel_tpl_id">Recive TPL: </label>
+	                   <select id="id_sel_tpl_id" name="sel_tpl_id">
+							{% for tref in data.tpl_object_list %}
+							<option value="{{ tref.0.id }}" name="{{tref.0.name}}" {% if data.sel_tpl_id == tref.0.id %} selected {% endif %} onclick="submit()">{{tref.0.name}}</option>
+							{% endfor %}
+						</select>  
+							<div style="float:right; width:200px">
+			                <input type="submit" class="command-button button primary" name="select_tpl" value="Select TPL"></input>
+							</div>  	
+	                    </div>
+						{% endif %}
+				</div>
+				
+			</fieldset>
+			<fieldset class="module aligned ">
+			 	<table>
+	 				<thead>
+						<tr>
+							<th class="required">Sl No</th>
+							<th class="required">TPl Id</th>
+							<th class="required">TPL Name</th>
+							<th class="required">OC Reference No</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+					{% for cur_sel_tpl in data.sel_tpl_list %}
+					<tr>
+						<td class="form-row row{{ rowcolors }}">
+						{{ forloop.counter }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						<input id="id_sel_tpl_{{ forloop.counter }}" name="sel_tpl_{{ forloop.counter }}" type="number" value="{{ cur_sel_tpl.0.id }}" hidden/>
+						{{ cur_sel_tpl.0.id }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ cur_sel_tpl.0.name }}
+						</td>
+						<td class="form-row row{{ rowcolors }}">
+						{{ cur_sel_tpl.1.field_list.order_confirmation.1 }}
+					{% endfor %}
+					</tbody>						 	
+				</table>				
+			 </fieldset>
+			 </form>
+			</div>
+		</div>
+
+	
+	<!-- END Content -->
+	{% endblock %}
+<!-- END Container -->
+</body>

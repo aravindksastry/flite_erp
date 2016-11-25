@@ -1,0 +1,196 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-form{% endblock %}
+
+<head>
+<title>Select transaction_ref to change | Django site admin</title>
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/journal_mgmt/css/changelists.css" />
+  
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+ 
+<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+<script type="text/javascript">window.__admin_media_prefix__ = "/static/journal_mgmt/";</script>
+<script type="text/javascript">window.__admin_utc_offset__ = "19800";</script>
+<script type="text/javascript" src="/static/journal_mgmt/js/core.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/journal_mgmt/js/actions.js"></script>
+
+
+<script type="text/javascript">
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+</script>
+
+
+
+<meta name="robots" content="NONE,NOARCHIVE" />
+</head>
+
+
+<body class=" app-journal_mgmt model-transaction_ref change-list">
+<!-- Container -->
+	{% block breadcrumbs %}
+	<div class="breadcrumbs">
+	<a href="/admin/">Home</a>
+	&rsaquo; <a href="/journal_mgmt/">Journal_Mgmt</a>
+	&rsaquo; Transaction_refs
+	</div>
+	{% endblock %}
+	
+	{% block content %}
+	<script language="javascript" type="text/javascript">
+	
+	function popitup(url) {
+	    newwindow=window.open(url,'{{title}}','height=650,width=950');
+	    if (window.focus) {newwindow.focus()}
+	    return false;
+	}
+	
+	</script>
+	<script type="text/javascript">
+	function quote_update() {
+	    var selectBox = document.getElementById("id_project");
+	    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+	    var nav_location =  "/journal_mgmt/quote_import/?project=" + String(selectedValue)
+	    window.location = nav_location;
+	   }
+	</script>
+	<!-- Content -->
+	<!-- test code <p>{{ data.project }}</p> -->
+	<div>
+	{% load custom_temp_tags %}
+        <h1>Import Quotation</h1>
+		<div>
+			<fieldset class="module aligned ">
+	    		<form id="changelist-form" action="{% url 'journal_mgmt:quote_import' %}" method="post" novalidate>
+	    		<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+	    		{% csrf_token %}
+	    		<div>
+	    		    <label class="required" for="id_project">Project:</label>
+						<select id="id_project" name="project" onchange="submit()" {% if data.redirect_url %}disabled{% endif %}>
+							{% for cur_project in data.project_opt %}
+							<option value="{{ cur_project.id }}" {% if data.project.id == cur_project.id %} selected {% endif %}>{{ cur_project.name }} - {{ cur_project.quote_required_by }}</option>
+							{% endfor %}
+						</select>
+				</form>
+				<form id="changelist-form" action="{% url 'journal_mgmt:quote_import' %}" method="post" novalidate>
+	    		<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+	    		{% csrf_token %}
+	    		{% if data.project_selected == True %}
+					<input hidden type="number" name="project" value="{{ data.project.id }}"></input>
+					<label class="required" for="id_quotation">Quotation:</label>
+						<select id="id_quotation" name="quotation" {% if data.redirect_url %}disabled{% endif %}>
+							{% for cur_quotation in data.quotation_opt %}
+							<option value="{{ cur_quotation.id }}" {% if data.quotation.id == cur_quotation.id %} selected {% endif %}>{{ cur_quotation.name }}{% if cur_quotation.id > 1435 %}*{% endif %}</option>
+							{% endfor %}
+						</select>
+					<label for="searchbar"></label>
+						{% if not data.redirect == True %}
+						<input type="submit" name="show_items" value="Show Items" />
+						<input type="submit" name="export" value="Export" />
+						{% endif %}
+				{% endif %}
+				</div>
+				</form>
+			</fieldset>
+			<fieldset class="module aligned ">
+	    		<div class="results">
+	    			{% if data.quote_pl_index %}
+						<table id="result_list" style="width:100%">
+						<thead>
+						<tr>
+							<th scope="col"  class="column-__str__">
+							   	<div class="text"><span>Item Name</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Quantity</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Old Rate</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>Old Value</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>New Rate</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+								<div class="text"><span>New Value</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+							   	<div class="text"><span>Clusterwise Report</span></div>
+							   	<div class="clear"></div>
+							</th>
+							<th scope="col"  class="column-__str__">
+							   	<div class="text"><span>MRS Report</span></div>
+							   	<div class="clear"></div>
+							</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for cur_quote_pl in data.quote_pl_index %}
+						{% cycle 'row1' 'row2' as rowcolors silent %}
+						<tr class="{{ rowcolors }}">
+							<th class="form-row row{{ rowcolors }}"><a href="popupex.html" onClick="return popitup('{% url 'journal_mgmt:new_quote_pl' cur_quote_pl.0.id %}')">{{ cur_quote_pl.1.name }}</a></th>
+							<td class="form-row row{{ rowcolors }}" style="text-align:right">{{ cur_quote_pl.0.spec.Quantity|stringformat:".1f" }}</td>
+							<td class="form-row row{{ rowcolors }}" style="text-align:right">{{ cur_quote_pl.0.spec|stringformat:".1f"|div:cur_quote_pl.0.spec.Quantity|stringformat:".1f" }}</td>
+							<td class="form-row row{{ rowcolors }}" style="text-align:right">{{ cur_quote_pl.0.spec|stringformat:".1f" }}</td>
+							<td class="form-row row{{ rowcolors }}" style="text-align:right">{{ cur_quote_pl.2|stringformat:".1f"|div:cur_quote_pl.0.spec.Quantity|stringformat:".1f" }}</td>
+							<td class="form-row row{{ rowcolors }}" style="text-align:right">{{ cur_quote_pl.2|stringformat:".1f" }}</td>
+							<th class="form-row row{{ rowcolors }}"><a href="popupex.html" onClick="return popitup('{% url 'journal_mgmt:cluster_pl' cur_quote_pl.0.id %}')">Cluster Report</a></th>
+							<th class="form-row row{{ rowcolors }}"><a href="popupex.html" onClick="return popitup('{% url 'journal_mgmt:new_quote_pl' cur_quote_pl.0.id %}?nested=True')">MRS Report</a></th>
+						</tr>
+						{% endfor %}
+						</tbody>
+						</table>
+						<form enctype="multipart/form-data" action="{% url 'journal_mgmt:quote_write_back' data.quotation.0 %}" method="post" id="coa_form" novalidate>
+							<input type='hidden' name='csrfmiddlewaretoken' value='LQYxtGkdhNzzYNdAdPQplaVHAiQsTYex' />
+		    				{% csrf_token %}
+							<div>
+							{% if not data.redirect_url %}
+							<input type="button" value="Import Quote and Create OC" onclick="location.href = '{% url 'journal_mgmt:quote_save' data.quotation.0 %}'"></input>
+							{% endif %}
+							<input type="submit" value="Update Sale Price" name="update_sale_price"></input>
+							</div>
+							<div>
+							<textarea type="text" value="redirect_url" name="redirect_url" cols="20" readonly>{{ data.redirect_url }}</textarea>
+							</div>
+						</form>
+					{% else %}
+					    <p>{% trans "You don't have permission to edit anything." %}</p>
+					{% endif %}
+				<div>
+			</fieldset>
+		</div>
+	</div>
+</div>
+<!-- END Content -->
+{% endblock %}
+
+<!-- END Container -->
+</body>
+
+
+<!--
+
+
+
+-->
