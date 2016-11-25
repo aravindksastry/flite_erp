@@ -36,6 +36,7 @@ from django.contrib.auth import authenticate, login, logout
 # from journal_mgmt.models import project
 
 # need to try with mongo db
+#plan fo rthe scheduler app
 # Create your views here.
 
 def test_http(request):
