@@ -35,7 +35,7 @@ from django.contrib.auth import authenticate, login, logout
 
 # from journal_mgmt.models import project
 
-
+# need to try with mongo db
 # Create your views here.
 
 def test_http(request):
